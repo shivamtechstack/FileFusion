@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="15dp">
+    <RadioGroup
+        android:id="@+id/sort_group_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="8dp">
+        <RadioButton
+            android:id="@+id/name_sort"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            tools:ignore="HardcodedText" />
+        <RadioButton
+            android:id="@+id/size_sort"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Size"
+            tools:ignore="HardcodedText" />
+        <RadioButton
+            android:id="@+id/last_modified_sort"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Last modified"
+            tools:ignore="HardcodedText" />
+        <RadioButton
+            android:id="@+id/type_sort"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Type"
+            tools:ignore="HardcodedText" />
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/black"/>
+
+    <RadioGroup
+        android:id="@+id/ascending_descending_group"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ascending"
+            android:id="@+id/ascending_sort"
+            tools:ignore="HardcodedText" />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Descending"
+            android:id="@+id/descending_sort"
+            tools:ignore="HardcodedText" />
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:id="@+id/sort_dialog_cancel_button"
+            style="@style/Widget.AppCompat.Button.Borderless"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ok"
+            android:id="@+id/sort_dialog_ok_button"
+            style="@style/Widget.AppCompat.Button.Borderless"/>
+
+    </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

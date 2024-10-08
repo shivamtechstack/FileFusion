@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".fragments.FileExplorerFragment">
+<com.google.android.material.appbar.MaterialToolbar
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:popupTheme="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical">
+
+   <com.google.android.material.search.SearchBar
+       android:id="@+id/search_view"
+       android:layout_width="0dp"
+       android:layout_height="40dp"
+       android:layout_gravity="top"
+       android:hint="Search files...."
+       android:layout_weight="1"
+       tools:ignore="HardcodedText" />
+
+   <ImageView
+       android:id="@+id/toolbar_popup_menu"
+       android:layout_width="30dp"
+       android:layout_height="match_parent"
+       android:layout_gravity="top"
+       android:layout_marginEnd="8dp"
+       android:contentDescription="toolbar menu button"
+       android:src="@drawable/baseline_more_vert_24"
+       app:tint="@color/iconcolor"
+       tools:ignore="HardcodedText" />
+
+</LinearLayout>
+
+</com.google.android.material.appbar.MaterialToolbar>
+   <HorizontalScrollView
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
+   <LinearLayout
+       android:id="@+id/pathContainer"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:orientation="horizontal"
+       android:padding="2dp"
+       android:gravity="center_vertical"
+       android:clickable="true">
+   </LinearLayout>
+
+   </HorizontalScrollView>
+   <androidx.cardview.widget.CardView
+       android:id="@+id/TopNavigation"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_gravity="top"
+       android:visibility="gone">
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="bottom"
+          android:orientation="horizontal"
+          android:gravity="center_vertical"
+          android:padding="13dp">
+
+         <ImageView
+             android:id="@+id/clear_selection_button"
+             android:layout_width="0dp"
+             android:layout_height="35dp"
+             android:layout_weight="1"
+             app:tint="@color/red"
+             android:src="@drawable/baseline_clear_24"
+             tools:ignore="ContentDescription" />
+         <TextView
+             android:id="@+id/number_of_selected_files_textView"
+             android:layout_width="0dp"
+             android:layout_marginStart="8dp"
+             android:layout_height="wrap_content"
+             android:text="Files Selected"
+             android:layout_weight="9"
+             tools:ignore="HardcodedText" />
+
+         <ImageView
+             android:id="@+id/selectAllButton"
+             android:layout_width="0dp"
+             android:layout_height="wrap_content"
+             app:tint="@color/iconcolor"
+             android:layout_weight="1"
+             android:layout_marginEnd="14dp"
+             android:src="@drawable/baseline_done_all_24"
+             tools:ignore="ContentDescription" />
+
+         <ImageView
+             android:id="@+id/deleteButton"
+             android:layout_width="0dp"
+             android:layout_height="wrap_content"
+             android:layout_weight="1"
+             app:tint="@color/iconcolor"
+             android:layout_marginEnd="7dp"
+             android:src="@drawable/baseline_delete_24"
+             tools:ignore="ContentDescription" />
+
+      </LinearLayout>
+   </androidx.cardview.widget.CardView>
+
+   <RelativeLayout
+       android:layout_width="match_parent"
+       android:layout_height="0dp"
+       android:layout_weight="1">
+
+      <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/RecyclerViewFileExplorer"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent" />
+
+      <com.google.android.material.floatingactionbutton.FloatingActionButton
+          android:id="@+id/floatingActionButton"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentEnd="true"
+          android:layout_alignParentBottom="true"
+          app:tint="@color/white"
+          app:backgroundTint="@color/app_pallet"
+          android:layout_marginEnd="46dp"
+          android:layout_marginBottom="62dp"
+          android:contentDescription="Add new Folder or File"
+          android:src="@drawable/plus_24"
+          tools:ignore="HardcodedText" />
+
+      <LinearLayout
+          android:id="@+id/fabContainer"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_above="@+id/floatingActionButton"
+          android:layout_alignParentEnd="true"
+          android:layout_marginEnd="36dp"
+          android:layout_marginBottom="10dp"
+          android:gravity="end"
+          android:orientation="vertical"
+          android:visibility="gone">
+
+         <LinearLayout
+             android:id="@+id/createFileButton"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:gravity="end"
+             android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="18dp"
+                android:text="File"
+                android:shadowDx="10"
+                android:shadowColor="@color/app_pallet"
+                android:shadowRadius="25"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                tools:ignore="HardcodedText" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabAction_newFile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="10dp"
+                android:backgroundTint="@color/app_pallet"
+                app:tint="@color/white"
+                android:src="@drawable/outline_insert_drive_file_24"
+                app:fabSize="mini"
+                tools:ignore="ContentDescription" />
+         </LinearLayout>
+
+         <LinearLayout
+             android:id="@+id/createFolderButton"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:gravity="end"
+             android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="18dp"
+                android:shadowDx="10"
+                android:shadowColor="@color/app_pallet"
+                android:shadowRadius="25"
+                android:text="Folder"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabAction_newFolder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="10dp"
+                android:backgroundTint="@color/app_pallet"
+                android:src="@drawable/outline_folder_24"
+                app:fabSize="mini"
+                app:tint="@color/white"
+                tools:ignore="ContentDescription" />
+         </LinearLayout>
+
+      </LinearLayout>
+   </RelativeLayout>
+
+   <androidx.cardview.widget.CardView
+       android:id="@+id/bottomNavigation"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_gravity="bottom"
+       android:visibility="gone">
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_gravity="bottom"
+       android:orientation="horizontal"
+       android:padding="13dp"
+       android:layout_marginBottom="4dp">
+
+      <ImageView
+          android:id="@+id/cutButton"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:src="@drawable/baseline_content_cut_24"
+          app:tint="@color/iconcolor"
+          tools:ignore="ContentDescription" />
+
+      <ImageView
+          android:id="@+id/copyButton"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:src="@drawable/baseline_content_copy_24"
+          app:tint="@color/iconcolor"
+          tools:ignore="ContentDescription" />
+
+      <ImageView
+          android:id="@+id/shareButton"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:src="@drawable/share_24"
+          app:tint="@color/iconcolor"
+          tools:ignore="ContentDescription" />
+
+      <ImageView
+          android:id="@+id/renameButton"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          app:tint="@color/iconcolor"
+          android:src="@drawable/baseline_drive_file_rename_outline_24"
+          tools:ignore="ContentDescription" />
+
+      <ImageView
+          android:id="@+id/moreOptionsButton"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          app:tint="@color/iconcolor"
+          android:src="@drawable/baseline_more_vert_24"
+          tools:ignore="ContentDescription" />
+   </LinearLayout>
+   </androidx.cardview.widget.CardView>
+
+   <androidx.cardview.widget.CardView
+       android:id="@+id/pastelayout"
+       android:visibility="gone"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_gravity="bottom">
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_margin="5dp">
+
+         <TextView
+             android:id="@+id/paste_button"
+             android:layout_width="0dp"
+             android:layout_height="45dp"
+             android:layout_marginStart="10dp"
+             android:text="Paste"
+             android:gravity="center_vertical"
+             android:textSize="22sp"
+             android:textColor="@color/iconcolor"
+             android:textStyle="bold"
+             android:layout_weight="1"
+             tools:ignore="HardcodedText" />
+
+         <ImageView
+             android:id="@+id/newfolder_withpaste"
+             android:layout_width="45dp"
+             android:layout_height="match_parent"
+             android:src="@drawable/baseline_create_new_folder_24"
+             android:layout_gravity="end"
+             android:padding="7dp"
+             android:layout_marginEnd="12dp"
+             app:tint="@color/iconcolor" />
+
+         <ImageView
+             android:id="@+id/paste_clear"
+             android:layout_width="35dp"
+             app:tint="@color/iconcolor"
+             android:layout_height="match_parent"
+             android:layout_marginEnd="7dp"
+             android:src="@drawable/baseline_clear_24"/>
+
+      </LinearLayout>
+
+   </androidx.cardview.widget.CardView>
+
+</LinearLayout>

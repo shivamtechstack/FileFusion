@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/archive"
+        android:icon="@drawable/baseline_archive_24"
+        android:title="Archive"
+        tools:ignore="HardcodedText" />
+
+    <item android:id="@+id/unarchive"
+        android:icon="@drawable/baseline_unarchive_24"
+        android:title="Unarchive"
+        tools:ignore="HardcodedText" />
+
+    <item android:id="@+id/encrypt"
+        android:title="Encrypt"
+        tools:ignore="HardcodedText" />
+
+    <item android:id="@+id/decrypt"
+        android:title="Decrypt"
+        tools:ignore="HardcodedText" />
+
+    <item android:title="Copy Path to Clipboard"
+        android:id="@+id/copypath"
+        android:icon="@drawable/baseline_content_copy_24"
+        tools:ignore="HardcodedText" />
+
+    <item android:id="@+id/createshortcut"
+        android:title="Create shortcut"
+        android:icon="@drawable/baseline_shortcut_24"
+        tools:ignore="HardcodedText" />
+
+    <item android:id="@+id/bookmark"
+        android:icon="@drawable/baseline_star_outline_24"
+        android:title="Bookmark"
+        tools:ignore="HardcodedText" />
+
+    <item android:id="@+id/properties"
+        android:title="Properties"
+        android:icon="@drawable/baseline_info_outline_24"
+        tools:ignore="HardcodedText" />
+
+</menu>
