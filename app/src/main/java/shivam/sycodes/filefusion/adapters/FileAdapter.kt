@@ -26,6 +26,7 @@ import kotlin.math.pow
 class FileAdapter(val context: Context,private var files : List<File>,
     private var onItemClick : (File) -> Unit,
     private val onItemLongClick : (File) -> Unit) : RecyclerView.Adapter<FileAdapter.FileViewHolder>() {
+        //this is main adapter
 
         private val preferencesHelper :PreferencesHelper = PreferencesHelper(context)
 
