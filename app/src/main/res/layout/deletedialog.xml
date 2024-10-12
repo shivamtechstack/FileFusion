@@ -41,6 +41,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:gravity="end">
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/delete_operation_cancel_button"
@@ -54,10 +55,10 @@
             android:id="@+id/moveto_trash_button"
             android:layout_width="wrap_content"
             android:elevation="5dp"
-            style="@style/Widget.AppCompat.Button.Borderless"
+            android:backgroundTint="@color/lightred"
             android:layout_height="wrap_content"
             android:text="Move to trash"
-            android:textColor="@color/red"
+            android:textColor="@color/white"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 </LinearLayout>

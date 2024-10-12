@@ -2,6 +2,7 @@ package shivam.sycodes.filefusion.utility
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -19,34 +20,37 @@ class CreateFileAndFolder(private val context : Context) {
         fileDialog.setView(fileDialogView)
         fileDialog.setTitle("New File")
         val fileName = fileDialogView.findViewById<EditText>(R.id.newFileFolder_edittext)
+        val createFileButton = fileDialogView.findViewById<Button>(R.id.createfile_ok_button)
+        val cancelFileButton = fileDialogView.findViewById<Button>(R.id.createfile_cancel_button)
+        val fileAlertDialog = fileDialog.create()
 
-        fileDialog.setPositiveButton("Create"){ dialog, _ ->
+        createFileButton.setOnClickListener {
             val filename = fileName.text.toString().trim()
-            if (filename.isNotEmpty() && currentPath != null){
+            if (filename.isNotEmpty() && currentPath != null) {
                 val newFile = File(currentPath, filename)
-                try{
+                try {
                     if (!newFile.exists()) {
                         if (newFile.createNewFile()) {
                             showToast("File created successfully")
                         } else {
                             showToast("Failed to create file!")
                         }
-                    }else{
+                    } else {
                         showToast("File already exists")
                     }
-                }catch (e : Exception){
+                } catch (e: Exception) {
                     showToast("Error : $e")
                 }
-            }else{
+            } else {
                 showToast("Filename cannot be empty")
             }
             loadFiles(currentPath)
-            dialog.dismiss()
+            fileAlertDialog.dismiss()
         }
-        fileDialog.setNegativeButton("Cancel"){dialog,_ ->
-            dialog.dismiss()
+        cancelFileButton.setOnClickListener {
+            fileAlertDialog.dismiss()
         }
-        fileDialog.show()
+        fileAlertDialog.show()
     }
 
     fun createNewFolder(
@@ -58,8 +62,11 @@ class CreateFileAndFolder(private val context : Context) {
         folderDialog.setView(folderDialogView)
         folderDialog.setTitle("New Folder")
         val folderName = folderDialogView.findViewById<EditText>(R.id.newFileFolder_edittext)
+        val createFolderButton = folderDialogView.findViewById<Button>(R.id.createfile_ok_button)
+        val cancelFolderButton = folderDialogView.findViewById<Button>(R.id.createfile_cancel_button)
 
-        folderDialog.setPositiveButton("Create") { dialog, _ ->
+        val folderAlertDialog = folderDialog.create()
+        createFolderButton.setOnClickListener {
             val foldername = folderName.text.toString().trim()
             if (foldername.isNotEmpty() && currentPath != null) {
                 val newFolder = File(currentPath, foldername)
@@ -76,12 +83,12 @@ class CreateFileAndFolder(private val context : Context) {
                 showToast("Folder name cannot be empty")
             }
             loadFiles(currentPath)
-            dialog.dismiss()
+           folderAlertDialog.dismiss()
         }
-        folderDialog.setNegativeButton("cancel"){dialog,_ ->
-            dialog.dismiss()
-        }
-        folderDialog.show()
+       cancelFolderButton.setOnClickListener {
+           folderAlertDialog.dismiss()
+       }
+        folderAlertDialog.show()
     }
 
     private fun showToast(message : String){

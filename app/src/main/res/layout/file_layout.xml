@@ -10,6 +10,7 @@
         android:id="@+id/directory_image"
         android:layout_width="35dp"
         android:layout_gravity="center"
+        android:layout_marginStart="7dp"
         android:layout_height="35dp"
         android:src="@drawable/folder"
         tools:ignore="ContentDescription" />
@@ -19,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="15dp"
         android:gravity="center_vertical">
 
         <TextView

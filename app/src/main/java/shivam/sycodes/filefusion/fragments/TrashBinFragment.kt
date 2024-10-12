@@ -5,11 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.GridLayoutManager
+import org.w3c.dom.Text
 import shivam.sycodes.filefusion.R
 import shivam.sycodes.filefusion.adapters.TrashAdapter
 import shivam.sycodes.filefusion.databinding.FragmentTrashBinBinding
@@ -54,6 +56,10 @@ class TrashBinFragment : Fragment() {
 
                         val trashBinDelete = trashDialogView.findViewById<CardView>(R.id.trashBin_deletebutton)
                         val trashBinRestore = trashDialogView.findViewById<CardView>(R.id.trashBin_restoreButton)
+                        val trashCancelButton = trashDialogView.findViewById<TextView>(R.id.trashCancelButton)
+                        val trashFileNameShow = trashDialogView.findViewById<TextView>(R.id.trashFileNameShow)
+
+                        trashFileNameShow.text= "File : ${selectedFile.name}"
 
                         val alertDialog = trashDialog.create()
 
@@ -79,9 +85,9 @@ class TrashBinFragment : Fragment() {
                             alertDialog.dismiss()
                         }
 
-                        trashDialog.setNegativeButton("Cancel") { dialog, _ ->
-                            dialog.dismiss()
-                        }
+                       trashCancelButton.setOnClickListener {
+                           alertDialog.dismiss()
+                       }
 
                         alertDialog.show()
                     })

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="270dp"
     android:layout_height="wrap_content"
+    android:padding="15dp"
+    android:orientation="vertical"
     android:layout_gravity="center">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/newFileFolderField"
-        android:layout_margin="10dp"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,4 +22,31 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-</androidx.cardview.widget.CardView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+       android:layout_marginTop="8dp">
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/createfile_cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:elevation="5dp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_height="wrap_content"
+            android:text="cancel"
+            tools:ignore="HardcodedText" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/createfile_ok_button"
+            android:layout_width="wrap_content"
+            android:elevation="5dp"
+            android:textColor="@color/white"
+            android:layout_weight="1"
+            android:backgroundTint="@color/lightred"
+            android:layout_height="wrap_content"
+            android:text="create"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+
+
+</LinearLayout>

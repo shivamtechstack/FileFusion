@@ -404,6 +404,14 @@ class FileExplorerFragment : Fragment() {
 
             val deletedialog = deleteAlertDialog.create()
 
+            permanentDeletecheckBox.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    movetoTrashButton.text = "Delete"
+                } else {
+                    movetoTrashButton.text = "Move to Trash"
+                }
+            }
+
             cancelDeleteButton.setOnClickListener {
                 deletedialog.dismiss()
             }

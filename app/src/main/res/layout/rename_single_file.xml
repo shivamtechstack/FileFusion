@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="270dp"
     android:layout_gravity="center"
+    android:orientation="vertical"
+    android:padding="15dp"
     android:layout_height="wrap_content">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/filledTextField"
@@ -30,10 +26,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="end"
-    android:layout_margin="5dp">
+    android:layout_marginTop="8dp">
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/rename_single_cancel_button"
             android:layout_width="wrap_content"
+            android:layout_weight="1"
             android:elevation="5dp"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_height="wrap_content"
@@ -43,12 +40,12 @@
         android:id="@+id/rename_single_ok_button"
         android:layout_width="wrap_content"
         android:elevation="5dp"
-        style="@style/Widget.AppCompat.Button.Borderless"
+        android:textColor="@color/white"
+        android:layout_weight="1"
+        android:backgroundTint="@color/lightred"
         android:layout_height="wrap_content"
-        android:text="ok"
+        android:text="Rename"
         tools:ignore="HardcodedText" />
 </LinearLayout>
 
-    </LinearLayout>
-
-</com.google.android.material.card.MaterialCardView>
+</LinearLayout>
