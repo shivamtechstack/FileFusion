@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import shivam.sycodes.filefusion.R
 import java.io.File
-import kotlin.reflect.KFunction1
 
 class CreateFileAndFolder(private val context : Context) {
 

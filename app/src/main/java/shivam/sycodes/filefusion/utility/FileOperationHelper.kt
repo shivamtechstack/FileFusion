@@ -6,6 +6,10 @@ import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import shivam.sycodes.filefusion.roomdatabase.AppDatabase
+import shivam.sycodes.filefusion.roomdatabase.ItemEntity
+import shivam.sycodes.filefusion.roomdatabase.itemDAO
 import java.io.File
 import java.util.Date
 
@@ -103,6 +107,7 @@ class FileOperationHelper(private val context: Context) {
     }
     fun moveToTrash(selectedFiles: List<File>): Boolean {
         val trashDir = getTrashDir()
+        val trashDao = AppDatabase.getDatabase(context).trashItemDAO()
         if (trashDir == null || !trashDir.exists()) {
             showToast("Trash Directory Error!")
             return false
@@ -117,11 +122,20 @@ class FileOperationHelper(private val context: Context) {
             } else {
                 file.renameTo(trashFile)
             }
+            if (isMoved){
+                CoroutineScope(Dispatchers.IO).launch{
+                    val trashItem = ItemEntity(
+                        trashFileName = file.name,
+                        trashFileOriginalPath = file.absolutePath,
+                        trashFileDeletionDate = Date().toString()
+                    )
+                    trashDao.insertTrashItem(trashItem)
+                }
+            }
             if (!isMoved) {
                 allMovedSuccessfully = false
             }
         }
-
         return allMovedSuccessfully
     }
 
@@ -157,4 +171,27 @@ class FileOperationHelper(private val context: Context) {
         return trashDir
     }
 
+    fun isRestored(file : File){
+    val trashDAO = AppDatabase.getDatabase(context).trashItemDAO()
+        CoroutineScope(Dispatchers.IO).launch {
+            val trashItem = trashDAO.getTrashItemByFileName(file.name)
+            if (trashItem!=null) {
+                val originalFilePath = File(trashItem.trashFileOriginalPath)
+                val isrestored = if (file.isDirectory) {
+                    moveFileOrDirectoryToTrash(file, originalFilePath)
+                } else {
+                    file.renameTo(originalFilePath)
+                }
+                withContext(Dispatchers.Main) {
+                    if (isrestored) {
+                        trashDAO.deleteTrashItem(file.name)
+                        showToast("File restored to original path.")
+                    } else {
+                        showToast("Failed to restore file.")
+                    }
+                } }else {
+                    showToast("Original path not found!")
+                }
+        }
+    }
 }

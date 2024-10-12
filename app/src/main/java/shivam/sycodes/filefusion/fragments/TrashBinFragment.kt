@@ -5,8 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.GridLayoutManager
+import shivam.sycodes.filefusion.R
 import shivam.sycodes.filefusion.adapters.TrashAdapter
 import shivam.sycodes.filefusion.databinding.FragmentTrashBinBinding
 import shivam.sycodes.filefusion.utility.FileOperationHelper
@@ -30,26 +34,68 @@ class TrashBinFragment : Fragment() {
         loadFiles(trashPath)
         return binding!!.root
     }
-    private fun loadFiles(trashPath : String){
-        trashPath.let {
-            val directory = File(trashPath)
-            if (directory.isDirectory && directory.exists()){
-                val files : Array<File> = directory.listFiles()?: arrayOf()
-                files.sortedByDescending { it.lastModified() }
-                if (files.isNotEmpty()){
-                trashAdapter = TrashAdapter(requireContext(),files, onItemClick ={ selectedFile ->
-                }
-                )
-                    binding?.trashBinRecyclerView?.layoutManager = GridLayoutManager(requireContext(),3)
-                    binding?.trashBinRecyclerView?.adapter = trashAdapter
-                }else{
-                    binding?.trashBinRecyclerView?.adapter = null
-                    showToast("Trash Directory is empty")
-                }
+    private fun loadFiles(trashPath: String) {
+        val directory = File(trashPath)
+        if (directory.isDirectory && directory.exists()) {
+            val files: Array<File> = directory.listFiles() ?: arrayOf()
+            val sortedFiles = files.sortedByDescending { it.lastModified() }.toMutableList()
 
+            if (sortedFiles.isNotEmpty()) {
+                if (::trashAdapter.isInitialized) {
+
+                    trashAdapter.files = sortedFiles.toTypedArray()
+                    trashAdapter.notifyDataSetChanged()
+                } else {
+
+                    trashAdapter = TrashAdapter(requireContext(), sortedFiles.toTypedArray(), onItemClick = { selectedFile ->
+                        val trashDialog = AlertDialog.Builder(requireContext())
+                        val trashDialogView = LayoutInflater.from(requireContext()).inflate(R.layout.trashdialog, null, false)
+                        trashDialog.setView(trashDialogView)
+
+                        val trashBinDelete = trashDialogView.findViewById<CardView>(R.id.trashBin_deletebutton)
+                        val trashBinRestore = trashDialogView.findViewById<CardView>(R.id.trashBin_restoreButton)
+
+                        val alertDialog = trashDialog.create()
+
+                        trashBinDelete.setOnClickListener {
+                            val position = sortedFiles.indexOf(selectedFile)
+                            if (position >= 0) {
+                                fileOperationHelper.deleteOperation(listOf(selectedFile))
+                                sortedFiles.removeAt(position)
+                                trashAdapter.files = sortedFiles.toTypedArray()
+                                trashAdapter.notifyItemRemoved(position)
+                            }
+                            alertDialog.dismiss()
+                        }
+
+                        trashBinRestore.setOnClickListener {
+                            val position = sortedFiles.indexOf(selectedFile)
+                            if (position >= 0) {
+                                fileOperationHelper.isRestored(selectedFile)
+                                sortedFiles.removeAt(position)
+                                trashAdapter.files = sortedFiles.toTypedArray()
+                                trashAdapter.notifyItemChanged(position)
+                            }
+                            alertDialog.dismiss()
+                        }
+
+                        trashDialog.setNegativeButton("Cancel") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+
+                        alertDialog.show()
+                    })
+
+                    binding?.trashBinRecyclerView?.layoutManager = GridLayoutManager(requireContext(), 3)
+                    binding?.trashBinRecyclerView?.adapter = trashAdapter
+                }
+            } else {
+                binding?.trashBinRecyclerView?.adapter = null
+                showToast("Trash Directory is empty")
             }
         }
     }
+
     private fun showToast(message : String){
         Toast.makeText(requireContext(),message,Toast.LENGTH_SHORT).show()
     }

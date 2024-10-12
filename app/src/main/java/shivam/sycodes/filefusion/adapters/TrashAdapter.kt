@@ -31,7 +31,10 @@ class TrashAdapter(val context: Context, var files: Array<File>, private var onI
     }
 
     override fun onBindViewHolder(holder: TrashViewHolder, position: Int) {
+        val file= files[position]
+
         holder.fileName.text = files[position].name
+
         if (files[position].isDirectory){
             holder.fileImage.setImageResource(R.drawable.folder)
         }else{
@@ -88,6 +91,10 @@ class TrashAdapter(val context: Context, var files: Array<File>, private var onI
                     else -> holder.fileImage.setImageResource(R.drawable.document)
                 }
             }
+        }
+        holder.itemView.setOnLongClickListener {
+            onItemClick(file)
+            true
         }
     }
 }
