@@ -357,7 +357,11 @@ class FileExplorerFragment : Fragment() {
         binding.bottomNavigation.visibility = View.VISIBLE
         binding.TopNavigation.visibility = View.VISIBLE
 
-        binding.numberOfSelectedFilesTextView.text="${fileAdapter.getSelectedFiles().size.toString()} selected"
+        fileAdapter.setOnSelectionChangeListener(object : FileAdapter.OnSelectionChangeListener {
+            override fun onSelectionChanged(selectedFileCount: Int) {
+                binding.numberOfSelectedFilesTextView.text = "$selectedFileCount selected"
+            }
+        })
 
         binding.clearSelectionButton.setOnClickListener {
             fileAdapter.clearSelection()

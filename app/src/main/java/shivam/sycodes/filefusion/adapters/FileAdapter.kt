@@ -29,8 +29,18 @@ class FileAdapter(val context: Context,private var files : List<File>,
 
         private val preferencesHelper :PreferencesHelper = PreferencesHelper(context)
 
-        private val selectedFiles = mutableSetOf<File>()
+        private val selectedFiles = HashSet<File>()
         var isMultiSelectedMode = false
+
+    interface OnSelectionChangeListener {
+        fun onSelectionChanged(selectedFileCount: Int)
+    }
+
+    private var selectionChangeListener: OnSelectionChangeListener? = null
+
+    fun setOnSelectionChangeListener(listener: OnSelectionChangeListener) {
+        this.selectionChangeListener = listener
+    }
 
         inner class FileViewHolder(view: View): RecyclerView.ViewHolder(view){
             private val filename : TextView? = view.findViewById(R.id.directory_name)
@@ -38,6 +48,7 @@ class FileAdapter(val context: Context,private var files : List<File>,
             private val checkBox : CheckBox?= view.findViewById(R.id.checkbox)
             private val fileSize :TextView? =view.findViewById(R.id.filesize)
             private val fileDate : TextView?=view.findViewById(R.id.fileDate)
+
 
             init {
                 view.setOnClickListener {
@@ -57,14 +68,21 @@ class FileAdapter(val context: Context,private var files : List<File>,
                     onItemLongClick(selectedFile)
                     true
                 }
+                checkBox?.setOnClickListener {
+                    val selectedFile = files[adapterPosition]
+                    toggleSelection(selectedFile)
+                    notifyItemChanged(adapterPosition)
+                }
             }
             @SuppressLint("SetTextI18n")
             fun bind(file: File) {
                 filename?.text = file.name
+                checkBox?.isChecked = selectedFiles.contains(file)
+                checkBox?.visibility = if (isMultiSelectedMode) View.VISIBLE else View.GONE
+
                 if (file.isDirectory) {
                     fileImage?.setImageResource(R.drawable.folder)
-                    val itemCount = file.listFiles()?.size ?: 0
-                    fileSize?.text = "$itemCount items"
+                   fileSize?.text= "${file.listFiles()?.size ?: 0} items"
                 } else {
                     val extension = file.extension.lowercase()
                     val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
@@ -106,11 +124,9 @@ class FileAdapter(val context: Context,private var files : List<File>,
                     fileSize?.text = filesize
                     fileDate?.text = lastModified
                 }
-                checkBox?.isChecked = selectedFiles.contains(file)
-                checkBox?.visibility = if (isMultiSelectedMode) View.VISIBLE else View.GONE
                 if (isMultiSelectedMode){
-                    fileSize?.visibility = View.GONE
-                    fileDate?.visibility= View.GONE
+                    fileSize?.visibility=View.GONE
+                    fileDate?.visibility=View.GONE
                 }
             }
         }
@@ -122,20 +138,29 @@ class FileAdapter(val context: Context,private var files : List<File>,
             selectedFiles.add(file)
         }
         notifyItemChanged(files.indexOf(file))
+        selectionChangeListener?.onSelectionChanged(selectedFiles.size)
+
     }
     fun getSelectedFiles() : List<File> = selectedFiles.toList()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun clearSelection(){
+    fun clearSelection(keepMultiSelectMode: Boolean = false){
         selectedFiles.clear()
-        isMultiSelectedMode = false
+        isMultiSelectedMode = keepMultiSelectMode
         notifyDataSetChanged()
+        selectionChangeListener?.onSelectionChanged(selectedFiles.size)
     }
     @SuppressLint("NotifyDataSetChanged")
     fun selectAll() {
-        selectedFiles.clear()
-        selectedFiles.addAll(files)
-        notifyDataSetChanged()
+        if (selectedFiles.size == files.size) {
+            clearSelection(keepMultiSelectMode = true)
+        } else {
+            selectedFiles.clear()
+            selectedFiles.addAll(files)
+            isMultiSelectedMode=true
+            notifyDataSetChanged()
+            selectionChangeListener?.onSelectionChanged(selectedFiles.size)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileViewHolder {
