@@ -14,17 +14,21 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import shivam.sycodes.filefusion.R
+import shivam.sycodes.filefusion.archievingAndEncryption.ZipArchieve
 import java.io.File
 import java.util.Date
 
 
 class BottomPopUpMenu(private val context: Context) {
+
+    lateinit var zipArchieve : ZipArchieve
     fun popUpMenuBottom(
         selectedFiles: List<File>, view: View,
         hideNavigationBar: () -> Unit,
         isFromCategory: Boolean,
     ){
         val bottomPopUpMenu = PopupMenu(context,view)
+        zipArchieve =ZipArchieve()
         bottomPopUpMenu.menuInflater.inflate(R.menu.bottompopupmenu, bottomPopUpMenu.menu)
         bottomPopUpMenu.setForceShowIcon(true)
 
@@ -43,7 +47,32 @@ class BottomPopUpMenu(private val context: Context) {
         bottomPopUpMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.archive -> {
-                    Toast.makeText(context, "Archiving file", Toast.LENGTH_SHORT).show()
+                    if (selectedFiles.isNotEmpty()) {
+                        val parentDir = selectedFiles.first().parentFile
+                        if (parentDir != null) {
+                            val outputZipFileName = "archived_${System.currentTimeMillis()}.zip"
+                            val outputZipFilePath = File(parentDir, outputZipFileName).absolutePath
+
+                            zipArchieve.zipFileorFolder(selectedFiles, outputZipFilePath)
+
+                            Toast.makeText(context, "Files zipped to: $outputZipFilePath", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(context, "Cannot determine parent directory", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    true
+                }
+                R.id.unarchive ->{
+                    if (selectedFiles.isNotEmpty()) {
+                        val parentDir = selectedFiles.first().parentFile
+                        if (parentDir != null) {
+                            val outputZipFileName = "archived_${System.currentTimeMillis()}.zip"
+                            val outputZipFilePath = File(parentDir, outputZipFileName).absolutePath
+                            determineFileType(selectedFiles, outputZipFilePath)
+                        }
+                    }else{
+                        Toast.makeText(context,"No File/Folder Selected",Toast.LENGTH_SHORT).show()
+                    }
                     true
                 }
                 R.id.copypath -> {
@@ -71,6 +100,19 @@ class BottomPopUpMenu(private val context: Context) {
             }
         }
         bottomPopUpMenu.show()
+    }
+
+    private fun determineFileType(selectedFiles: List<File>, outputZipFilePath: String) {
+        selectedFiles.forEach { file ->
+            val extension = file.extension.lowercase()
+            when{
+                extension == "zip" -> zipArchieve.unZipFile(file,outputZipFilePath)
+
+                else -> Toast.makeText(context,"Unsupported Archieve Format!!",Toast.LENGTH_SHORT).show()
+            }
+
+        }
+
     }
 
     private fun copyPathsToClipboard(files: List<File>) {
