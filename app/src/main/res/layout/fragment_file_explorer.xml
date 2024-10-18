@@ -125,12 +125,12 @@
           android:layout_height="wrap_content"
           android:layout_alignParentEnd="true"
           android:layout_alignParentBottom="true"
-          app:tint="@color/white"
-          app:backgroundTint="@color/app_pallet"
-          android:layout_marginEnd="46dp"
-          android:layout_marginBottom="62dp"
+          android:layout_marginEnd="28dp"
+          android:layout_marginBottom="58dp"
           android:contentDescription="Add new Folder or File"
           android:src="@drawable/plus_24"
+          app:backgroundTint="@color/app_pallet"
+          app:tint="@color/white"
           tools:ignore="HardcodedText" />
 
       <LinearLayout

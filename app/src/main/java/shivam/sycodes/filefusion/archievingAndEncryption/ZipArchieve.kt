@@ -5,16 +5,33 @@ import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.util.zip.Deflater
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
-class ZipArchieve() {
+class ZipArchieve {
 
-    fun zipFileorFolder(filesOrFolders: List<File>, outputZipPath: String) {
+    fun zipFileorFolder(
+        filesOrFolders: List<File>,
+        outputZipPath: String,
+        selectedCompression: String
+    ) {
         val zipFile = File(outputZipPath)
+
         ZipOutputStream(BufferedOutputStream(FileOutputStream(zipFile))).use { zos ->
             filesOrFolders.forEach { fileOrFolder ->
+                val compressionLevel = when (selectedCompression) {
+                    "No Compression" -> Deflater.NO_COMPRESSION
+                    "Very Fast" -> 1
+                    "Fast" -> 3
+                    "Balanced" -> Deflater.DEFAULT_COMPRESSION
+                    "High" -> 7
+                    "Maximum Compression" -> Deflater.BEST_COMPRESSION
+                    else -> Deflater.DEFAULT_COMPRESSION
+                }
+
+                zos.setLevel(compressionLevel)
                 zipFileOrFolderRecursive(fileOrFolder, fileOrFolder.name, zos)
             }
         }

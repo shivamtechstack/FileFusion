@@ -3,6 +3,10 @@
     <array name="preloaded_fonts" translatable="false">
         <item>@font/</item>
         <item>@font/acme</item>
+        <item>@font/lato</item>
+        <item>@font/lato_bold</item>
+        <item>@font/merriweather_sans_light</item>
         <item>@font/montserrat_bold</item>
+        <item>@font/source_sans_pro_semibold</item>
     </array>
 </resources>

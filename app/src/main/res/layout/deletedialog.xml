@@ -9,18 +9,23 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Are you sure you want to delete this file?"
-        android:textSize="17sp" />
+        android:text="Are you sure you want to delete the following files?"
+        android:textSize="18sp"
+        android:fontFamily="@font/source_sans_pro_semibold"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/deleting_file_size"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="15dp"
+        android:fontFamily="@font/source_sans_pro_semibold"
         android:text="File"
-        android:textSize="17sp" />
+        android:textSize="18sp"
+        tools:ignore="HardcodedText" />
 
     <LinearLayout
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -34,27 +39,34 @@
             android:layout_height="wrap_content"
             android:text="Delete Permanently!!"
             android:textStyle="bold"
-            android:textSize="17sp"
+            android:fontFamily="@font/source_sans_pro_semibold"
+            android:textSize="18sp"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="15dp"
         android:gravity="end">
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/delete_operation_cancel_button"
-            android:layout_width="wrap_content"
-            android:elevation="5dp"
             style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:textSize="16sp"
             android:layout_height="wrap_content"
+            android:elevation="5dp"
+            android:fontFamily="@font/source_sans_pro_semibold"
             android:text="cancel"
             tools:ignore="HardcodedText" />
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/moveto_trash_button"
             android:layout_width="wrap_content"
             android:elevation="5dp"
+            android:textSize="16sp"
+            android:fontFamily="@font/source_sans_pro_semibold"
             android:backgroundTint="@color/lightred"
             android:layout_height="wrap_content"
             android:text="Move to trash"
