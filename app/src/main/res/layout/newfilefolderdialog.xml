@@ -18,6 +18,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/newFileFolder_edittext"
             android:layout_width="match_parent"
+            android:fontFamily="@font/source_sans_pro_semibold"
+            android:textSize="18sp"
             android:layout_height="wrap_content" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -32,14 +34,18 @@
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:elevation="5dp"
+            android:textSize="16sp"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_height="wrap_content"
             android:text="cancel"
+            android:fontFamily="@font/source_sans_pro_semibold"
             tools:ignore="HardcodedText" />
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/createfile_ok_button"
             android:layout_width="wrap_content"
             android:elevation="5dp"
+            android:textSize="16sp"
+            android:fontFamily="@font/source_sans_pro_semibold"
             android:textColor="@color/white"
             android:layout_weight="1"
             android:backgroundTint="@color/lightred"

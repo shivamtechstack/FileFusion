@@ -139,7 +139,7 @@
           android:layout_height="wrap_content"
           android:layout_above="@+id/floatingActionButton"
           android:layout_alignParentEnd="true"
-          android:layout_marginEnd="36dp"
+          android:layout_marginEnd="20dp"
           android:layout_marginBottom="10dp"
           android:gravity="end"
           android:orientation="vertical"
@@ -158,11 +158,12 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="18dp"
                 android:text="File"
+                android:fontFamily="@font/poppins_medium"
                 android:shadowDx="10"
                 android:shadowColor="@color/app_pallet"
                 android:shadowRadius="25"
                 android:textStyle="bold"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 tools:ignore="HardcodedText" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -193,8 +194,9 @@
                 android:shadowDx="10"
                 android:shadowColor="@color/app_pallet"
                 android:shadowRadius="25"
+                android:fontFamily="@font/poppins_medium"
                 android:text="Folder"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 

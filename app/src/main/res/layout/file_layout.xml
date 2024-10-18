@@ -26,6 +26,7 @@
         <TextView
             android:id="@+id/directory_name"
             android:maxLines="1"
+            android:fontFamily="@font/lato_bold"
             android:layout_width="wrap_content"
             android:overScrollMode="ifContentScrolls"
             android:layout_height="wrap_content"
@@ -42,6 +43,7 @@
             <TextView
                 android:id="@+id/filesize"
                 android:layout_width="0dp"
+                android:fontFamily="@font/lato"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="14sp"
@@ -50,6 +52,7 @@
 
             <TextView
                 android:id="@+id/fileDate"
+                android:fontFamily="@font/lato"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"

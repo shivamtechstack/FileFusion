@@ -55,19 +55,6 @@ class BottomPopUpMenu(private val context: Context) {
         bottomPopUpMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.archive -> {
-                    /*if (selectedFiles.isNotEmpty()) {
-                        val parentDir = selectedFiles.first().parentFile
-                        if (parentDir != null) {
-                            val outputZipFileName = "archived_${System.currentTimeMillis()}.zip"
-                            val outputZipFilePath = File(parentDir, outputZipFileName).absolutePath
-
-                            zipArchieve.zipFileorFolder(selectedFiles, outputZipFilePath)
-
-                            Toast.makeText(context, "Files zipped to: $outputZipFilePath", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(context, "Cannot determine parent directory", Toast.LENGTH_SHORT).show()
-                        }
-                    }*/
 
                     val archiveDialog = AlertDialog.Builder(context)
                     val archiveDialogView = LayoutInflater.from(context).inflate(R.layout.archieve_dialog,null,false)

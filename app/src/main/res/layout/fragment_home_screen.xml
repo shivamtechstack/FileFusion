@@ -10,7 +10,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="17dp"
+            android:layout_marginHorizontal="20dp"
             android:layout_marginVertical="9dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -73,7 +73,8 @@
                         android:layout_gravity="center"
                         android:text="32%"
                         android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
                 </FrameLayout>
 
                 <LinearLayout
@@ -89,6 +90,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Internal Storage"
+                        android:fontFamily="@font/source_sans_pro_semibold"
                         android:textColor="@color/white"
                         android:textSize="20sp"
                         android:textStyle="bold"
@@ -164,6 +166,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="SD Card"
+                    android:fontFamily="@font/source_sans_pro_semibold"
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold"
@@ -240,6 +243,7 @@
                     android:layout_height="wrap_content"
                     android:text="USB Storage"
                     android:textColor="@color/white"
+                    android:fontFamily="@font/source_sans_pro_semibold"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     tools:ignore="HardcodedText" />
@@ -261,6 +265,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Categories"
+        android:fontFamily="@font/lato"
         android:textSize="18sp"
         android:textStyle="bold"
         android:textAlignment="center"
@@ -295,6 +300,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:fontFamily="@font/lato_bold"
                 android:text="Recent"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
@@ -318,6 +324,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Photos"
+                android:fontFamily="@font/lato_bold"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
 
@@ -340,6 +347,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Musics"
+                android:fontFamily="@font/lato_bold"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
 
@@ -361,6 +369,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:fontFamily="@font/lato_bold"
                 android:text="Videos"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
@@ -384,6 +393,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Apks"
+                android:fontFamily="@font/lato_bold"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
 
@@ -406,6 +416,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Archieves"
+                android:fontFamily="@font/lato_bold"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
 
@@ -428,6 +439,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Downloads"
+                android:fontFamily="@font/lato_bold"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
 
@@ -449,6 +461,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:fontFamily="@font/lato_bold"
                 android:text="Documents"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
@@ -459,6 +472,7 @@
         android:layout_height="wrap_content"
         android:text="Management"
         android:textSize="18sp"
+        android:fontFamily="@font/lato"
         android:textStyle="bold"
         android:textAlignment="center"
         android:gravity="center"
@@ -499,8 +513,9 @@
                 android:text="Bookmarks"
                 android:layout_marginStart="8dp"
                 android:gravity="center"
+                android:fontFamily="@font/lato"
                 android:textColor="@color/white"
-                android:textSize="19dp"
+                android:textSize="19sp"
                 tools:ignore="HardcodedText" />
             </LinearLayout>
 
@@ -533,8 +548,9 @@
                     android:text="Trash"
                     android:layout_marginStart="8dp"
                     android:gravity="center"
+                    android:fontFamily="@font/lato"
                     android:textColor="@color/white"
-                    android:textSize="19dp"/>
+                    android:textSize="19sp"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </GridLayout>

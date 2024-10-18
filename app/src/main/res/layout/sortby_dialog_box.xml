@@ -20,24 +20,28 @@
             android:id="@+id/name_sort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/source_sans_pro_semibold"
             android:text="Name"
             tools:ignore="HardcodedText" />
         <RadioButton
             android:id="@+id/size_sort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/source_sans_pro_semibold"
             android:text="Size"
             tools:ignore="HardcodedText" />
         <RadioButton
             android:id="@+id/last_modified_sort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/source_sans_pro_semibold"
             android:text="Last modified"
             tools:ignore="HardcodedText" />
         <RadioButton
             android:id="@+id/type_sort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/source_sans_pro_semibold"
             android:text="Type"
             tools:ignore="HardcodedText" />
     </RadioGroup>
@@ -57,12 +61,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Ascending"
+            android:fontFamily="@font/source_sans_pro_semibold"
             android:id="@+id/ascending_sort"
             tools:ignore="HardcodedText" />
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Descending"
+            android:fontFamily="@font/source_sans_pro_semibold"
             android:id="@+id/descending_sort"
             tools:ignore="HardcodedText" />
     </RadioGroup>
@@ -78,6 +84,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cancel"
+            android:fontFamily="@font/source_sans_pro_semibold"
+            android:textSize="16sp"
             android:id="@+id/sort_dialog_cancel_button"
             style="@style/Widget.AppCompat.Button.Borderless"/>
 
@@ -85,6 +93,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ok"
+            android:fontFamily="@font/source_sans_pro_semibold"
+            android:textSize="16sp"
             android:id="@+id/sort_dialog_ok_button"
             style="@style/Widget.AppCompat.Button.Borderless"/>
 
