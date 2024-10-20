@@ -9,7 +9,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import shivam.sycodes.filefusion.roomdatabase.AppDatabase
 import shivam.sycodes.filefusion.roomdatabase.ItemEntity
-import shivam.sycodes.filefusion.roomdatabase.itemDAO
 import java.io.File
 import java.util.Date
 
@@ -107,7 +106,7 @@ class FileOperationHelper(private val context: Context) {
     }
     fun moveToTrash(selectedFiles: List<File>): Boolean {
         val trashDir = getTrashDir()
-        val trashDao = AppDatabase.getDatabase(context).trashItemDAO()
+        val trashDao = AppDatabase.getDatabase(context).itemDAO()
         if (trashDir == null || !trashDir.exists()) {
             showToast("Trash Directory Error!")
             return false
@@ -172,7 +171,7 @@ class FileOperationHelper(private val context: Context) {
     }
 
     fun isRestored(file : File){
-    val trashDAO = AppDatabase.getDatabase(context).trashItemDAO()
+    val trashDAO = AppDatabase.getDatabase(context).itemDAO()
         CoroutineScope(Dispatchers.IO).launch {
             val trashItem = trashDAO.getTrashItemByFileName(file.name)
             if (trashItem!=null) {

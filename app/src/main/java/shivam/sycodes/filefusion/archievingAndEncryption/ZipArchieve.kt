@@ -1,5 +1,6 @@
 package shivam.sycodes.filefusion.archievingAndEncryption
 
+
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.File
@@ -15,7 +16,8 @@ class ZipArchieve {
     fun zipFileorFolder(
         filesOrFolders: List<File>,
         outputZipPath: String,
-        selectedCompression: String
+        selectedCompression: String,
+        password : String?=null
     ) {
         val zipFile = File(outputZipPath)
 

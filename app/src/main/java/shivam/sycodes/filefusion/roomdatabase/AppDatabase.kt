@@ -4,11 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-@Database(entities = [ItemEntity::class], version = 1, exportSchema = false)
-abstract class AppDatabase: RoomDatabase() {
-    abstract fun trashItemDAO() : itemDAO
 
-    companion object{
+@Database(entities = [ItemEntity::class, BookmarkEntity::class], version = 1, exportSchema = false)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun itemDAO(): itemDAO
+
+    companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
@@ -17,7 +18,7 @@ abstract class AppDatabase: RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "file_trash_database"
+                    "file_database"
                 ).build()
                 INSTANCE = instance
                 instance

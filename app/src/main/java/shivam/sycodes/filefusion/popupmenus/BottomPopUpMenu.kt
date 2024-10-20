@@ -21,15 +21,22 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import shivam.sycodes.filefusion.R
 import shivam.sycodes.filefusion.archievingAndEncryption.ZipArchieve
+import shivam.sycodes.filefusion.roomdatabase.AppDatabase
+import shivam.sycodes.filefusion.roomdatabase.BookmarkEntity
 import java.io.File
 import java.util.Date
 
 
 class BottomPopUpMenu(private val context: Context) {
 
-    lateinit var zipArchieve : ZipArchieve
+    private lateinit var zipArchieve : ZipArchieve
     fun popUpMenuBottom(
         selectedFiles: List<File>, view: View,
         hideNavigationBar: () -> Unit,
@@ -130,8 +137,28 @@ class BottomPopUpMenu(private val context: Context) {
                                         val outputZipFileName = archiveFileName.text.toString() + ".zip"
                                         val outputZipFilePath = File(parentDir, outputZipFileName).absolutePath
 
-                                        zipArchieve.zipFileorFolder(selectedFiles, outputZipFilePath,selectedCompression)
+                                        if (protectWithPasswordCheckBox.isChecked){
+                                            val password = passwordEditText.text.toString()
+                                            val confirmPassword = confirmPasswordEditText.text.toString()
+                                            if(password.isEmpty() || confirmPassword.isEmpty()){
+                                                Toast.makeText(context, "Password cannot be empty", Toast.LENGTH_SHORT).show()
+                                                return@setOnClickListener
+                                            }
+                                            if (password != confirmPassword){
+                                                Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                                                return@setOnClickListener
+                                            }
+                                            else{
+                                                zipArchieve.zipFileorFolder(selectedFiles, outputZipFilePath,selectedCompression,password)
+                                            }
+                                        }else {
 
+                                            zipArchieve.zipFileorFolder(
+                                                selectedFiles,
+                                                outputZipFilePath,
+                                                selectedCompression
+                                            )
+                                        }
                                         Toast.makeText(context, "Files zipped to: $outputZipFilePath", Toast.LENGTH_SHORT).show()
                                     } else {
                                         Toast.makeText(context, "Cannot determine parent directory", Toast.LENGTH_SHORT).show()
@@ -172,6 +199,29 @@ class BottomPopUpMenu(private val context: Context) {
                 R.id.properties -> {
                     if (selectedFiles.isNotEmpty()) {
                         showFileProperties(selectedFiles)
+                    }
+                    true
+                }
+                R.id.bookmark ->{
+                    val bookmarkDao = AppDatabase.getDatabase(context).itemDAO()
+
+                    CoroutineScope(Dispatchers.IO).launch{
+                        selectedFiles.forEach { file ->
+                            val bookmarkItem = BookmarkEntity(
+                                bookmarkFileName = file.name.toString(),
+                                bookmarkFilePath = file.absolutePath
+                            )
+                            try {
+                                bookmarkDao.addBookmark(bookmarkItem)
+                                withContext(Dispatchers.Main) {
+                                    Toast.makeText(context, "${file.name} bookmarked successfully", Toast.LENGTH_SHORT).show()
+                                }
+                            } catch (e: Exception) {
+                                withContext(Dispatchers.Main) {
+                                    Toast.makeText(context, "Failed to bookmark ${file.name}", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
                     }
                     true
                 }

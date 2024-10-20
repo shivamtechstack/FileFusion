@@ -20,6 +20,9 @@ roomCompilerVersion = "2.6.1"
 roomKtx = "2.6.1"
 roomRuntime = "2.5.2"
 roomRuntimeVersion = "2.6.1"
+sevenzipjbindingAllPlatforms = "16.02-2.01"
+truevfsKernelImpl = "0.10.5"
+zip4j = "2.11.5"
 
 [libraries]
 androidx-core = { module = "androidx.core:core", version.ref = "coreKtx" }
@@ -45,6 +48,10 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 material-v11210 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
+sevenzipjbinding = { module = "net.sf.sevenzipjbinding:sevenzipjbinding", version.ref = "sevenzipjbindingAllPlatforms" }
+sevenzipjbinding-all-platforms = { module = "net.sf.sevenzipjbinding:sevenzipjbinding-all-platforms", version.ref = "sevenzipjbindingAllPlatforms" }
+truevfs-kernel-impl = { module = "net.java.truevfs:truevfs-kernel-impl", version.ref = "truevfsKernelImpl" }
+zip4j = { module = "net.lingala.zip4j:zip4j", version.ref = "zip4j" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

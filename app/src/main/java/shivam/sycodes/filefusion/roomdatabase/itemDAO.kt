@@ -14,4 +14,15 @@ interface itemDAO {
 
     @Query("SELECT * FROM items_Entity WHERE trashFileName= :trashFileName")
     suspend fun deleteTrashItem(trashFileName: String):ItemEntity
+
+    @Insert
+    suspend fun addBookmark(bookmark: BookmarkEntity)
+
+    @Query("SELECT * FROM bookmark_entities")
+    suspend fun getAllBookmarks(): List<BookmarkEntity>
+
+    @Query("DELETE FROM bookmark_entities WHERE bookmarkFilePath = :filePath")
+    suspend fun removeBookmark(filePath: String)
+
+
 }
