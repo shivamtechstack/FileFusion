@@ -24,11 +24,16 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import shivam.sycodes.filefusion.R
 import shivam.sycodes.filefusion.utility.FileSharingHelper
 import shivam.sycodes.filefusion.adapters.FileAdapter
 import shivam.sycodes.filefusion.databinding.FragmentFileExplorerBinding
 import shivam.sycodes.filefusion.popupmenus.BottomPopUpMenu
+import shivam.sycodes.filefusion.roomdatabase.AppDatabase
 import shivam.sycodes.filefusion.utility.CreateFileAndFolder
 import shivam.sycodes.filefusion.utility.FileOperationHelper
 import shivam.sycodes.filefusion.utility.FileRenameHelper
@@ -119,6 +124,7 @@ class FileExplorerFragment : Fragment() {
             "music" -> loadFilesFromMediaStore(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI)
             "apks" -> loadApkFiles()
             "archives" -> loadFilesFromStorage(this::getArchiveFiles)
+            "bookmarks"-> loadBookmarks()
             else -> loadFiles(currentPath)
         }
         binding.pasteClear.setOnClickListener {
@@ -134,6 +140,21 @@ class FileExplorerFragment : Fragment() {
         popUpMenuTop()
 
         return binding.root
+    }
+
+    private fun loadBookmarks(){
+        isFromCategory = true
+        CoroutineScope(Dispatchers.IO).launch {
+            val bookmarkDAO = AppDatabase.getDatabase(requireContext()).itemDAO()
+            val bookmarkEntities = bookmarkDAO.getAllBookmarks()
+
+            val bookmarkFiles = bookmarkEntities.map { bookmark ->
+                File(bookmark.bookmarkFilePath)
+            }.filter { it.exists() }
+            withContext(Dispatchers.Main){
+                displayFilesInRecyclerView(bookmarkFiles)
+            }
+        }
     }
     private fun loadFilesFromStorage(getFilesMethod: (File, MutableList<File>) -> Unit) {
         isFromCategory = true
@@ -445,7 +466,13 @@ class FileExplorerFragment : Fragment() {
             deletedialog.show()
         }
         binding.moreOptionsButton.setOnClickListener {
-                bottomPopUpMenu.popUpMenuBottom(fileAdapter.getSelectedFiles(), view = binding.moreOptionsButton, ::hideNavigationBars ,isFromCategory)
+            val category = arguments?.getString(ARG_CATEGORY)
+                bottomPopUpMenu.popUpMenuBottom(
+                    fileAdapter.getSelectedFiles(),
+                    view = binding.moreOptionsButton,
+                    ::hideNavigationBars,
+                    isFromCategory,
+                    category)
         }
     }
     private fun showPasteLayout() {
@@ -534,12 +561,7 @@ class FileExplorerFragment : Fragment() {
 
     private fun toogleFabMenu(){
         if (isFabOpen){
-            binding.fabContainer.visibility = View.GONE
-            binding.fabContainer.animate().scaleY(0f).scaleX(0f).setDuration(200).withEndAction {
-                binding.fabContainer.visibility = View.GONE
-            }.start()
-            binding.floatingActionButton.setImageResource(R.drawable.plus_24)
-            isFabOpen = false
+            fapButtonVisibility()
         }else{
             binding.fabContainer.visibility = View.VISIBLE
             binding.fabContainer.animate().scaleY(1f).scaleX(1f).setDuration(200).start()
@@ -551,10 +573,20 @@ class FileExplorerFragment : Fragment() {
                 currentPath,
                 ::loadFiles
             )
+           fapButtonVisibility()
         }
         binding.fabActionNewFolder.setOnClickListener {
             createFileFolderClass.createNewFolder(currentPath,::loadFiles)
+           fapButtonVisibility()
         }
+    }
+    private fun fapButtonVisibility() {
+        binding.fabContainer.visibility = View.GONE
+        binding.fabContainer.animate().scaleY(0f).scaleX(0f).setDuration(200).withEndAction {
+            binding.fabContainer.visibility = View.GONE
+        }.start()
+        binding.floatingActionButton.setImageResource(R.drawable.plus_24)
+        isFabOpen = false
     }
     private fun handleBackPress() {
         if(fileAdapter.isMultiSelectedMode){
@@ -588,8 +620,13 @@ class FileExplorerFragment : Fragment() {
         binding.bottomNavigation.visibility=View.GONE
         binding.TopNavigation.visibility=View.GONE
         binding.toolbar.visibility = View.VISIBLE
-        binding.floatingActionButton.visibility = View.VISIBLE
-        binding.pathContainer.visibility = View.VISIBLE
+        if (isFromCategory){
+            binding.floatingActionButton.visibility = View.GONE
+            binding.pathContainer.visibility = View.GONE
+        }else {
+            binding.floatingActionButton.visibility = View.VISIBLE
+            binding.pathContainer.visibility = View.VISIBLE
+        }
     }
     override fun onDestroyView() {
         super.onDestroyView()

@@ -23,6 +23,4 @@ interface itemDAO {
 
     @Query("DELETE FROM bookmark_entities WHERE bookmarkFilePath = :filePath")
     suspend fun removeBookmark(filePath: String)
-
-
 }

@@ -23,7 +23,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import shivam.sycodes.filefusion.R
@@ -41,6 +40,7 @@ class BottomPopUpMenu(private val context: Context) {
         selectedFiles: List<File>, view: View,
         hideNavigationBar: () -> Unit,
         isFromCategory: Boolean,
+        category: String?,
     ){
         val bottomPopUpMenu = PopupMenu(context,view)
         zipArchieve =ZipArchieve()
@@ -53,10 +53,18 @@ class BottomPopUpMenu(private val context: Context) {
             drawable?.setTint(ContextCompat.getColor(context, R.color.iconcolor))
         }
         if (isFromCategory){
+            if (category == "bookmarks"){
+                bottomPopUpMenu.menu.findItem(R.id.bookmark).isVisible = false
+                bottomPopUpMenu.menu.findItem(R.id.removeBookmark).isVisible = true
+            }
             bottomPopUpMenu.menu.findItem(R.id.archive).isVisible =false
             bottomPopUpMenu.menu.findItem(R.id.unarchive).isVisible =false
             bottomPopUpMenu.menu.findItem(R.id.decrypt).isVisible =false
             bottomPopUpMenu.menu.findItem(R.id.encrypt).isVisible =false
+        }
+        if (selectedFiles.any { it.isDirectory }){
+            bottomPopUpMenu.menu.findItem(R.id.bookmark).isVisible = false
+            bottomPopUpMenu.menu.findItem(R.id.removeBookmark).isVisible = false
         }
 
         bottomPopUpMenu.setOnMenuItemClickListener { item ->

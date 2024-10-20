@@ -488,6 +488,7 @@
         android:rowCount="2">
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/bookmark_cardView"
             android:layout_width="160dp"
             android:backgroundTint="@color/app_pallet"
             android:layout_columnWeight="1"
@@ -504,7 +505,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:tint="@color/white"
-                android:src="@drawable/baseline_star_outline_24"
+                android:src="@drawable/outline_bookmarks_24"
                 android:layout_height="match_parent"/>
 
             <TextView
@@ -539,7 +540,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:tint="@color/white"
-                    android:src="@drawable/baseline_delete_24"
+                    android:src="@drawable/outline_delete_24"
                     android:layout_height="match_parent"/>
 
                 <TextView

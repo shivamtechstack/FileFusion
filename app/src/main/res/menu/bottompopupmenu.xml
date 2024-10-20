@@ -3,20 +3,22 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/archive"
-        android:icon="@drawable/baseline_archive_24"
+        android:icon="@drawable/outline_archive_24"
         android:title="Archive"
         tools:ignore="HardcodedText" />
 
     <item android:id="@+id/unarchive"
-        android:icon="@drawable/baseline_unarchive_24"
-        android:title="Unarchive"
+        android:icon="@drawable/outline_unarchive_24"
+        android:title="Extract"
         tools:ignore="HardcodedText" />
 
     <item android:id="@+id/encrypt"
+        android:icon="@drawable/outline_lock_24"
         android:title="Encrypt"
         tools:ignore="HardcodedText" />
 
     <item android:id="@+id/decrypt"
+        android:icon="@drawable/baseline_lock_open_24"
         android:title="Decrypt"
         tools:ignore="HardcodedText" />
 
@@ -31,9 +33,16 @@
         tools:ignore="HardcodedText" />
 
     <item android:id="@+id/bookmark"
-        android:icon="@drawable/baseline_star_outline_24"
+        android:icon="@drawable/outline_bookmark_add_24"
         android:title="Bookmark"
         tools:ignore="HardcodedText" />
+
+    <item android:id="@+id/removeBookmark"
+        android:icon="@drawable/outline_bookmark_remove_24"
+        android:title="Remove Bookmark"
+        android:visible="false"
+        tools:ignore="HardcodedText" />
+
 
     <item android:id="@+id/properties"
         android:title="Properties"
