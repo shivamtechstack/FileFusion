@@ -233,6 +233,26 @@ class BottomPopUpMenu(private val context: Context) {
                     }
                     true
                 }
+                R.id.removeBookmark -> {
+
+                    val bookmarkDao = AppDatabase.getDatabase(context).itemDAO()
+                    CoroutineScope(Dispatchers.IO).launch {
+                        selectedFiles.forEach { file ->
+                            bookmarkDao.removeBookmark(file.absolutePath)
+                        }
+                        try {
+                            withContext(Dispatchers.Main){
+                                Toast.makeText(context, "Bookmarks removed successfully", Toast.LENGTH_SHORT).show()
+                            }
+                        }catch (e: Exception){
+                            withContext(Dispatchers.Main){
+                                Toast.makeText(context, "Failed to remove bookmarks", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+
+                    true
+                }
                 else -> {
                     Toast.makeText(context, "No selection", Toast.LENGTH_SHORT).show()
                     true

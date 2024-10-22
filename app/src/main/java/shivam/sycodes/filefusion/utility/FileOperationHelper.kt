@@ -1,5 +1,6 @@
 package shivam.sycodes.filefusion.utility
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Environment
 import android.widget.Toast
@@ -170,6 +171,7 @@ class FileOperationHelper(private val context: Context) {
         return trashDir
     }
 
+    @SuppressLint("SuspiciousIndentation")
     fun isRestored(file : File){
     val trashDAO = AppDatabase.getDatabase(context).itemDAO()
         CoroutineScope(Dispatchers.IO).launch {
