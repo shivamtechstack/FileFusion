@@ -19,7 +19,7 @@
             android:id="@+id/newFileFolder_edittext"
             android:layout_width="match_parent"
             android:fontFamily="@font/source_sans_pro_semibold"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:layout_height="wrap_content" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:elevation="5dp"
-            android:textSize="16sp"
+            android:textSize="15sp"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_height="wrap_content"
             android:text="cancel"
@@ -44,7 +44,7 @@
             android:id="@+id/createfile_ok_button"
             android:layout_width="wrap_content"
             android:elevation="5dp"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:fontFamily="@font/source_sans_pro_semibold"
             android:textColor="@color/white"
             android:layout_weight="1"

@@ -71,8 +71,8 @@
 
          <ImageView
              android:id="@+id/clear_selection_button"
-             android:layout_width="0dp"
-             android:layout_height="35dp"
+             android:layout_width="28dp"
+             android:layout_height="28dp"
              android:layout_weight="1"
              app:tint="@color/red"
              android:src="@drawable/baseline_clear_24"
@@ -80,7 +80,7 @@
          <TextView
              android:id="@+id/number_of_selected_files_textView"
              android:layout_width="0dp"
-             android:layout_marginStart="8dp"
+             android:layout_marginStart="4dp"
              android:layout_height="wrap_content"
              android:text="Files Selected"
              android:layout_weight="9"
@@ -88,21 +88,22 @@
 
          <ImageView
              android:id="@+id/selectAllButton"
-             android:layout_width="0dp"
-             android:layout_height="wrap_content"
+             android:layout_width="26dp"
+             android:layout_height="26dp"
              app:tint="@color/iconcolor"
              android:layout_weight="1"
-             android:layout_marginEnd="14dp"
+             android:layout_marginEnd="2dp"
              android:src="@drawable/baseline_done_all_24"
              tools:ignore="ContentDescription" />
 
          <ImageView
+             android:elevation="10dp"
              android:id="@+id/deleteButton"
-             android:layout_width="0dp"
-             android:layout_height="wrap_content"
+             android:layout_width="26dp"
+             android:layout_height="26dp"
              android:layout_weight="1"
              app:tint="@color/iconcolor"
-             android:layout_marginEnd="7dp"
+             android:layout_marginEnd="6dp"
              android:src="@drawable/outline_delete_24"
              tools:ignore="ContentDescription" />
 
@@ -139,7 +140,7 @@
           android:layout_height="wrap_content"
           android:layout_above="@+id/floatingActionButton"
           android:layout_alignParentEnd="true"
-          android:layout_marginEnd="20dp"
+          android:layout_marginEnd="19dp"
           android:layout_marginBottom="10dp"
           android:gravity="end"
           android:orientation="vertical"
@@ -163,7 +164,7 @@
                 android:shadowColor="@color/app_pallet"
                 android:shadowRadius="25"
                 android:textStyle="bold"
-                android:textSize="18sp"
+                android:textSize="15sp"
                 tools:ignore="HardcodedText" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -196,7 +197,7 @@
                 android:shadowRadius="25"
                 android:fontFamily="@font/poppins_medium"
                 android:text="Folder"
-                android:textSize="18sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 

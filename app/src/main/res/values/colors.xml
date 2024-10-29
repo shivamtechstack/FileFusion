@@ -6,5 +6,7 @@
     <color name="red">#FF0000</color>
     <color name="iconcolor">#371F76</color>
     <color name="lightred">#FF2E31</color>
+    <color name="unhighlighted_text">#A0A0A0</color>
+    <color name="alpaviewbackground">#0A000000</color>
 
 </resources>

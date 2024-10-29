@@ -2,4 +2,5 @@
 <resources>
     <color name="app_pallet">#353A47</color>
     <color name="iconcolor">#E9FFF9</color>
+    <color name="alpaviewbackground">#0AFFFFFF</color>
 </resources>
