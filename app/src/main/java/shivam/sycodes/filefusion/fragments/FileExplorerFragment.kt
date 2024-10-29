@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,13 +18,20 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,10 +42,12 @@ import shivam.sycodes.filefusion.adapters.FileAdapter
 import shivam.sycodes.filefusion.databinding.FragmentFileExplorerBinding
 import shivam.sycodes.filefusion.popupmenus.BottomPopUpMenu
 import shivam.sycodes.filefusion.roomdatabase.AppDatabase
+import shivam.sycodes.filefusion.service.PasteWorker
 import shivam.sycodes.filefusion.utility.CreateFileAndFolder
 import shivam.sycodes.filefusion.utility.FileOperationHelper
 import shivam.sycodes.filefusion.utility.FileRenameHelper
 import shivam.sycodes.filefusion.utility.PathDisplayHelper
+import shivam.sycodes.filefusion.utility.PermissionHelper
 import shivam.sycodes.filefusion.utility.PreferencesHelper
 import shivam.sycodes.filefusion.viewModel.FileOperationViewModel
 import java.io.File
@@ -58,9 +68,18 @@ class FileExplorerFragment : Fragment() {
     private lateinit var preferencesHelper: PreferencesHelper
     private lateinit var currentSortOption : Pair<String?, Boolean>
     private lateinit var createFileFolderClass : CreateFileAndFolder
+    private lateinit var permissionHelper: PermissionHelper
     private var isFabOpen = false
     private lateinit var pathDisplayHelper : PathDisplayHelper
     private var isFromCategory: Boolean = false
+    private val requestNotificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                Toast.makeText(requireContext(), "Notification permission granted", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "Notification permission denied", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     companion object{
         private const val ARG_PATH = "path"
@@ -87,6 +106,7 @@ class FileExplorerFragment : Fragment() {
         fileOperationHelper= FileOperationHelper(requireContext())
         bottomPopUpMenu= BottomPopUpMenu(requireContext())
         createFileFolderClass = CreateFileAndFolder(requireContext())
+
 
         requireActivity().onBackPressedDispatcher.addCallback(this,object : OnBackPressedCallback(true){
             override fun handleOnBackPressed() {
@@ -484,15 +504,38 @@ class FileExplorerFragment : Fragment() {
     private fun setupPasteOperation() {
         binding.pasteButton.setOnClickListener {
             val filesToPaste = fileOperationViewModel.filesToCopyorCut
+            val filePaths = filesToPaste!!.map { it.absolutePath }
             val isCutOperation = fileOperationViewModel.isCutOperation
-
-            fileOperationHelper.pasteFiles(
-                filesToPaste, currentPath, isCutOperation
-            ) {
-                fileOperationViewModel.filesToCopyorCut = null
-                binding.pastelayout.visibility = View.GONE
-                loadFiles(currentPath)
+            permissionHelper = PermissionHelper(requireContext())
+            if(!permissionHelper.isNotificationPermissionGranted()){
+                permissionHelper.requestNotificationPermission(requestNotificationPermissionLauncher)
             }
+
+            val inputData = Data.Builder()
+                .putStringArray("FILES_TO_PASTE", filePaths.toTypedArray())
+                .putString("DESTINATION_PATH", currentPath)
+                .putBoolean("IS_CUT_OPERATION", isCutOperation)
+                .build()
+
+            val pasteWorkRequest = OneTimeWorkRequestBuilder<PasteWorker>()
+                .setInputData(inputData)
+                .build()
+
+            WorkManager.getInstance(requireContext()).enqueue(pasteWorkRequest)
+
+            WorkManager.getInstance(requireContext()).getWorkInfoByIdLiveData(pasteWorkRequest.id)
+                .observe(viewLifecycleOwner, Observer { workInfo ->
+                    if (workInfo != null && workInfo.state == WorkInfo.State.SUCCEEDED) {
+                        Toast.makeText(requireContext(), "Paste operation completed successfully!", Toast.LENGTH_SHORT).show()
+                        loadFiles(currentPath)
+                    } else if (workInfo != null && workInfo.state == WorkInfo.State.FAILED) {
+                        Toast.makeText(requireContext(), "Paste operation failed.", Toast.LENGTH_SHORT).show()
+                        loadFiles(currentPath)
+                    }
+                })
+            fileOperationViewModel.filesToCopyorCut = null
+            binding.pastelayout.visibility = View.GONE
+
         }
         binding.newfolderWithpaste.setOnClickListener {
             createFileFolderClass.createNewFolder(currentPath,::loadFiles)

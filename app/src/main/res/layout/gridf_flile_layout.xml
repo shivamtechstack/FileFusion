@@ -19,17 +19,18 @@
         android:layout_weight="1"
         android:src="@drawable/imagefile"
         tools:ignore="NestedWeights" />
-    <TextView
-        android:id="@+id/directory_name"
-        android:fontFamily="@font/lato_bold"
-        android:hint="File/Folder"
-        android:gravity="center"
-        android:singleLine="true"
-        android:textAlignment="center"
-        android:textSize="15sp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/directory_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/lato"
+            android:gravity="center"
+            android:hint="File/Folder"
+            android:singleLine="true"
+            android:textAlignment="center"
+            android:textSize="15sp"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
     <CheckBox
         android:id="@+id/checkbox"

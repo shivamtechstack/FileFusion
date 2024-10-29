@@ -2,7 +2,6 @@ package shivam.sycodes.filefusion.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Bitmap
 import android.media.ThumbnailUtils
 import android.provider.MediaStore
 import android.text.format.DateFormat
@@ -15,6 +14,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import shivam.sycodes.filefusion.R
 import shivam.sycodes.filefusion.utility.PreferencesHelper
 import java.io.File
@@ -91,18 +94,30 @@ class FileAdapter(val context: Context,private var files : List<File>,
                             fileImage?.let {
                                 Glide.with(it.context)
                                     .load(file)
+                                    .circleCrop()
                                     .placeholder(R.drawable.imagefile)
                                     .into(it)
                             }
                         }
                         mimeType != null && mimeType.startsWith("video") -> {
-                            val videoThumbnail: Bitmap? = ThumbnailUtils.createVideoThumbnail(
-                                file.path, MediaStore.Images.Thumbnails.MINI_KIND
-                            )
-                            if (videoThumbnail != null) {
-                                fileImage?.setImageBitmap(videoThumbnail)
-                            } else {
-                                fileImage?.setImageResource(R.drawable.videofile)
+
+                            CoroutineScope(Dispatchers.Main).launch {
+                                val videoThumbnail = withContext(Dispatchers.IO) {
+                                    ThumbnailUtils.createVideoThumbnail(
+                                        file.path, MediaStore.Images.Thumbnails.MINI_KIND
+                                    )
+                                }
+                                if (videoThumbnail != null) {
+                                    fileImage?.let {
+                                        Glide.with(it.context)
+                                            .load(videoThumbnail)
+                                            .circleCrop()
+                                            .placeholder(R.drawable.videofile)
+                                            .into(it)
+                                    }
+                                } else {
+                                    fileImage?.setImageResource(R.drawable.videofile)
+                                }
                             }
                         }
                         extension == "pdf" -> fileImage?.setImageResource(R.drawable.pdf)
@@ -118,11 +133,17 @@ class FileAdapter(val context: Context,private var files : List<File>,
                         extension in arrayOf("mp3", "aac", "m4a", "wav", "flac", "amr") -> fileImage?.setImageResource(R.drawable.audio)
                         else -> fileImage?.setImageResource(R.drawable.document)
                     }
-                    val filesize = formatFileSize(file.length())
-                    val lastModified = formatDate(file.lastModified())
-                    fileDate?.visibility = View.VISIBLE
-                    fileSize?.text = filesize
-                    fileDate?.text = lastModified
+
+                    CoroutineScope(Dispatchers.Main).launch {
+                        val (filesize, lastModified) = withContext(Dispatchers.IO) {
+                            val size = formatFileSize(file.length())
+                            val modified = formatDate(file.lastModified())
+                            size to modified
+                        }
+                        fileSize?.text = filesize
+                        fileDate?.visibility = View.VISIBLE
+                        fileDate?.text = lastModified
+                    }
                 }
                 if (isMultiSelectedMode){
                     fileSize?.visibility=View.GONE

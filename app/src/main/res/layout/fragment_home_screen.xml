@@ -21,7 +21,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/poppins_semibold"
                 android:text="FileFusion"
-                android:textSize="24sp"
+                android:textSize="21sp"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 
@@ -92,7 +92,7 @@
                         android:text="Internal Storage"
                         android:fontFamily="@font/source_sans_pro_semibold"
                         android:textColor="@color/white"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         android:textStyle="bold"
                         tools:ignore="HardcodedText" />
 
@@ -102,7 +102,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
                         android:text="87 GB | 128 GB available"
-                        android:textSize="16sp" />
+                        android:textSize="15sp" />
                 </LinearLayout>
             </RelativeLayout>
 
@@ -168,7 +168,7 @@
                     android:text="SD Card"
                     android:fontFamily="@font/source_sans_pro_semibold"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     tools:ignore="HardcodedText" />
 
@@ -178,7 +178,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:text="87 GB | 128 GB available"
-                    android:textSize="16sp"
+                    android:textSize="15sp"
                     tools:ignore="HardcodedText" />
             </LinearLayout>
         </RelativeLayout>
@@ -244,7 +244,7 @@
                     android:text="USB Storage"
                     android:textColor="@color/white"
                     android:fontFamily="@font/source_sans_pro_semibold"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     tools:ignore="HardcodedText" />
 
@@ -254,7 +254,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:text="87 GB | 128 GB available"
-                    android:textSize="16sp"
+                    android:textSize="15sp"
                     tools:ignore="HardcodedText" />
             </LinearLayout>
         </RelativeLayout>
@@ -266,7 +266,7 @@
         android:layout_height="wrap_content"
         android:text="Categories"
         android:fontFamily="@font/lato"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         android:textAlignment="center"
         android:gravity="center"
@@ -471,11 +471,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Management"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:fontFamily="@font/lato"
         android:textStyle="bold"
         android:textAlignment="center"
         android:gravity="center"
+        android:layout_marginBottom="5dp"
         android:layout_marginTop="10dp"
         tools:ignore="HardcodedText" />
 
@@ -516,7 +517,7 @@
                 android:gravity="center"
                 android:fontFamily="@font/lato"
                 android:textColor="@color/white"
-                android:textSize="19sp"
+                android:textSize="17sp"
                 tools:ignore="HardcodedText" />
             </LinearLayout>
 
@@ -551,7 +552,7 @@
                     android:gravity="center"
                     android:fontFamily="@font/lato"
                     android:textColor="@color/white"
-                    android:textSize="19sp"/>
+                    android:textSize="17sp"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </GridLayout>

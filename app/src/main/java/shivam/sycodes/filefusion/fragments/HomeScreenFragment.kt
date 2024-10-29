@@ -30,7 +30,6 @@ class HomeScreenFragment : Fragment() {
     private val downloadsFolderPath = Environment.getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS).absolutePath
     private val documentsFolderPath = Environment.getExternalStoragePublicDirectory(DIRECTORY_DOCUMENTS).absolutePath
     private val storageManager by lazy { requireContext().getSystemService(Context.STORAGE_SERVICE) as StorageManager }
-   // private val trashDir = Environment.getExternalStorageDirectory(".FileFusionTrashBin").absolutePath
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -99,8 +98,7 @@ class HomeScreenFragment : Fragment() {
             fragment(null, "archives")
         }
         binding.trashBinCardView.setOnClickListener{
-            val trashDir= getTrashDir()
-            fragment(trashDir.toString(),null)
+           fragmentManager?.beginTransaction()?.replace(R.id.fragmentContainerView,TrashBinFragment())?.addToBackStack(null)?.commit()
         }
         binding.bookmarkCardView.setOnClickListener {
             fragment(null,"bookmarks")
@@ -173,18 +171,5 @@ class HomeScreenFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-    private fun getTrashDir(): File? {
-        val storageDir = Environment.getExternalStorageDirectory()
-        val trashDir = File(storageDir, ".FileFusionTrashBin")
-
-        if (!trashDir.exists()) {
-            val isCreated = trashDir.mkdirs()
-            if (!isCreated) {
-               Toast.makeText(requireContext(),"error",Toast.LENGTH_SHORT).show()
-                return null
-            }
-        }
-        return trashDir
     }
 }

@@ -5,13 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.GridLayoutManager
-import org.w3c.dom.Text
 import shivam.sycodes.filefusion.R
 import shivam.sycodes.filefusion.adapters.TrashAdapter
 import shivam.sycodes.filefusion.databinding.FragmentTrashBinBinding

@@ -15,58 +15,6 @@ import java.util.Date
 
 class FileOperationHelper(private val context: Context) {
 
-    private fun copyFileorDirectory(source: File, destination: File){
-        if (source.isDirectory) {
-            destination.mkdirs()
-            source.listFiles()?.forEach { child ->
-                copyFileorDirectory(child, File(destination, child.name))
-            }
-        }else{
-                source.copyTo(destination, overwrite = false)
-            }
-    }
-
-    private fun moveFileorDirectory(source: File, destination: File){
-        if (source.isDirectory){
-            destination.mkdirs()
-            source.listFiles()?.forEach { child ->
-                moveFileorDirectory(child,File(destination, child.name))
-            }
-            source.deleteRecursively()
-        }else {
-            source.renameTo(destination)
-        }
-    }
-
-    fun pasteFiles(filesToPaste : List<File>?,
-                   destinationPath: String?,
-                   isCutOperation: Boolean,
-                   onComplete: () -> Unit){
-
-        if ( filesToPaste == null || destinationPath == null){
-            showToast("No files or destination path available")
-            return
-        }
-        val destinationDirectory = File(destinationPath)
-
-        filesToPaste.forEach { file ->
-            val targetFile = File(destinationDirectory, file.name)
-            if (targetFile.exists()){
-                showToast("File or folder with name ${file.name} already exists in the destination")
-            }else{
-                if (isCutOperation){
-                    moveFileorDirectory(file, targetFile)
-                }else{
-                    copyFileorDirectory(file, targetFile)
-                }
-            }
-        }
-        if (isCutOperation){
-            filesToPaste.forEach { file -> file.deleteRecursively() }
-        }
-        onComplete()
-        showToast("Paste operation complete")
-    }
     private fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }

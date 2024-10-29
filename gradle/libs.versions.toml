@@ -23,6 +23,7 @@ roomRuntimeVersion = "2.6.1"
 sevenzipjbindingAllPlatforms = "16.02-2.01"
 truevfsKernelImpl = "0.10.5"
 zip4j = "2.11.5"
+workRuntimeKtx = "2.9.1"
 
 [libraries]
 androidx-core = { module = "androidx.core:core", version.ref = "coreKtx" }
@@ -52,6 +53,7 @@ sevenzipjbinding = { module = "net.sf.sevenzipjbinding:sevenzipjbinding", versio
 sevenzipjbinding-all-platforms = { module = "net.sf.sevenzipjbinding:sevenzipjbinding-all-platforms", version.ref = "sevenzipjbindingAllPlatforms" }
 truevfs-kernel-impl = { module = "net.java.truevfs:truevfs-kernel-impl", version.ref = "truevfsKernelImpl" }
 zip4j = { module = "net.lingala.zip4j:zip4j", version.ref = "zip4j" }
+androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
