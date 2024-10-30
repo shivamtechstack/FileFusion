@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import shivam.sycodes.filefusion.R
 import shivam.sycodes.filefusion.adapters.TrashAdapter
 import shivam.sycodes.filefusion.databinding.FragmentTrashBinBinding
+import shivam.sycodes.filefusion.service.DeleteOperationCallback
 import shivam.sycodes.filefusion.utility.FileOperationHelper
 import java.io.File
 
@@ -64,7 +65,16 @@ class TrashBinFragment : Fragment() {
                         trashBinDelete.setOnClickListener {
                             val position = sortedFiles.indexOf(selectedFile)
                             if (position >= 0) {
-                                fileOperationHelper.deleteOperation(listOf(selectedFile))
+                                fileOperationHelper.deleteOperation(listOf(selectedFile), object :
+                                    DeleteOperationCallback {
+                                    override fun onSuccess(deletedFiles: List<String>) {
+                                        Toast.makeText(requireContext(), "Files deleted successfully: ${deletedFiles.joinToString()}", Toast.LENGTH_SHORT).show()
+                                    }
+
+                                    override fun onFailure(errorMessage: String) {
+                                      Toast.makeText(requireContext(), "files deletion Failed !!", Toast.LENGTH_SHORT).show()
+                                    }
+                                })
                                 sortedFiles.removeAt(position)
                                 trashAdapter.files = sortedFiles.toTypedArray()
                                 trashAdapter.notifyItemRemoved(position)

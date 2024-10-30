@@ -42,6 +42,7 @@ import shivam.sycodes.filefusion.adapters.FileAdapter
 import shivam.sycodes.filefusion.databinding.FragmentFileExplorerBinding
 import shivam.sycodes.filefusion.popupmenus.BottomPopUpMenu
 import shivam.sycodes.filefusion.roomdatabase.AppDatabase
+import shivam.sycodes.filefusion.service.DeleteOperationCallback
 import shivam.sycodes.filefusion.service.PasteWorker
 import shivam.sycodes.filefusion.utility.CreateFileAndFolder
 import shivam.sycodes.filefusion.utility.FileOperationHelper
@@ -462,14 +463,26 @@ class FileExplorerFragment : Fragment() {
             }
             movetoTrashButton.setOnClickListener {
                 if (permanentDeletecheckBox.isChecked){
+                    permissionHelper = PermissionHelper(requireContext())
+                    if (!permissionHelper.isNotificationPermissionGranted()){
+                        permissionHelper.requestNotificationPermission(requestNotificationPermissionLauncher)
+                    }
                     val selectedFilesDelete = fileAdapter.getSelectedFiles()
-                    fileOperationHelper.deleteOperation(
-                        selectedFilesDelete
-                    )
+                    fileOperationHelper.deleteOperation(selectedFilesDelete, object :
+                        DeleteOperationCallback {
+                        override fun onSuccess(deletedFiles: List<String>) {
+
+                            loadFiles(currentPath)
+                            Toast.makeText(requireContext(), "Files deleted successfully: ${deletedFiles.joinToString()}", Toast.LENGTH_SHORT).show()
+                        }
+
+                        override fun onFailure(errorMessage: String) {
+                            loadFiles(currentPath)
+                        }
+                    })
+                    deletedialog.dismiss()
                     fileAdapter.clearSelection()
                     hideNavigationBars()
-                    loadFiles(currentPath)
-                    deletedialog.dismiss()
                 }else{
                    val selectedFilesForTrash = fileAdapter.getSelectedFiles()
                     val trashMoveSuccess = fileOperationHelper.moveToTrash(selectedFilesForTrash)

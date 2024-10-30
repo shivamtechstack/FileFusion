@@ -4,12 +4,20 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Environment
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import shivam.sycodes.filefusion.roomdatabase.AppDatabase
 import shivam.sycodes.filefusion.roomdatabase.ItemEntity
+import shivam.sycodes.filefusion.service.DeleteOperationCallback
+import shivam.sycodes.filefusion.service.DeleteWorker
 import java.io.File
 import java.util.Date
 
@@ -18,41 +26,31 @@ class FileOperationHelper(private val context: Context) {
     private fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
+    fun deleteOperation(selectedFiles: List<File>,callback: DeleteOperationCallback){
+        val filePaths = selectedFiles.map { it.absolutePath }.toTypedArray()
 
-    private fun deleteDirectory(directory: File): Boolean {
-        return try{
-            if (directory.isDirectory) directory.listFiles()?.forEach { file ->
-                if (file.isDirectory){
-                    deleteDirectory(file)
-                }else{
-                    file.delete()
-                }
-            }
-            directory.delete()
-        }catch (e : Exception){
-            e.printStackTrace()
-            false
-        }
-    }
+        val data = Data.Builder()
+            .putStringArray(DeleteWorker.KEY_FILES_TO_DELETE, filePaths)
+            .build()
 
-    fun deleteOperation(selectedFiles: List<File>){
+        val deleteWorkRequest = OneTimeWorkRequestBuilder<DeleteWorker>()
+            .setInputData(data)
+            .build()
 
-        selectedFiles.forEach { file: File ->
-            if (file.isDirectory) {
-                if (deleteDirectory(file)) {
-                    showToast("Directory Deleted Successfully")
-                } else {
-                    showToast("Failed to delete directory")
-                }
-            }else{
-                    if (file.delete()) {
-                        showToast("File deleted successfully")
+        WorkManager.getInstance(context).enqueue(deleteWorkRequest)
+
+        WorkManager.getInstance(context).getWorkInfoByIdLiveData(deleteWorkRequest.id)
+            .observeForever { workInfo ->
+                if (workInfo != null && workInfo.state.isFinished) {
+                    if (workInfo.state == WorkInfo.State.SUCCEEDED) {
+                        callback.onSuccess(filePaths.toList())
                     } else {
-                        showToast("Failed to delete file")
+                        callback.onFailure("Failed to delete files.")
                     }
+                }
             }
-        }
     }
+
     fun moveToTrash(selectedFiles: List<File>): Boolean {
         val trashDir = getTrashDir()
         val trashDao = AppDatabase.getDatabase(context).itemDAO()
