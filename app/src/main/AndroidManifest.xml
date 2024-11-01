@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
 
     <application
         android:allowBackup="true"
@@ -29,6 +31,9 @@
             android:name=".MainActivity"
             android:exported="true">
         </activity>
+
+        <service android:name=".service.VaultService"
+            android:foregroundServiceType="dataSync"/>
 
         <meta-data
             android:name="preloaded_fonts"

@@ -1,6 +1,7 @@
 package shivam.sycodes.filefusion.roomdatabase
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 
@@ -23,4 +24,10 @@ interface itemDAO {
 
     @Query("DELETE FROM bookmark_entities WHERE bookmarkFilePath = :filePath")
     suspend fun removeBookmark(filePath: String)
+
+    @Insert
+    suspend fun addVaultItem(vaultItem: VaultEntity)
+
+    @Delete
+    suspend fun deleteVaultItem(vaultItem: VaultEntity)
 }

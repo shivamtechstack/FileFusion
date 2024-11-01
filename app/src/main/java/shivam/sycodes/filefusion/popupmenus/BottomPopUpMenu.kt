@@ -29,6 +29,7 @@ import shivam.sycodes.filefusion.R
 import shivam.sycodes.filefusion.archievingAndEncryption.ZipArchieve
 import shivam.sycodes.filefusion.roomdatabase.AppDatabase
 import shivam.sycodes.filefusion.roomdatabase.BookmarkEntity
+import shivam.sycodes.filefusion.service.VaultService
 import java.io.File
 import java.util.Date
 
@@ -233,6 +234,18 @@ class BottomPopUpMenu(private val context: Context) {
                     }
                     true
                 }
+                R.id.movetovault -> {
+                   if (selectedFiles.isNotEmpty()){
+                       val intent = Intent(context, VaultService::class.java).apply {
+                           putExtra("selectedFiles",ArrayList(selectedFiles))
+                       }
+                       ContextCompat.startForegroundService(context,intent)
+                   }else{
+                       Toast.makeText(context, "No files selected to move to vault", Toast.LENGTH_SHORT).show()
+                   }
+
+                   true
+                }
                 R.id.removeBookmark -> {
 
                     val bookmarkDao = AppDatabase.getDatabase(context).itemDAO()
@@ -270,9 +283,7 @@ class BottomPopUpMenu(private val context: Context) {
 
                 else -> Toast.makeText(context,"Unsupported Archieve Format!!",Toast.LENGTH_SHORT).show()
             }
-
         }
-
     }
 
     private fun copyPathsToClipboard(files: List<File>) {

@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [ItemEntity::class, BookmarkEntity::class], version = 1, exportSchema = false)
+@Database(entities = [ItemEntity::class, BookmarkEntity::class, VaultEntity::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun itemDAO(): itemDAO
 
