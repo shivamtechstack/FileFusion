@@ -505,9 +505,9 @@
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:tint="@color/white"
                 android:src="@drawable/outline_bookmarks_24"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                app:tint="@color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -540,9 +540,9 @@
 
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:tint="@color/white"
                     android:src="@drawable/outline_delete_24"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    app:tint="@color/white" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -552,7 +552,42 @@
                     android:gravity="center"
                     android:fontFamily="@font/lato"
                     android:textColor="@color/white"
-                    android:textSize="17sp"/>
+                    android:textSize="17sp"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/vault_bin_cardView"
+            android:layout_width="160dp"
+            android:layout_marginTop="6dp"
+            android:backgroundTint="@color/app_pallet"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_height="70dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:layout_height="match_parent"
+                android:padding="10dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:src="@drawable/vault24"
+                    android:layout_height="match_parent"
+                    app:tint="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text=" Safe Vault"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center"
+                    android:fontFamily="@font/lato"
+                    android:textColor="@color/white"
+                    android:textSize="17sp"
+                    tools:ignore="HardcodedText" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </GridLayout>

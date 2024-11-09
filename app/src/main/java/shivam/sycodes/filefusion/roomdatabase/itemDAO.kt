@@ -30,4 +30,7 @@ interface itemDAO {
 
     @Delete
     suspend fun deleteVaultItem(vaultItem: VaultEntity)
+
+    @Query("SELECT * FROM vault_entity WHERE vaultPath = :vaultPath LIMIT 1")
+    suspend fun getVaultItemByPath(vaultPath: String): VaultEntity?
 }

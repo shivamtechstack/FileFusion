@@ -103,6 +103,9 @@ class HomeScreenFragment : Fragment() {
         binding.bookmarkCardView.setOnClickListener {
             fragment(null,"bookmarks")
         }
+        binding.vaultBinCardView.setOnClickListener {
+            fragmentManager?.beginTransaction()?.replace(R.id.fragmentContainerView,VaultFragment())?.addToBackStack(null)?.commit()
+        }
         return binding.root
     }
     private fun fragment(path : String?, category: String?){

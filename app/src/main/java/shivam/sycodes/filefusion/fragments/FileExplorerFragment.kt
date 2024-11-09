@@ -183,7 +183,6 @@ class FileExplorerFragment : Fragment() {
         getFilesMethod(Environment.getExternalStorageDirectory(), fileList)
         fileList.sortByDescending { it.lastModified() }
         displayFilesInRecyclerView(fileList)
-
     }
 
     private fun loadFilesFromMediaStore(uri: Uri) {

@@ -238,12 +238,12 @@ class BottomPopUpMenu(private val context: Context) {
                    if (selectedFiles.isNotEmpty()){
                        val intent = Intent(context, VaultService::class.java).apply {
                            putExtra("selectedFiles",ArrayList(selectedFiles))
+                           action = "MOVE_TO_VAULT"
                        }
                        ContextCompat.startForegroundService(context,intent)
                    }else{
                        Toast.makeText(context, "No files selected to move to vault", Toast.LENGTH_SHORT).show()
                    }
-
                    true
                 }
                 R.id.removeBookmark -> {

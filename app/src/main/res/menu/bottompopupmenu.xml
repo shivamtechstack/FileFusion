@@ -49,6 +49,7 @@
 
     <item android:id="@+id/movetovault"
         android:title="Move to Vault"
+        android:icon="@drawable/vault24"
         tools:ignore ="HardcodedText"/>
 
 
