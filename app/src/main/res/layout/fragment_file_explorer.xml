@@ -57,6 +57,9 @@
    <androidx.cardview.widget.CardView
        android:id="@+id/TopNavigation"
        android:layout_width="match_parent"
+       android:layout_marginHorizontal="7dp"
+       android:layout_marginTop="7dp"
+       app:cardCornerRadius="12dp"
        android:layout_height="wrap_content"
        android:layout_gravity="top"
        android:visibility="gone">
@@ -67,7 +70,7 @@
           android:layout_gravity="bottom"
           android:orientation="horizontal"
           android:gravity="center_vertical"
-          android:padding="13dp">
+          android:padding="11dp">
 
          <ImageView
              android:id="@+id/clear_selection_button"
@@ -222,6 +225,9 @@
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:layout_gravity="bottom"
+       android:layout_marginHorizontal="7dp"
+       android:layout_marginBottom="7dp"
+       app:cardCornerRadius="12dp"
        android:visibility="gone">
 
    <LinearLayout
@@ -229,8 +235,7 @@
        android:layout_height="wrap_content"
        android:layout_gravity="bottom"
        android:orientation="horizontal"
-       android:padding="13dp"
-       android:layout_marginBottom="4dp">
+       android:padding="13dp">
 
       <ImageView
           android:id="@+id/cutButton"
@@ -285,12 +290,21 @@
        android:visibility="gone"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
+       android:layout_marginHorizontal="7dp"
+       android:layout_marginBottom="7dp"
+       app:cardCornerRadius="12dp"
        android:layout_gravity="bottom">
 
       <LinearLayout
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_margin="5dp">
+          android:layout_height="wrap_content">
+
+         <ImageView
+             android:layout_marginStart="10dp"
+             android:layout_width="wrap_content"
+             android:layout_height="match_parent"
+             android:src="@drawable/outline_content_paste_24"
+             app:tint="@color/app_pallet" />
 
          <TextView
              android:id="@+id/paste_button"
@@ -320,7 +334,7 @@
              android:layout_width="35dp"
              app:tint="@color/red"
              android:layout_height="match_parent"
-             android:layout_marginEnd="7dp"
+             android:layout_marginEnd="9dp"
              android:src="@drawable/baseline_clear_24"/>
 
       </LinearLayout>

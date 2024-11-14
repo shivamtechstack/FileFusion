@@ -27,6 +27,7 @@ import kotlinx.coroutines.withContext
 import shivam.sycodes.filefusion.R
 import shivam.sycodes.filefusion.adapters.FileAdapter
 import shivam.sycodes.filefusion.databinding.FragmentVaultBinding
+import shivam.sycodes.filefusion.filehandling.FileOpener
 import shivam.sycodes.filefusion.roomdatabase.AppDatabase
 import shivam.sycodes.filefusion.service.DeleteOperationCallback
 import shivam.sycodes.filefusion.service.VaultService
@@ -43,6 +44,7 @@ class VaultFragment : Fragment(){
     private lateinit var vaultAdapter : FileAdapter
     private lateinit var permissionHelper : PermissionHelper
     private lateinit var fileOperationHelper : FileOperationHelper
+    private lateinit var fileOpener : FileOpener
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
@@ -54,6 +56,9 @@ class VaultFragment : Fragment(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        fileOperationHelper = FileOperationHelper(requireContext())
+        permissionHelper = PermissionHelper(requireContext())
+        fileOpener = FileOpener(requireContext())
         initializeVaultDirectory()
     }
 
@@ -67,8 +72,6 @@ class VaultFragment : Fragment(){
         if (!vaultDir!!.canWrite()) {
             Toast.makeText(requireContext(), "Vault directory is not writable", Toast.LENGTH_SHORT).show()
         }
-        fileOperationHelper = FileOperationHelper(requireContext())
-        permissionHelper = PermissionHelper(requireContext())
     }
 
     override fun onCreateView(
@@ -88,6 +91,8 @@ class VaultFragment : Fragment(){
 
             vaultAdapter = FileAdapter(requireContext(),sortedFiles,
                 onItemClick ={ file ->
+                    fileOpener.openFile(file)
+
             } , onItemLongClick = { selectedFiles ->
                 popUpMenu()
 

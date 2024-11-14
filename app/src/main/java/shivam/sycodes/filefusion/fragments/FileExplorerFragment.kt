@@ -40,6 +40,7 @@ import shivam.sycodes.filefusion.R
 import shivam.sycodes.filefusion.utility.FileSharingHelper
 import shivam.sycodes.filefusion.adapters.FileAdapter
 import shivam.sycodes.filefusion.databinding.FragmentFileExplorerBinding
+import shivam.sycodes.filefusion.filehandling.FileOpener
 import shivam.sycodes.filefusion.popupmenus.BottomPopUpMenu
 import shivam.sycodes.filefusion.roomdatabase.AppDatabase
 import shivam.sycodes.filefusion.service.DeleteOperationCallback
@@ -67,6 +68,7 @@ class FileExplorerFragment : Fragment() {
     private lateinit var fileOperationHelper: FileOperationHelper
     private lateinit var bottomPopUpMenu: BottomPopUpMenu
     private lateinit var preferencesHelper: PreferencesHelper
+    private lateinit var fileOpener : FileOpener
     private lateinit var currentSortOption : Pair<String?, Boolean>
     private lateinit var createFileFolderClass : CreateFileAndFolder
     private lateinit var permissionHelper: PermissionHelper
@@ -107,6 +109,7 @@ class FileExplorerFragment : Fragment() {
         fileOperationHelper= FileOperationHelper(requireContext())
         bottomPopUpMenu= BottomPopUpMenu(requireContext())
         createFileFolderClass = CreateFileAndFolder(requireContext())
+        fileOpener = FileOpener(requireContext())
 
 
         requireActivity().onBackPressedDispatcher.addCallback(this,object : OnBackPressedCallback(true){
@@ -255,10 +258,10 @@ class FileExplorerFragment : Fragment() {
 
     private fun displayFilesInRecyclerView(filesList: List<File>) {
         if (filesList.isNotEmpty()) {
-            fileAdapter = FileAdapter(requireContext(), filesList, onItemClick = { openFile(it) }, onItemLongClick = { bottomNavigation() })
+            fileAdapter = FileAdapter(requireContext(), filesList, onItemClick = { fileOpener.openFile(it) }, onItemLongClick = { bottomNavigation() })
             binding.RecyclerViewFileExplorer.adapter = fileAdapter
         } else {
-            fileAdapter = FileAdapter(requireContext(), emptyList(), onItemClick = { openFile(it) }, onItemLongClick = { bottomNavigation() })
+            fileAdapter = FileAdapter(requireContext(), emptyList(), onItemClick = { fileOpener.openFile(it) }, onItemLongClick = { bottomNavigation() })
             binding.RecyclerViewFileExplorer.adapter = null
             Toast.makeText(requireContext(), "No files found in this category", Toast.LENGTH_SHORT).show()
         }
@@ -292,7 +295,7 @@ class FileExplorerFragment : Fragment() {
                             currentPath = selectedFile.absolutePath
                             loadFiles(currentPath)
                         } else {
-                            openFile(selectedFile)
+                            fileOpener.openFile(selectedFile)
                         }
                     }, onItemLongClick = { _ -> bottomNavigation() })
                     binding.RecyclerViewFileExplorer.adapter = fileAdapter
@@ -552,23 +555,6 @@ class FileExplorerFragment : Fragment() {
         binding.newfolderWithpaste.setOnClickListener {
             createFileFolderClass.createNewFolder(currentPath,::loadFiles)
         }
-    }
-    private fun openFile(file: File) {
-        val uri: Uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", file)
-        val mimeType: String? = getMimeType(file)
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.setDataAndType(uri, mimeType)
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
-        try {
-            startActivity(intent)
-        } catch (e: ActivityNotFoundException) {
-            Toast.makeText(requireContext(), "No application found to open this file", Toast.LENGTH_SHORT).show()
-        }
-    }
-    private fun getMimeType(file: File): String? {
-        val extension = MimeTypeMap.getFileExtensionFromUrl(file.name)
-        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension.lowercase(Locale.ROOT))
     }
     private fun showSortDialogBox() {
         val alertDialog = AlertDialog.Builder(requireContext())

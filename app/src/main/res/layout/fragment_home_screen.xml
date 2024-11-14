@@ -302,6 +302,7 @@
                 android:gravity="center"
                 android:fontFamily="@font/lato"
                 android:text="Recent"
+                android:textSize="13sp"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
 
@@ -324,6 +325,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Photos"
+                android:textSize="13sp"
                 android:fontFamily="@font/lato"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
@@ -346,6 +348,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:textSize="13sp"
                 android:text="Musics"
                 android:fontFamily="@font/lato"
                 tools:ignore="HardcodedText" />
@@ -370,6 +373,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/lato"
                 android:gravity="center"
+                android:textSize="13sp"
                 android:text="Videos"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
@@ -393,6 +397,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Apks"
+                android:textSize="13sp"
                 android:fontFamily="@font/lato"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
@@ -416,6 +421,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Archieves"
+                android:textSize="13sp"
                 android:fontFamily="@font/lato"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
@@ -438,6 +444,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:textSize="13sp"
                 android:text="Downloads"
                 android:fontFamily="@font/lato"
                 tools:ignore="HardcodedText" />
@@ -462,6 +469,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:fontFamily="@font/lato"
+                android:textSize="13sp"
                 android:text="Documents"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
@@ -470,7 +478,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Management"
+        android:text="Collections"
         android:textSize="16sp"
         android:fontFamily="@font/lato"
         android:textStyle="bold"

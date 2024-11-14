@@ -8,8 +8,40 @@
     tools:context=".fragments.VaultFragment">
 
   <androidx.cardview.widget.CardView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:padding="7dp"
+      android:gravity="center_vertical"
+      android:orientation="horizontal">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@drawable/vault24"/>
+
+    <TextView
+        android:gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_height="match_parent"
+        android:text="Secure Vault"
+        android:textSize="17sp"
+        android:fontFamily="@font/poppins_medium"/>
+
+  </LinearLayout>
+
+  </androidx.cardview.widget.CardView>
+
+  <androidx.cardview.widget.CardView
       android:id="@+id/VaultTopPopUpNavigation"
       android:layout_width="match_parent"
+      android:layout_marginHorizontal="7dp"
+      android:layout_marginTop="7dp"
+      app:cardCornerRadius="12dp"
       android:layout_height="wrap_content"
       android:layout_gravity="top"
       android:visibility="gone">
@@ -18,9 +50,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:padding="13dp">
+        android:padding="12dp">
 
       <ImageView
           android:id="@+id/vault_clearFile_button"
@@ -57,11 +90,15 @@
       android:id="@+id/vault_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="0dp"
+      android:layout_marginTop="8dp"
       android:layout_weight="1" />
 
   <androidx.cardview.widget.CardView
       android:id="@+id/vault_bottomPopUpNavigation"
       android:layout_width="match_parent"
+      android:layout_marginHorizontal="7dp"
+      android:layout_marginBottom="7dp"
+      app:cardCornerRadius="12dp"
       android:layout_height="wrap_content"
       android:layout_gravity="bottom"
       android:visibility="gone">
