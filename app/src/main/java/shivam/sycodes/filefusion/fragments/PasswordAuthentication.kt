@@ -15,10 +15,27 @@ class PasswordAuthentication : Fragment() {
     private var _binding : FragmentPasswordAuthenticationBinding ? = null
     private val binding get() = _binding!!
     private lateinit var preferencesHelper : PreferencesHelper
+    private var action :String? = null
+
+    companion object {
+        private const val ARG_ACTION = "action"
+
+        @JvmStatic
+        fun newInstance(action: String): PasswordAuthentication {
+            return PasswordAuthentication().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_ACTION, action)
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         preferencesHelper = PreferencesHelper(requireContext())
+        arguments?.let {
+            action = it.getString(ARG_ACTION)
+        }
     }
 
     override fun onCreateView(
@@ -26,6 +43,9 @@ class PasswordAuthentication : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPasswordAuthenticationBinding.inflate(inflater,container,false)
+        if (action == "change"){
+            binding.drawpatterntext.text = "Draw Old Pattern"
+        }
 
         binding.authenticatePassword.setOnPatternListener(object : PatternLockView.OnPatternListener{
             override fun onComplete(ids: ArrayList<Int>): Boolean {
@@ -33,16 +53,41 @@ class PasswordAuthentication : Fragment() {
                 val savedPassword = preferencesHelper.getPassword()
 
                 if (savedPassword == enteredpassword){
-                    fragmentManager!!.beginTransaction().replace(R.id.fragmentContainerView,VaultFragment()).commit()
+                    if (action == "change"){
+                        val fragment=PasswordSetupFragment.newInstance("change")
+                        fragmentManager!!.beginTransaction().replace(R.id.fragmentContainerView1,fragment).commit()
+                    }
+                    else {
+                        val fragment = VaultFragment()
+                        clearBackStack()
+                        parentFragmentManager.beginTransaction()
+                            .replace(R.id.fragmentContainerView, fragment)
+                            .addToBackStack(null)
+                            .commit()
+                    }
                 }else{
+                    binding.wrongpatterntext.text = "Wrong Pattern, Try Again"
                    return true
                 }
 
              return true
             }
         })
-
+        binding.authpasswordback.setOnClickListener {
+            super.getActivity()?.onBackPressed()
+        }
 
         return binding.root
+    }
+    fun clearBackStack() {
+        val backStackCount = parentFragmentManager.backStackEntryCount
+        for (i in 0 until backStackCount) {
+            parentFragmentManager.popBackStack()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

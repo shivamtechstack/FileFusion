@@ -16,14 +16,29 @@ class PasswordSetupFragment : Fragment() {
 
     private var _binding: FragmentPasswordSetupFragementBinding?= null
     private val binding get() = _binding!!
-
     private lateinit var preferencesHelper : PreferencesHelper
-
     private var firstPattern: String? = null
     private var isConfirmingPattern = false
+    private var action:String? = null
+
+    companion object {
+        private const val ARG_ACTION = "action"
+        @JvmStatic
+        fun newInstance(action: String): PasswordSetupFragment {
+            return PasswordSetupFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_ACTION, action)
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arguments?.let {
+            action = it.getString(ARG_ACTION)
+
+        }
         preferencesHelper = PreferencesHelper(requireContext())
     }
 
@@ -40,15 +55,23 @@ class PasswordSetupFragment : Fragment() {
                 if (!isConfirmingPattern){
                     firstPattern = enteredPattern
                     isConfirmingPattern = true
-                    Toast.makeText(requireContext(),"Confirm your pattern",Toast.LENGTH_SHORT).show()
+                    binding.createpatterntext.text= "Confirm New Pattern"
                     return true
                 }else{
                     if (enteredPattern == firstPattern) {
-                        preferencesHelper.savePassword(enteredPattern)
-                        Toast.makeText(context, "Pattern set successfully!", Toast.LENGTH_SHORT).show()
-                        fragmentManager!!.beginTransaction().replace(R.id.fragmentContainerView,VaultFragment()).commit()
+                        if (action == "change"){
+                            preferencesHelper.savePassword(enteredPattern)
+                            Toast.makeText(context, "Pattern changed successfully!", Toast.LENGTH_SHORT).show()
+                            requireActivity().finish()
+                        }else {
+                            preferencesHelper.savePassword(enteredPattern)
+                            Toast.makeText(context, "Pattern set successfully!", Toast.LENGTH_SHORT)
+                                .show()
+                            fragmentManager!!.beginTransaction()
+                                .replace(R.id.fragmentContainerView, VaultFragment()).commit()
+                        }
                     } else {
-                        Toast.makeText(context, "Patterns do not match. Try again.", Toast.LENGTH_SHORT).show()
+                       binding.patternConfirmationText.text = "Patterns do not match. Try again."
                         isConfirmingPattern = false
                         firstPattern = null
                     }
@@ -57,6 +80,13 @@ class PasswordSetupFragment : Fragment() {
                 return true
             }
         })
+        binding.setuppasswordback.setOnClickListener {
+            super.getActivity()?.onBackPressed()
+        }
         return binding.root
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

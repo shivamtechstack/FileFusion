@@ -7,6 +7,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AppSettings">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"/>
+
+
     <androidx.cardview.widget.CardView
     android:layout_width="match_parent"
         android:layout_gravity="center_vertical"
@@ -43,6 +53,35 @@
         android:columnCount="1">
 
         <LinearLayout
+            android:id="@+id/vaultPasswordChangeButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:src="@drawable/vault24"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                app:tint="@color/app_pallet" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Change Vault password"
+                android:textSize="17sp"
+                tools:ignore="HardcodedText" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/alpaviewbackground"/>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="12dp"
@@ -73,7 +112,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp"
+            android:padding="12dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
