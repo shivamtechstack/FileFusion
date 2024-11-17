@@ -1,17 +1,14 @@
 package shivam.sycodes.filefusion.fragments
 
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.MimeTypeMap
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.RadioGroup
@@ -22,7 +19,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -31,11 +27,11 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import androidx.work.workDataOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import shivam.sycodes.filefusion.AppSettings
 import shivam.sycodes.filefusion.R
 import shivam.sycodes.filefusion.utility.FileSharingHelper
 import shivam.sycodes.filefusion.adapters.FileAdapter
@@ -53,7 +49,6 @@ import shivam.sycodes.filefusion.utility.PermissionHelper
 import shivam.sycodes.filefusion.utility.PreferencesHelper
 import shivam.sycodes.filefusion.viewModel.FileOperationViewModel
 import java.io.File
-import java.util.Locale
 
 class FileExplorerFragment : Fragment() {
 
@@ -357,6 +352,7 @@ class FileExplorerFragment : Fragment() {
                         showSortDialogBox()
                         true
                     }
+
                     R.id.hidden_file_button ->{
                         val newHiddenState = !preferencesHelper.isFilesHidden()
                         preferencesHelper.hiddenFiles(newHiddenState)
@@ -365,7 +361,8 @@ class FileExplorerFragment : Fragment() {
                         true
                     }
                     R.id.setting_button_toolbar ->{
-                        Toast.makeText(requireContext(), "Settings Button click", Toast.LENGTH_SHORT).show()
+                        val intent=Intent(this@FileExplorerFragment.requireContext(),AppSettings::class.java)
+                        startActivity(intent)
                         true
                     }
                     R.id.list_layout_mode ->{

@@ -119,7 +119,7 @@ class VaultFragment : Fragment(){
         vaultAdapter.setOnSelectionChangeListener(object : FileAdapter.OnSelectionChangeListener {
             @SuppressLint("SetTextI18n")
             override fun onSelectionChanged(selectedFileCount: Int) {
-                binding?.numberOfSelectedFilesVault?.text = "$selectedFileCount selected"
+                binding?.numberOfSelectedFilesVault?.text = "$selectedFileCount File selected"
             }
         })
 

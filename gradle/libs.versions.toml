@@ -1,7 +1,9 @@
 [versions]
 agp = "8.7.2"
+androidMavenGradlePlugin = "1.4.1"
 fragmentKtx = "1.6.1"
 glide = "4.16.0"
+gradleBintrayPlugin = "1.4"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -15,6 +17,8 @@ material = "1.12.0"
 activity = "1.9.1"
 constraintlayout = "2.1.4"
 materialVersion = "1.12.10"
+patternlockviewReactive = "1.0.0"
+patternlockviewVersion = "1.0.0"
 roomCompiler = "2.5.0"
 roomCompilerVersion = "2.6.1"
 roomKtx = "2.6.1"
@@ -28,6 +32,9 @@ workRuntimeKtx = "2.9.1"
 securityCryptoKtx = "1.0.0"
 
 [libraries]
+andrognito-patternlockview = { module = "com.andrognito:patternlockview", version.ref = "patternlockviewVersion" }
+andrognito-patternlockview-reactive = { module = "com.andrognito.patternlockview:patternlockview-reactive", version.ref = "patternlockviewReactive" }
+android-maven-gradle-plugin = { module = "com.github.dcendents:android-maven-gradle-plugin", version.ref = "androidMavenGradlePlugin" }
 androidx-core = { module = "androidx.core:core", version.ref = "coreKtx" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
@@ -40,6 +47,7 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-room-runtime-v261 = { module = "androidx.room:room-runtime", version.ref = "roomRuntimeVersion" }
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+gradle-bintray-plugin = { module = "com.jfrog.bintray.gradle:gradle-bintray-plugin", version.ref = "gradleBintrayPlugin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -52,6 +60,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 material-v11210 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
+patternlockview = { module = "com.andrognito.patternlockview:patternlockview", version.ref = "patternlockviewVersion" }
 sevenzipjbinding = { module = "net.sf.sevenzipjbinding:sevenzipjbinding", version.ref = "sevenzipjbindingAllPlatforms" }
 sevenzipjbinding-all-platforms = { module = "net.sf.sevenzipjbinding:sevenzipjbinding-all-platforms", version.ref = "sevenzipjbindingAllPlatforms" }
 truevfs-kernel-impl = { module = "net.java.truevfs:truevfs-kernel-impl", version.ref = "truevfsKernelImpl" }

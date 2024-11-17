@@ -57,7 +57,6 @@ dependencies {
     implementation (libs.glide)
     implementation (libs.androidx.core)
 
-
     implementation(libs.androidx.room.runtime.v261)
     implementation(libs.androidx.room.ktx.v261)
     ksp(libs.androidx.room.compiler.v261)
@@ -65,4 +64,5 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core.v163)
     implementation(libs.kotlinx.coroutines.android.v163)
 
+    implementation ("io.github.itsxtt:pattern-lock:0.2.0")
 }

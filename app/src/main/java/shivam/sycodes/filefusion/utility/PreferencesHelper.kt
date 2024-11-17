@@ -4,6 +4,7 @@ import android.content.Context
 
 class PreferencesHelper(context: Context) {
     private val sharedPreferencesforFileView = context.getSharedPreferences("FileViewPreferences",Context.MODE_PRIVATE)
+    private val sharedPreferencesForPassword = context.getSharedPreferences("PasswordPreferences",Context.MODE_PRIVATE)
 
     fun saveSortOptions(sortBy : String, isAscending : Boolean){
         sharedPreferencesforFileView.edit().apply{
@@ -35,5 +36,14 @@ class PreferencesHelper(context: Context) {
     }
     fun isFilesHidden(): Boolean{
         return sharedPreferencesforFileView.getBoolean("isFilesHidden",false)
+    }
+    fun savePassword(password: String){
+        sharedPreferencesForPassword.edit().apply {
+            putString("password",password)
+            apply()
+        }
+    }
+    fun getPassword(): String? {
+        return sharedPreferencesForPassword.getString("password", null)
     }
 }

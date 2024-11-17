@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:orientation="horizontal"
+    android:background="@drawable/filegridviewborder"
     android:gravity="center"
     android:padding="10dp"
     android:layout_height="110dp">
@@ -29,7 +30,7 @@
             android:hint="File/Folder"
             android:singleLine="true"
             android:textAlignment="center"
-            android:textSize="15sp"
+            android:textSize="13sp"
             tools:ignore="HardcodedText" />
     </LinearLayout>
     <CheckBox

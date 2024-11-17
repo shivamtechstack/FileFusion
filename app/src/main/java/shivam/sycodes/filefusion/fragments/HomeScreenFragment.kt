@@ -2,6 +2,7 @@ package shivam.sycodes.filefusion.fragments
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.os.Environment.DIRECTORY_DOCUMENTS
@@ -16,26 +17,28 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.commit
+import shivam.sycodes.filefusion.AppSettings
 import shivam.sycodes.filefusion.R
 import shivam.sycodes.filefusion.databinding.FragmentHomeScreenBinding
+import shivam.sycodes.filefusion.utility.PreferencesHelper
 import java.io.File
-
 
 class HomeScreenFragment : Fragment() {
 
     private var _binding : FragmentHomeScreenBinding ? = null
     private val binding get() = _binding!!
-
     private val internalStoragePath = Environment.getExternalStorageDirectory().absolutePath
     private val downloadsFolderPath = Environment.getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS).absolutePath
     private val documentsFolderPath = Environment.getExternalStoragePublicDirectory(DIRECTORY_DOCUMENTS).absolutePath
     private val storageManager by lazy { requireContext().getSystemService(Context.STORAGE_SERVICE) as StorageManager }
+    private lateinit var preferencesHelper: PreferencesHelper
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
        _binding = FragmentHomeScreenBinding.inflate(inflater,container,false)
+        preferencesHelper = PreferencesHelper(requireContext())
 
         updateStorageDetails(internalStoragePath,binding.storageProgressBar,binding.storagePercentage,binding.storageAvailable)
 
@@ -104,7 +107,15 @@ class HomeScreenFragment : Fragment() {
             fragment(null,"bookmarks")
         }
         binding.vaultBinCardView.setOnClickListener {
-            fragmentManager?.beginTransaction()?.replace(R.id.fragmentContainerView,VaultFragment())?.addToBackStack(null)?.commit()
+            if (preferencesHelper.getPassword() != null){
+                fragmentManager?.beginTransaction()?.replace(R.id.fragmentContainerView,PasswordAuthentication())?.addToBackStack(null)?.commit()
+            }else{
+                fragmentManager?.beginTransaction()?.replace(R.id.fragmentContainerView,PasswordSetupFragment())?.addToBackStack(null)?.commit()
+            }
+        }
+        binding.homescreenSettingsButton.setOnClickListener {
+            val intent = Intent(this@HomeScreenFragment.requireContext(), AppSettings::class.java)
+            startActivity(intent)
         }
         return binding.root
     }

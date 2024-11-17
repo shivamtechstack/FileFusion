@@ -10,6 +10,6 @@
     android:scrollHorizontally="true"
     android:paddingBottom="6dp"
     android:paddingVertical="4dp"
-    android:textSize="14sp">
+    android:textSize="12sp">
 
 </TextView>

@@ -6,7 +6,7 @@
         android:visible="false"
         android:icon="@drawable/outline_archive_24"
         android:title="Archive"
-        tools:ignore="HardcodedText" />
+        tools:ignore="HardcodedText"/>
 
     <item android:id="@+id/unarchive"
         android:visible="false"

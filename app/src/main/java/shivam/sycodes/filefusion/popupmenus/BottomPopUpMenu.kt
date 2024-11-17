@@ -66,6 +66,7 @@ class BottomPopUpMenu(private val context: Context) {
         if (selectedFiles.any { it.isDirectory }){
             bottomPopUpMenu.menu.findItem(R.id.bookmark).isVisible = false
             bottomPopUpMenu.menu.findItem(R.id.removeBookmark).isVisible = false
+            bottomPopUpMenu.menu.findItem(R.id.movetovault).isVisible = false
         }
 
         bottomPopUpMenu.setOnMenuItemClickListener { item ->
