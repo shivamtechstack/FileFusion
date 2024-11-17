@@ -17,9 +17,12 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.commit
+import androidx.recyclerview.widget.LinearLayoutManager
 import shivam.sycodes.filefusion.AppSettings
 import shivam.sycodes.filefusion.R
+import shivam.sycodes.filefusion.adapters.RecentAdapter
 import shivam.sycodes.filefusion.databinding.FragmentHomeScreenBinding
+import shivam.sycodes.filefusion.filehandling.FileOpener
 import shivam.sycodes.filefusion.utility.PreferencesHelper
 import java.io.File
 
@@ -32,6 +35,8 @@ class HomeScreenFragment : Fragment() {
     private val documentsFolderPath = Environment.getExternalStoragePublicDirectory(DIRECTORY_DOCUMENTS).absolutePath
     private val storageManager by lazy { requireContext().getSystemService(Context.STORAGE_SERVICE) as StorageManager }
     private lateinit var preferencesHelper: PreferencesHelper
+    private lateinit var recentAdapter : RecentAdapter
+    private lateinit var fileOpener: FileOpener
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,6 +44,8 @@ class HomeScreenFragment : Fragment() {
     ): View {
        _binding = FragmentHomeScreenBinding.inflate(inflater,container,false)
         preferencesHelper = PreferencesHelper(requireContext())
+        fileOpener = FileOpener(requireContext())
+        showRecentFiles()
 
         updateStorageDetails(internalStoragePath,binding.storageProgressBar,binding.storagePercentage,binding.storageAvailable)
 
@@ -76,6 +83,7 @@ class HomeScreenFragment : Fragment() {
                 Toast.makeText(requireContext(),"No USB Storage Detected.",Toast.LENGTH_SHORT).show()
             }
         }
+
         binding.recentButton.setOnClickListener {
             fragment(null,"recent")
         }
@@ -119,6 +127,48 @@ class HomeScreenFragment : Fragment() {
         }
         return binding.root
     }
+
+    private fun showRecentFiles() {
+        val allFiles = mutableListOf<File>()
+
+        val internalFiles = getFilesFromDirectory(File(internalStoragePath))
+        allFiles.addAll(internalFiles)
+
+        val recentFiles = allFiles.sortedByDescending { it.lastModified() }.take(20)
+        displayFilesInRecyclerView(recentFiles)
+    }
+
+    private fun displayFilesInRecyclerView(recentFiles: List<File>) {
+        binding.recentRecyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+        if (recentFiles.isNotEmpty()){
+            recentAdapter = RecentAdapter(requireContext(),recentFiles, onItemClick = { selectedFile ->
+                fileOpener.openFile(selectedFile)
+            })
+            binding.recentRecyclerView.adapter= recentAdapter
+        }else{
+            binding.recentRecyclerView.adapter = null
+
+        }
+
+    }
+
+    private fun getFilesFromDirectory(dir: File): List<File> {
+        val recentFiles = mutableListOf<File>()
+
+        if (!dir.isDirectory || dir.name.startsWith(".")) return recentFiles
+        dir.listFiles()?.forEach { file ->
+            if (!file.name.startsWith(".")) {
+                if (file.isFile) {
+                    recentFiles.add(file)
+                } else if (file.isDirectory) {
+                    recentFiles.addAll(getFilesFromDirectory(file))
+                }
+            }
+        }
+
+        return recentFiles
+    }
+
     private fun fragment(path : String?, category: String?){
         val fragmentStacking = FileExplorerFragment.newInstance(path,category)
         parentFragmentManager.commit {
