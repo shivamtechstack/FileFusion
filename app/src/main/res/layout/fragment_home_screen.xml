@@ -102,7 +102,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
-                        android:text="87 GB | 128 GB available"
+                        android:text="  "
                         android:textSize="15sp" />
                 </LinearLayout>
             </RelativeLayout>
@@ -178,7 +178,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:text="87 GB | 128 GB available"
+                    android:text="  "
                     android:textSize="15sp"
                     tools:ignore="HardcodedText" />
             </LinearLayout>
@@ -254,7 +254,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:text="87 GB | 128 GB available"
+                    android:text="  "
                     android:textSize="15sp"
                     tools:ignore="HardcodedText" />
             </LinearLayout>
@@ -272,25 +272,51 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Recents"
+            android:text="Recent"
+            android:textSize="16sp"
             android:layout_weight="3"
             android:fontFamily="@font/source_sans_pro_semibold"
             tools:ignore="HardcodedText" />
 
         <TextView
+            android:id="@+id/recentseeall"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textSize="16sp"
             android:gravity="end"
-            android:text="see all"
+            android:text="See all"
             android:fontFamily="@font/source_sans_pro_semibold"
             tools:ignore="HardcodedText" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/recentEmptyRecyclerViewImage"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginHorizontal="17dp"
+        android:layout_height="120dp">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:src="@drawable/emptyfolder"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="17sp"
+            android:fontFamily="@font/source_sans_pro_semibold"
+            android:text="No Recent Items"/>
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recentRecyclerView"
         android:layout_width="match_parent"
         android:layout_marginTop="5dp"
+        android:clickable="true"
+        android:focusable="true"
         android:layout_marginHorizontal="17dp"
         android:layout_height="wrap_content"/>
 
@@ -303,41 +329,17 @@
         android:textStyle="bold"
         android:textAlignment="center"
         android:gravity="center"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="12dp"
+        tools:ignore="HardcodedText" />
 
     <GridLayout
         android:id="@+id/categoriesIcons"
         android:layout_width="match_parent"
         android:layout_height="163dp"
         android:layout_marginHorizontal="17dp"
-        android:layout_marginTop="5dp"
         android:columnCount="4"
         android:rowCount="2"
         android:useDefaultMargins="true">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:id="@+id/recent_button"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/recent" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:fontFamily="@font/lato"
-                android:text="Recent"
-                android:textSize="13sp"
-                tools:ignore="HardcodedText" />
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -525,6 +527,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="17dp"
+        android:layout_marginTop="7dp"
         android:paddingHorizontal="10dp"
         android:orientation="horizontal">
 

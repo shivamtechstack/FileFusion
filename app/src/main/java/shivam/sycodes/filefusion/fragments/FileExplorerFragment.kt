@@ -229,7 +229,7 @@ class FileExplorerFragment : Fragment() {
     private fun getRecentFiles(directory: File, fileList: MutableList<File>) {
         val oneWeekInMillis = 7 * 24 * 60 * 60 * 1000
         val recentTimeLimit = System.currentTimeMillis() - oneWeekInMillis
-        getFilesWithCondition(directory, fileList) { it.lastModified() >= recentTimeLimit }
+        getFilesWithCondition(directory, fileList) { !it.isHidden && it.lastModified() >= recentTimeLimit }
 
         fileList.sortByDescending { it.lastModified() }
     }
@@ -254,11 +254,11 @@ class FileExplorerFragment : Fragment() {
     private fun displayFilesInRecyclerView(filesList: List<File>) {
         if (filesList.isNotEmpty()) {
             fileAdapter = FileAdapter(requireContext(), filesList, onItemClick = { fileOpener.openFile(it) }, onItemLongClick = { bottomNavigation() })
+            showRecyclerView()
             binding.RecyclerViewFileExplorer.adapter = fileAdapter
         } else {
-            fileAdapter = FileAdapter(requireContext(), emptyList(), onItemClick = { fileOpener.openFile(it) }, onItemLongClick = { bottomNavigation() })
             binding.RecyclerViewFileExplorer.adapter = null
-            Toast.makeText(requireContext(), "No files found in this category", Toast.LENGTH_SHORT).show()
+          emptyRecyclerViewLoad()
         }
     }
 
@@ -293,11 +293,12 @@ class FileExplorerFragment : Fragment() {
                             fileOpener.openFile(selectedFile)
                         }
                     }, onItemLongClick = { _ -> bottomNavigation() })
+                    showRecyclerView()
                     binding.RecyclerViewFileExplorer.adapter = fileAdapter
                 } else {
                     fileAdapter = FileAdapter(requireContext(), emptyList(), onItemClick = {_-> }, onItemLongClick = {_->})
                     binding.RecyclerViewFileExplorer.adapter = null
-                    Toast.makeText(requireContext(), "No files found in this category", Toast.LENGTH_SHORT).show()
+                    emptyRecyclerViewLoad()
                 }
             }
         }
@@ -407,6 +408,7 @@ class FileExplorerFragment : Fragment() {
         binding.clearSelectionButton.setOnClickListener {
             fileAdapter.clearSelection()
             hideNavigationBars()
+            loadFiles(currentPath)
         }
         binding.selectAllButton.setOnClickListener {
             fileAdapter.selectAll()
@@ -627,18 +629,21 @@ class FileExplorerFragment : Fragment() {
         isFabOpen = false
     }
     private fun handleBackPress() {
-        if(fileAdapter.isMultiSelectedMode){
+        if (::fileAdapter.isInitialized && fileAdapter.isMultiSelectedMode) {
             fileAdapter.clearSelection()
             hideNavigationBars()
-        }else if(isFabOpen){
-            binding.fabContainer.visibility = View.GONE
-            binding.fabContainer.animate().scaleY(0f).scaleX(0f).setDuration(200).withEndAction {
-                binding.fabContainer.visibility = View.GONE
-            }.start()
+        } else if (isFabOpen) {
+            binding.fabContainer.animate()
+                .scaleY(0f)
+                .scaleX(0f)
+                .setDuration(200)
+                .withEndAction {
+                    binding.fabContainer.visibility = View.GONE
+                }
+                .start()
             binding.floatingActionButton.setImageResource(R.drawable.plus_24)
             isFabOpen = false
-        }
-        else {
+        } else {
             if (isFromCategory) {
                 parentFragmentManager.popBackStack()
             } else if (currentPath != absolutePath) {
@@ -654,6 +659,7 @@ class FileExplorerFragment : Fragment() {
             }
         }
     }
+
     private fun hideNavigationBars(){
         binding.bottomNavigation.visibility=View.GONE
         binding.TopNavigation.visibility=View.GONE
@@ -670,4 +676,13 @@ class FileExplorerFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+    private fun emptyRecyclerViewLoad(){
+        binding.RecyclerViewFileExplorer.visibility = View.GONE
+        binding.emptyRecyclerViewImage.visibility = View.VISIBLE
+    }
+    private fun showRecyclerView(){
+        binding.RecyclerViewFileExplorer.visibility = View.VISIBLE
+        binding.emptyRecyclerViewImage.visibility = View.GONE
+    }
+
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:gravity="center"
@@ -13,7 +14,7 @@
         android:text="File"
         android:textSize="18sp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:layout_marginTop="12dp"
@@ -21,25 +22,27 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/trashBin_deletebutton"
-        android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:backgroundTint="@color/lightred"
-        android:layout_gravity="center"
-        android:layout_height="wrap_content">
-        <LinearLayout
+        <androidx.cardview.widget.CardView
+            android:id="@+id/trashBin_deletebutton"
             android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="10dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/lightred"
+            android:layout_gravity="center"
             android:layout_height="wrap_content">
-        <ImageView
-            android:layout_width="wrap_content"
-           android:tint="@color/white"
-            android:src="@drawable/outline_delete_24"
-            android:layout_marginBottom="5dp"
-            android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="10dp"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:src="@drawable/outline_delete_24"
+                    android:layout_marginBottom="5dp"
+                    android:layout_height="wrap_content"
+                    app:tint="@color/white" />
         <TextView
             android:gravity="center"
             android:fontFamily="@font/source_sans_pro_semibold"

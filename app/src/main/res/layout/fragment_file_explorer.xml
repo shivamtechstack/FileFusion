@@ -60,6 +60,7 @@
        android:layout_marginHorizontal="7dp"
        android:layout_marginTop="7dp"
        app:cardCornerRadius="12dp"
+       android:backgroundTint="@color/app_pallet"
        android:layout_height="wrap_content"
        android:layout_gravity="top"
        android:visibility="gone">
@@ -86,6 +87,7 @@
              android:layout_marginStart="4dp"
              android:layout_height="wrap_content"
              android:text="Files Selected"
+             android:textColor="@color/white"
              android:layout_weight="9"
              tools:ignore="HardcodedText" />
 
@@ -93,7 +95,7 @@
              android:id="@+id/selectAllButton"
              android:layout_width="26dp"
              android:layout_height="26dp"
-             app:tint="@color/iconcolor"
+             app:tint="@color/white"
              android:layout_weight="1"
              android:layout_marginEnd="2dp"
              android:src="@drawable/baseline_done_all_24"
@@ -105,7 +107,7 @@
              android:layout_width="26dp"
              android:layout_height="26dp"
              android:layout_weight="1"
-             app:tint="@color/iconcolor"
+             app:tint="@color/white"
              android:layout_marginEnd="6dp"
              android:src="@drawable/outline_delete_24"
              tools:ignore="ContentDescription" />
@@ -115,9 +117,29 @@
 
    <RelativeLayout
        android:layout_width="match_parent"
-       android:layout_height="0dp"
+       android:layout_height="match_parent"
        android:layout_weight="1">
 
+      <LinearLayout
+          android:id="@+id/emptyRecyclerViewImage"
+          android:layout_width="match_parent"
+          android:orientation="vertical"
+          android:gravity="center"
+          android:padding="80dp"
+          android:visibility="gone"
+          android:layout_height="match_parent">
+      <ImageView
+          android:layout_width="match_parent"
+          android:layout_height="100dp"
+          android:src="@drawable/emptyfolder"/>
+         <TextView
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:gravity="center"
+             android:textSize="17sp"
+             android:fontFamily="@font/source_sans_pro_semibold"
+             android:text="No content here"/>
+      </LinearLayout>
       <androidx.recyclerview.widget.RecyclerView
           android:id="@+id/RecyclerViewFileExplorer"
           android:layout_width="match_parent"
@@ -225,6 +247,7 @@
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:layout_gravity="bottom"
+       android:backgroundTint="@color/app_pallet"
        android:layout_marginHorizontal="7dp"
        android:layout_marginBottom="7dp"
        app:cardCornerRadius="12dp"
@@ -243,7 +266,7 @@
           android:layout_height="wrap_content"
           android:layout_weight="1"
           android:src="@drawable/baseline_content_cut_24"
-          app:tint="@color/iconcolor"
+          app:tint="@color/white"
           tools:ignore="ContentDescription" />
 
       <ImageView
@@ -252,7 +275,7 @@
           android:layout_height="wrap_content"
           android:layout_weight="1"
           android:src="@drawable/baseline_content_copy_24"
-          app:tint="@color/iconcolor"
+          app:tint="@color/white"
           tools:ignore="ContentDescription" />
 
       <ImageView
@@ -262,7 +285,7 @@
           android:layout_gravity="center"
           android:layout_weight="1"
           android:src="@drawable/share_24"
-          app:tint="@color/iconcolor"
+          app:tint="@color/white"
           tools:ignore="ContentDescription" />
 
       <ImageView
@@ -270,7 +293,7 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          app:tint="@color/iconcolor"
+          app:tint="@color/white"
           android:src="@drawable/baseline_drive_file_rename_outline_24"
           tools:ignore="ContentDescription" />
 
@@ -279,7 +302,7 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          app:tint="@color/iconcolor"
+          app:tint="@color/white"
           android:src="@drawable/baseline_more_vert_24"
           tools:ignore="ContentDescription" />
    </LinearLayout>
@@ -293,6 +316,7 @@
        android:layout_marginHorizontal="7dp"
        android:layout_marginBottom="7dp"
        app:cardCornerRadius="12dp"
+       android:backgroundTint="@color/app_pallet"
        android:layout_gravity="bottom">
 
       <LinearLayout
@@ -304,7 +328,7 @@
              android:layout_width="wrap_content"
              android:layout_height="match_parent"
              android:src="@drawable/outline_content_paste_24"
-             app:tint="@color/app_pallet" />
+             app:tint="@color/white" />
 
          <TextView
              android:id="@+id/paste_button"
@@ -314,7 +338,7 @@
              android:text="Paste"
              android:gravity="center_vertical"
              android:textSize="22sp"
-             android:textColor="@color/iconcolor"
+             android:textColor="@color/white"
              android:textStyle="bold"
              android:layout_weight="1"
              tools:ignore="HardcodedText" />
@@ -327,7 +351,7 @@
              android:layout_gravity="end"
              android:padding="7dp"
              android:layout_marginEnd="12dp"
-             app:tint="@color/iconcolor" />
+             app:tint="@color/white" />
 
          <ImageView
              android:id="@+id/paste_clear"

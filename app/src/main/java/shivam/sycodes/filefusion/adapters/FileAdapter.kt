@@ -129,6 +129,8 @@ class FileAdapter(val context: Context,private var files : List<File>,
                         extension == "iso" -> fileImage?.setImageResource(R.drawable.iso)
                         extension == "apk" -> fileImage?.setImageResource(R.drawable.apk)
                         extension == "docx" -> fileImage?.setImageResource(R.drawable.docx)
+                        extension == "vcf" -> fileImage?.setImageResource(R.drawable.vcffile)
+                        extension == "pptx" -> fileImage?.setImageResource(R.drawable.pptxfile)
                         extension in arrayOf("zip", "rar", "7z", "tar", "gz") -> fileImage?.setImageResource(R.drawable.zip)
                         extension in arrayOf("mp3", "aac", "m4a", "wav", "flac", "amr") -> fileImage?.setImageResource(R.drawable.audio)
                         else -> fileImage?.setImageResource(R.drawable.document)

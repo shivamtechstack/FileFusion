@@ -9,6 +9,7 @@ import android.os.Environment.DIRECTORY_DOCUMENTS
 import android.os.Environment.DIRECTORY_DOWNLOADS
 import android.os.StatFs
 import android.os.storage.StorageManager
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -84,7 +85,7 @@ class HomeScreenFragment : Fragment() {
             }
         }
 
-        binding.recentButton.setOnClickListener {
+        binding.recentseeall.setOnClickListener {
             fragment(null,"recent")
         }
         binding.photosButton.setOnClickListener {
@@ -144,10 +145,13 @@ class HomeScreenFragment : Fragment() {
             recentAdapter = RecentAdapter(requireContext(),recentFiles, onItemClick = { selectedFile ->
                 fileOpener.openFile(selectedFile)
             })
+            binding.recentRecyclerView.visibility = View.VISIBLE
+            binding.recentEmptyRecyclerViewImage.visibility = View.GONE
             binding.recentRecyclerView.adapter= recentAdapter
         }else{
             binding.recentRecyclerView.adapter = null
-
+            binding.recentRecyclerView.visibility = View.GONE
+            binding.recentEmptyRecyclerViewImage.visibility = View.VISIBLE
         }
 
     }

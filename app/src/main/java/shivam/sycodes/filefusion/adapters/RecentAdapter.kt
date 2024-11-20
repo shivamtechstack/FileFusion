@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.media.ThumbnailUtils
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,10 +20,11 @@ import kotlinx.coroutines.withContext
 import shivam.sycodes.filefusion.R
 import java.io.File
 
-class RecentAdapter(var requireContext: Context, private var recentFiles: List<File>,private var onItemClick: (File)-> Unit) : RecyclerView.Adapter<RecentAdapter.RecentViewHolder>() {
+class RecentAdapter(var requireContext: Context, private var recentFiles: List<File>, private var onItemClick : (File) -> Unit) : RecyclerView.Adapter<RecentAdapter.RecentViewHolder>() {
     class RecentViewHolder(view: View):RecyclerView.ViewHolder(view){
         var fileName = view.findViewById<TextView>(R.id.recentFileName)!!
         var fileImage = view.findViewById<ImageView>(R.id.recentImages)!!
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecentViewHolder {
@@ -72,6 +74,8 @@ class RecentAdapter(var requireContext: Context, private var recentFiles: List<F
 
             extension == "pdf" -> holder.fileImage.setImageResource(R.drawable.pdf)
             extension == "doc" -> holder.fileImage.setImageResource(R.drawable.doc)
+            extension == "vcf" -> holder.fileImage.setImageResource(R.drawable.vcffile)
+            extension == "pptx" -> holder.fileImage.setImageResource(R.drawable.pptxfile)
             extension == "ppt" -> holder.fileImage.setImageResource(R.drawable.ppt)
             extension == "xls" -> holder.fileImage.setImageResource(R.drawable.xls)
             extension == "txt" -> holder.fileImage.setImageResource(R.drawable.txt)
@@ -84,11 +88,8 @@ class RecentAdapter(var requireContext: Context, private var recentFiles: List<F
             else -> holder.fileImage.setImageResource(R.drawable.imagefile)
         }
 
-        holder.itemView.setOnLongClickListener {
+        holder.itemView.setOnClickListener {
             onItemClick(file)
-            true
         }
     }
-
-
 }
