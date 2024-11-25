@@ -2,11 +2,12 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="app_pallet">#250E6B</color>
+    <color name="app_pallet">#190759</color>
     <color name="red">#FF0000</color>
-    <color name="iconcolor">#371F76</color>
+    <color name="iconcolor">#376cfb</color>
     <color name="lightred">#FF2E31</color>
     <color name="unhighlighted_text">#A0A0A0</color>
     <color name="alpaviewbackground">#0A000000</color>
+    <color name="toogleButtonColor">#F5DF4F</color>
 
 </resources>

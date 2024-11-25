@@ -131,12 +131,14 @@
       <ImageView
           android:layout_width="match_parent"
           android:layout_height="100dp"
+          app:tint="@color/unhighlighted_text"
           android:src="@drawable/emptyfolder"/>
          <TextView
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
              android:gravity="center"
              android:textSize="17sp"
+             android:textColor="@color/unhighlighted_text"
              android:fontFamily="@font/source_sans_pro_semibold"
              android:text="No content here"/>
       </LinearLayout>
@@ -155,8 +157,8 @@
           android:layout_marginBottom="40dp"
           android:contentDescription="Add new Folder or File"
           android:src="@drawable/plus_24"
-          app:backgroundTint="@color/app_pallet"
-          app:tint="@color/white"
+          app:backgroundTint="@color/toogleButtonColor"
+          app:tint="@color/black"
           tools:ignore="HardcodedText" />
 
       <LinearLayout
@@ -178,16 +180,16 @@
              android:gravity="end"
              android:orientation="horizontal">
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="18dp"
                 android:text="File"
-                android:fontFamily="@font/poppins_medium"
-                android:shadowDx="10"
-                android:shadowColor="@color/app_pallet"
-                android:shadowRadius="25"
+                android:paddingHorizontal="12dp"
+                android:background="@color/white"
+                android:fontFamily="@font/merriweather_sans_light"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 android:textSize="15sp"
                 tools:ignore="HardcodedText" />
@@ -198,8 +200,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_margin="10dp"
-                android:backgroundTint="@color/app_pallet"
-                app:tint="@color/white"
+                android:backgroundTint="@color/toogleButtonColor"
+                app:tint="@color/black"
                 android:src="@drawable/outline_insert_drive_file_24"
                 app:fabSize="mini"
                 tools:ignore="ContentDescription" />
@@ -212,16 +214,16 @@
              android:gravity="end"
              android:orientation="horizontal">
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="18dp"
-                android:shadowDx="10"
-                android:shadowColor="@color/app_pallet"
-                android:shadowRadius="25"
-                android:fontFamily="@font/poppins_medium"
+                android:background="@color/white"
+                android:fontFamily="@font/merriweather_sans_light"
                 android:text="Folder"
+                android:textColor="@color/black"
+                android:paddingHorizontal="12dp"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
@@ -232,10 +234,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_margin="10dp"
-                android:backgroundTint="@color/app_pallet"
+                android:backgroundTint="@color/toogleButtonColor"
                 android:src="@drawable/outline_folder_24"
                 app:fabSize="mini"
-                app:tint="@color/white"
+                app:tint="@color/black"
                 tools:ignore="ContentDescription" />
          </LinearLayout>
 

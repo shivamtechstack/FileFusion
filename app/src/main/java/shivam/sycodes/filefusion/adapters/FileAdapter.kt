@@ -100,6 +100,12 @@ class FileAdapter(val context: Context,private var files : List<File>,
                             }
                         }
                         mimeType != null && mimeType.startsWith("video") -> {
+                            fileImage?.let {
+                                Glide.with(it.context)
+                                    .load(R.drawable.videofile)
+                                    .circleCrop()
+                                    .into(it)
+                            }
 
                             CoroutineScope(Dispatchers.Main).launch {
                                 val videoThumbnail = withContext(Dispatchers.IO) {

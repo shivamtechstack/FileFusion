@@ -29,7 +29,6 @@
                 android:id="@+id/homescreen_settings_button"
                 android:layout_width="27dp"
                 android:layout_height="27dp"
-                app:tint="@color/iconcolor"
                 android:src="@drawable/outline_settings_24"/>
 
         </LinearLayout>
@@ -285,6 +284,7 @@
             android:layout_weight="1"
             android:textSize="16sp"
             android:gravity="end"
+            android:textColor="@color/toogleButtonColor"
             android:text="See all"
             android:fontFamily="@font/source_sans_pro_semibold"
             tools:ignore="HardcodedText" />

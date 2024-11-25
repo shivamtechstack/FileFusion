@@ -19,14 +19,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -40,7 +35,7 @@ import shivam.sycodes.filefusion.filehandling.FileOpener
 import shivam.sycodes.filefusion.popupmenus.BottomPopUpMenu
 import shivam.sycodes.filefusion.roomdatabase.AppDatabase
 import shivam.sycodes.filefusion.service.DeleteOperationCallback
-import shivam.sycodes.filefusion.service.PasteWorker
+import shivam.sycodes.filefusion.service.PasteService
 import shivam.sycodes.filefusion.utility.CreateFileAndFolder
 import shivam.sycodes.filefusion.utility.FileOperationHelper
 import shivam.sycodes.filefusion.utility.FileRenameHelper
@@ -525,28 +520,13 @@ class FileExplorerFragment : Fragment() {
                 permissionHelper.requestNotificationPermission(requestNotificationPermissionLauncher)
             }
 
-            val inputData = Data.Builder()
-                .putStringArray("FILES_TO_PASTE", filePaths.toTypedArray())
-                .putString("DESTINATION_PATH", currentPath)
-                .putBoolean("IS_CUT_OPERATION", isCutOperation)
-                .build()
+            val intent = Intent(context, PasteService::class.java).apply {
+                putExtra("FILES_TO_PASTE", filePaths.toTypedArray())
+                putExtra("DESTINATION_PATH", currentPath)
+                putExtra("IS_CUT_OPERATION", isCutOperation)
+            }
+            ContextCompat.startForegroundService(requireContext(), intent)
 
-            val pasteWorkRequest = OneTimeWorkRequestBuilder<PasteWorker>()
-                .setInputData(inputData)
-                .build()
-
-            WorkManager.getInstance(requireContext()).enqueue(pasteWorkRequest)
-
-            WorkManager.getInstance(requireContext()).getWorkInfoByIdLiveData(pasteWorkRequest.id)
-                .observe(viewLifecycleOwner, Observer { workInfo ->
-                    if (workInfo != null && workInfo.state == WorkInfo.State.SUCCEEDED) {
-                        Toast.makeText(requireContext(), "Paste operation completed successfully!", Toast.LENGTH_SHORT).show()
-                        loadFiles(currentPath)
-                    } else if (workInfo != null && workInfo.state == WorkInfo.State.FAILED) {
-                        Toast.makeText(requireContext(), "Paste operation failed.", Toast.LENGTH_SHORT).show()
-                        loadFiles(currentPath)
-                    }
-                })
             fileOperationViewModel.filesToCopyorCut = null
             binding.pastelayout.visibility = View.GONE
 
@@ -555,6 +535,7 @@ class FileExplorerFragment : Fragment() {
             createFileFolderClass.createNewFolder(currentPath,::loadFiles)
         }
     }
+
     private fun showSortDialogBox() {
         val alertDialog = AlertDialog.Builder(requireContext())
         val sortDialogView = LayoutInflater.from(requireContext()).inflate(R.layout.sortby_dialog_box,null,false)

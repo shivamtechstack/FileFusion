@@ -54,6 +54,10 @@ class RecentAdapter(var requireContext: Context, private var recentFiles: List<F
             }
 
             mimeType != null && mimeType.startsWith("video") -> {
+                    Glide.with(holder.fileImage.context)
+                        .load(R.drawable.videofile)
+                        .circleCrop()
+                        .into(holder.fileImage)
                 CoroutineScope(Dispatchers.Main).launch {
                     val videoThumbnail = withContext(Dispatchers.IO) {
                         ThumbnailUtils.createVideoThumbnail(

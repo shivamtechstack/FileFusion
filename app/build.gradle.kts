@@ -65,4 +65,5 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android.v163)
 
     implementation ("io.github.itsxtt:pattern-lock:0.2.0")
+
 }

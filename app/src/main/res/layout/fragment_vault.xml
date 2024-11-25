@@ -8,6 +8,7 @@
     tools:context=".fragments.VaultFragment">
 
   <androidx.cardview.widget.CardView
+      android:id="@+id/secureVaultTopText"
       android:layout_width="match_parent"
       android:layout_gravity="center_vertical"
       android:layout_height="50dp">
