@@ -30,10 +30,10 @@ FileFusion is an advanced file management app that provides secure file storage 
 ## Screenshots
 Here are some previews of the app:
 
-![Home Screen](Screenshots/homescreen.jpg)  
-![Main Screen](Screenshots/mainscreen.jpg)
-![Secure Vault](Screenshots/securevault.jpg)  
-![password](Screenshots/passwordscreen.jpg)
+<img src="Screenshots/homescreen.jpg" alt="Home Screen" width="300">
+<img src="Screenshots/mainscreen.jpg" alt="Main Screen" width="300">
+<img src="Screenshots/securevault.jpg" alt="Secure Vault" width="300">
+<img src="Screenshots/passwordscreen.jpg" alt="Password Screen" width="300">
 
 ## How to Clone and Run the Repository
 
@@ -78,6 +78,7 @@ bash
 Copy code
 git push origin feature-name  
 Submit a pull request.
+
 License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
