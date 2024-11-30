@@ -26,6 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import shivam.sycodes.filefusion.R
+import shivam.sycodes.filefusion.archievingAndEncryption.EncryptionDialog
 import shivam.sycodes.filefusion.archievingAndEncryption.ZipArchieve
 import shivam.sycodes.filefusion.roomdatabase.AppDatabase
 import shivam.sycodes.filefusion.roomdatabase.BookmarkEntity
@@ -86,6 +87,15 @@ class BottomPopUpMenu(private val context: Context) {
                         }
                     }else{
                         Toast.makeText(context,"No File/Folder Selected",Toast.LENGTH_SHORT).show()
+                    }
+                    true
+                }
+                R.id.encrypt ->{
+                    if (selectedFiles.isNotEmpty()){
+                        EncryptionDialog().encryptionDialog(context,selectedFiles)
+                        hideNavigationBar()
+                    }else{
+                        Toast.makeText(context, "No files selected to encrypt", Toast.LENGTH_SHORT).show()
                     }
                     true
                 }

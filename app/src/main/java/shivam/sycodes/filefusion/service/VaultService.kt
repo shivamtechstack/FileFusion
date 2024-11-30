@@ -1,4 +1,5 @@
 package shivam.sycodes.filefusion.service
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -32,6 +33,7 @@ class VaultService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
 
+    @SuppressLint("SuspiciousIndentation")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         createNotificationChannel()
 

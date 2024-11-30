@@ -4,7 +4,6 @@
     android:layout_height="wrap_content"
     android:padding="20dp"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:orientation="vertical">
 
     <TextView

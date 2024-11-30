@@ -15,7 +15,7 @@
         tools:ignore="HardcodedText" />
 
     <item android:id="@+id/encrypt"
-        android:visible="false"
+        android:visible="true"
         android:icon="@drawable/outline_lock_24"
         android:title="Encrypt"
         tools:ignore="HardcodedText" />

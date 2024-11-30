@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="20dp"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Encryption"
+        android:textSize="18sp"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/encrypt_selectedFiles_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:fontFamily="@font/source_sans_pro_semibold"
+        android:text="File : "
+        android:textSize="16sp" />
+
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/source_sans_pro_semibold"
+                android:text="Type"
+                android:textSize="16sp"
+                tools:ignore="HardcodedText" />
+
+            <Spinner
+                android:id="@+id/typeSpinnerEncryption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:layout_marginTop="12dp"
+        android:id="@+id/archivePasswordLayout">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="Password"
+            android:textSize="16sp"
+            android:fontFamily="@font/source_sans_pro_semibold"
+            android:layout_height="wrap_content"
+            tools:ignore="HardcodedText" />
+        <EditText
+            android:id="@+id/EncryptionPasswordEditText"
+            android:fontFamily="@font/source_sans_pro_semibold"
+            android:textSize="18sp"
+            android:layout_width="match_parent"
+            android:inputType="textPassword"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:textSize="16sp"
+            android:text="Confirm Password"
+            android:fontFamily="@font/source_sans_pro_semibold"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"
+            tools:ignore="HardcodedText" />
+
+        <EditText
+            android:id="@+id/EncryptionConfirmPasswordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/source_sans_pro_semibold"
+            android:textSize="18sp"
+            android:inputType="textPassword"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/error_message_encryptdialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:fontFamily="@font/source_sans_pro_semibold"
+        android:textColor="@color/red"
+        android:text=""
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="end">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/encrypt_cancel_button"
+            android:layout_width="wrap_content"
+            android:elevation="5dp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_height="wrap_content"
+            android:text="cancel"
+            android:textSize="16sp"
+            android:fontFamily="@font/source_sans_pro_semibold"
+            tools:ignore="HardcodedText" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/encrypt_button"
+            android:layout_width="wrap_content"
+            android:elevation="5dp"
+            android:textSize="16sp"
+            android:fontFamily="@font/source_sans_pro_semibold"
+            android:backgroundTint="@color/lightred"
+            android:layout_height="wrap_content"
+            android:text="Encrypt"
+            android:textColor="@color/white"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+
+</LinearLayout>
