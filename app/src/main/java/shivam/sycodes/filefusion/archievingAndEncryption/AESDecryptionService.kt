@@ -86,7 +86,8 @@ class AESDecryptionService : Service() {
             val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
             cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec)
 
-            val decryptedFile = File(destinationFolder, file.nameWithoutExtension)
+            val encryptedFileName = resolveUniqueFileName(destinationFolder, file.nameWithoutExtension)
+            val decryptedFile = File(destinationFolder, encryptedFileName)
 
             CipherInputStream(fileIn, cipher).use { cipherIn ->
                 FileOutputStream(decryptedFile).use { output ->
@@ -121,8 +122,9 @@ class AESDecryptionService : Service() {
         if (!lockFileContent.contains(hashedPassword)) {
             throw Exception("Incorrect password.")
         }
+        val encryptedFolderName = resolveUniqueFileName(File(directory.parent!!), directory.nameWithoutExtension)
 
-        val decryptedFolder = File(directory.parent, directory.nameWithoutExtension)
+        val decryptedFolder = File(directory.parent, encryptedFolderName)
         if (!decryptedFolder.exists()) decryptedFolder.mkdirs()
 
         directory.walkTopDown().forEach { file ->
@@ -139,6 +141,23 @@ class AESDecryptionService : Service() {
         val digest = MessageDigest.getInstance("SHA-256")
         val hash = digest.digest(password.toByteArray())
         return hash.joinToString("") { "%02x".format(it) }
+    }
+
+    private fun resolveUniqueFileName(parentFolder: File, fileName: String): String {
+        val baseName = fileName.substringBeforeLast(".")
+        val extension = fileName.substringAfterLast(".", "")
+        var uniqueName = fileName
+        var counter = 1
+
+        while (File(parentFolder, uniqueName).exists()) {
+            val timestamp = System.currentTimeMillis()
+            uniqueName = if (extension.isNotEmpty()) {
+                "$baseName-$timestamp.$extension"
+            } else {
+                "$baseName-$timestamp"
+            }
+        }
+        return uniqueName
     }
 
     private fun buildNotification(contentText: String): Notification {

@@ -46,7 +46,9 @@ class AESEncryptionServices : Service() {
 
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec)
 
-        val encryptedFile = File(destinationFolder, file.name + ".enc")
+        val encryptedFileName = resolveUniqueFileName(destinationFolder, file.name + ".enc")
+
+        val encryptedFile = File(destinationFolder, encryptedFileName)
         FileOutputStream(encryptedFile).use { fileOut ->
             fileOut.write(salt)
             fileOut.write(iv)
@@ -65,7 +67,8 @@ class AESEncryptionServices : Service() {
     }
 
     private fun encryptDirectory(directory: File, password: String) {
-        val encryptedFolder = File(directory.parent, directory.name + ".enc")
+        val encryptedFolderName = resolveUniqueFileName(File(directory.parent!!), directory.name + ".enc")
+        val encryptedFolder = File(directory.parent, encryptedFolderName)
         if (!encryptedFolder.exists()) encryptedFolder.mkdirs()
 
         directory.walkTopDown().forEach { file ->
@@ -102,6 +105,8 @@ class AESEncryptionServices : Service() {
                       encryptFile(file,password.toString(),parentFolder)
                     }
                 }
+                withContext(Dispatchers.IO){
+                }
                 stopForeground(true)
                 stopSelf()
             } catch (e: Exception) {
@@ -117,6 +122,24 @@ class AESEncryptionServices : Service() {
         }
         return START_NOT_STICKY
     }
+
+    private fun resolveUniqueFileName(parentFolder: File, fileName: String): String {
+        val baseName = fileName.substringBeforeLast(".")
+        val extension = fileName.substringAfterLast(".", "")
+        var uniqueName = fileName
+        var counter = 1
+
+        while (File(parentFolder, uniqueName).exists()) {
+            val timestamp = System.currentTimeMillis()
+            uniqueName = if (extension.isNotEmpty()) {
+                "$baseName-$timestamp.$extension"
+            } else {
+                "$baseName-$timestamp"
+            }
+        }
+        return uniqueName
+    }
+
 
     override fun onBind(intent: Intent?): IBinder? {
         return null

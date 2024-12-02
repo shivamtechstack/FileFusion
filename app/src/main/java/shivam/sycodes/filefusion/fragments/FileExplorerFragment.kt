@@ -19,7 +19,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -66,6 +65,7 @@ class FileExplorerFragment : Fragment() {
     private var isFabOpen = false
     private lateinit var pathDisplayHelper : PathDisplayHelper
     private var isFromCategory: Boolean = false
+
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
@@ -102,7 +102,6 @@ class FileExplorerFragment : Fragment() {
         createFileFolderClass = CreateFileAndFolder(requireContext())
         fileOpener = FileOpener(requireContext())
         permissionHelper = PermissionHelper(requireContext())
-
 
         requireActivity().onBackPressedDispatcher.addCallback(this,object : OnBackPressedCallback(true){
             override fun handleOnBackPressed() {
