@@ -30,10 +30,10 @@ FileFusion is an advanced file management app that provides secure file storage 
 ## Screenshots
 Here are some previews of the app:
 
-<img src="Screenshots/homescreen.jpg" alt="Home Screen" width="300">
-<img src="Screenshots/mainscreen.jpg" alt="Main Screen" width="300">
-<img src="Screenshots/securevault.jpg" alt="Secure Vault" width="300">
-<img src="Screenshots/passwordscreen.jpg" alt="Password Screen" width="300">
+<img src="Screenshots/homescreen.jpg" alt="Home Screen" width="250">
+<img src="Screenshots/mainscreen.jpg" alt="Main Screen" width="250">
+<img src="Screenshots/securevault.jpg" alt="Secure Vault" width="250">
+<img src="Screenshots/passwordscreen.jpg" alt="Password Screen" width="250">
 
 ## How to Clone and Run the Repository
 

@@ -1,5 +1,6 @@
 package shivam.sycodes.filefusion.archievingAndEncryption
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -14,7 +15,9 @@ import shivam.sycodes.filefusion.R
 import java.io.File
 
 class EncryptionDialog {
-    fun encryptionDialog(context: Context, selectedFiles: List<File>) {
+    @SuppressLint("SuspiciousIndentation")
+    fun encryptionDialog(context: Context, selectedFiles: List<File>, requestNotification: () -> Unit) {
+
         val dialog = AlertDialog.Builder(context)
         val dialogView = LayoutInflater.from(context).inflate(R.layout.encryptiodialog, null)
         dialog.setView(dialogView)
@@ -29,7 +32,7 @@ class EncryptionDialog {
         val cancelButton = dialogView.findViewById<Button>(R.id.encrypt_cancel_button)
         val errorMessage = dialogView.findViewById<TextView>(R.id.error_message_encryptdialog)
 
-        fileNames.text = selectedFiles.first().nameWithoutExtension
+        fileNames.text = selectedFiles.joinToString(", ") { it.name }
 
         cancelButton.setOnClickListener {
             dialogBuilder.dismiss()
@@ -53,12 +56,13 @@ class EncryptionDialog {
                             errorMessage.text = "Passwords do not match"
                         }else{
                             errorMessage.text = ""
-                            val password = password.text.toString()
+                            val filePassword = password.text.toString()
                             when(selectedType){
                                 "AES(Advanced Encryption Standard)" -> {
+                                    requestNotification()
                                     val intent = Intent(context,AESEncryptionServices::class.java).apply {
                                         putExtra("selectedFiles",ArrayList(selectedFiles))
-                                        putExtra("password",password)
+                                        putExtra("password",filePassword)
                                     }
                                     ContextCompat.startForegroundService(context,intent)
                                     dialogBuilder.dismiss()

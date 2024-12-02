@@ -26,6 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import shivam.sycodes.filefusion.R
+import shivam.sycodes.filefusion.archievingAndEncryption.DecryptionDialog
 import shivam.sycodes.filefusion.archievingAndEncryption.EncryptionDialog
 import shivam.sycodes.filefusion.archievingAndEncryption.ZipArchieve
 import shivam.sycodes.filefusion.roomdatabase.AppDatabase
@@ -41,6 +42,7 @@ class BottomPopUpMenu(private val context: Context) {
     fun popUpMenuBottom(
         selectedFiles: List<File>, view: View,
         hideNavigationBar: () -> Unit,
+        requestNotification: () -> Unit,
         isFromCategory: Boolean,
         category: String?,
     ){
@@ -61,13 +63,19 @@ class BottomPopUpMenu(private val context: Context) {
             }
             bottomPopUpMenu.menu.findItem(R.id.archive).isVisible =false
             bottomPopUpMenu.menu.findItem(R.id.unarchive).isVisible =false
-            bottomPopUpMenu.menu.findItem(R.id.decrypt).isVisible =false
             bottomPopUpMenu.menu.findItem(R.id.encrypt).isVisible =false
         }
         if (selectedFiles.any { it.isDirectory }){
             bottomPopUpMenu.menu.findItem(R.id.bookmark).isVisible = false
             bottomPopUpMenu.menu.findItem(R.id.removeBookmark).isVisible = false
             bottomPopUpMenu.menu.findItem(R.id.movetovault).isVisible = false
+        }
+        if (selectedFiles.size <= 1){
+            val file = selectedFiles[0]
+            if (file.extension == "enc"){
+                bottomPopUpMenu.menu.findItem(R.id.decrypt).isVisible = true
+                bottomPopUpMenu.menu.findItem(R.id.encrypt).isVisible = false
+            }
         }
 
         bottomPopUpMenu.setOnMenuItemClickListener { item ->
@@ -92,11 +100,20 @@ class BottomPopUpMenu(private val context: Context) {
                 }
                 R.id.encrypt ->{
                     if (selectedFiles.isNotEmpty()){
-                        EncryptionDialog().encryptionDialog(context,selectedFiles)
+                        EncryptionDialog().encryptionDialog(context,selectedFiles,requestNotification)
                         hideNavigationBar()
                     }else{
                         Toast.makeText(context, "No files selected to encrypt", Toast.LENGTH_SHORT).show()
                     }
+                    true
+                }
+                R.id.decrypt -> {
+                    if (selectedFiles.isNotEmpty()){
+                        DecryptionDialog().decryptionDialog(context,selectedFiles,requestNotification)
+                        hideNavigationBar()
+                    }else{
+                        Toast.makeText(context, "No files selected to decrypt", Toast.LENGTH_SHORT).show()
+                }
                     true
                 }
                 R.id.copypath -> {

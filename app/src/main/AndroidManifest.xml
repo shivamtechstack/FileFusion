@@ -45,6 +45,9 @@
         <service android:name=".archievingAndEncryption.AESEncryptionServices"
             android:foregroundServiceType="dataSync" />
 
+        <service android:name=".archievingAndEncryption.AESDecryptionService"
+            android:foregroundServiceType="dataSync" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

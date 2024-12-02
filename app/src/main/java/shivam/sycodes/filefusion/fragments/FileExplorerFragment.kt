@@ -19,6 +19,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -100,6 +101,7 @@ class FileExplorerFragment : Fragment() {
         bottomPopUpMenu= BottomPopUpMenu(requireContext())
         createFileFolderClass = CreateFileAndFolder(requireContext())
         fileOpener = FileOpener(requireContext())
+        permissionHelper = PermissionHelper(requireContext())
 
 
         requireActivity().onBackPressedDispatcher.addCallback(this,object : OnBackPressedCallback(true){
@@ -152,6 +154,7 @@ class FileExplorerFragment : Fragment() {
             toogleFabMenu()
         }
         popUpMenuTop()
+
 
         return binding.root
     }
@@ -458,11 +461,8 @@ class FileExplorerFragment : Fragment() {
                 deletedialog.dismiss()
             }
             movetoTrashButton.setOnClickListener {
+                permissionHelper.ensureNotificationSetup(requestNotificationPermissionLauncher)
                 if (permanentDeletecheckBox.isChecked){
-                    permissionHelper = PermissionHelper(requireContext())
-                    if (!permissionHelper.isNotificationPermissionGranted()){
-                        permissionHelper.requestNotificationPermission(requestNotificationPermissionLauncher)
-                    }
                     val selectedFilesDelete = fileAdapter.getSelectedFiles()
                     fileOperationHelper.deleteOperation(selectedFilesDelete, object :
                         DeleteOperationCallback {
@@ -500,6 +500,7 @@ class FileExplorerFragment : Fragment() {
                     fileAdapter.getSelectedFiles(),
                     view = binding.moreOptionsButton,
                     ::hideNavigationBars,
+                    ::requestNotification,
                     isFromCategory,
                     category)
         }
@@ -515,10 +516,7 @@ class FileExplorerFragment : Fragment() {
             val filesToPaste = fileOperationViewModel.filesToCopyorCut
             val filePaths = filesToPaste!!.map { it.absolutePath }
             val isCutOperation = fileOperationViewModel.isCutOperation
-            permissionHelper = PermissionHelper(requireContext())
-            if(!permissionHelper.isNotificationPermissionGranted()){
-                permissionHelper.requestNotificationPermission(requestNotificationPermissionLauncher)
-            }
+            permissionHelper.ensureNotificationSetup(requestNotificationPermissionLauncher)
 
             val intent = Intent(context, PasteService::class.java).apply {
                 putExtra("FILES_TO_PASTE", filePaths.toTypedArray())
@@ -613,6 +611,7 @@ class FileExplorerFragment : Fragment() {
         if (::fileAdapter.isInitialized && fileAdapter.isMultiSelectedMode) {
             fileAdapter.clearSelection()
             hideNavigationBars()
+            loadFiles(currentPath)
         } else if (isFabOpen) {
             binding.fabContainer.animate()
                 .scaleY(0f)
@@ -664,6 +663,10 @@ class FileExplorerFragment : Fragment() {
     private fun showRecyclerView(){
         binding.RecyclerViewFileExplorer.visibility = View.VISIBLE
         binding.emptyRecyclerViewImage.visibility = View.GONE
+    }
+    fun requestNotification(){
+        permissionHelper = PermissionHelper(requireContext())
+        permissionHelper.ensureNotificationSetup(requestNotificationPermissionLauncher)
     }
 
 }

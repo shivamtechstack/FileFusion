@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Decryption"
+        android:textSize="18sp"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/decrypt_selectedFiles_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:fontFamily="@font/source_sans_pro_semibold"
+        android:text="File : "
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:layout_marginTop="12dp"
+        android:id="@+id/archivePasswordLayout">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="Password"
+            android:textSize="16sp"
+            android:fontFamily="@font/source_sans_pro_semibold"
+            android:layout_height="wrap_content"
+            tools:ignore="HardcodedText" />
+        <EditText
+            android:id="@+id/decryptionPasswordEditText"
+            android:fontFamily="@font/source_sans_pro_semibold"
+            android:textSize="18sp"
+            android:layout_width="match_parent"
+            android:inputType="textPassword"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/error_message_decryptdialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:fontFamily="@font/source_sans_pro_semibold"
+        android:textColor="@color/red"
+        android:text=""
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="end">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/decrypt_cancel_button"
+            android:layout_width="wrap_content"
+            android:elevation="5dp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_height="wrap_content"
+            android:text="cancel"
+            android:textSize="16sp"
+            android:fontFamily="@font/source_sans_pro_semibold"
+            tools:ignore="HardcodedText" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/decrypt_button"
+            android:layout_width="wrap_content"
+            android:elevation="5dp"
+            android:textSize="16sp"
+            android:fontFamily="@font/source_sans_pro_semibold"
+            android:backgroundTint="@color/lightred"
+            android:layout_height="wrap_content"
+            android:text="Decrypt"
+            android:textColor="@color/white"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+
+</LinearLayout>
