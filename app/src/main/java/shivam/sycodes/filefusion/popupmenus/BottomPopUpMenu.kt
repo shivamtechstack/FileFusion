@@ -26,9 +26,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import shivam.sycodes.filefusion.R
+import shivam.sycodes.filefusion.archievingAndEncryption.ArchiveDialog
 import shivam.sycodes.filefusion.archievingAndEncryption.DecryptionDialog
 import shivam.sycodes.filefusion.archievingAndEncryption.EncryptionDialog
-import shivam.sycodes.filefusion.archievingAndEncryption.ZipArchieve
 import shivam.sycodes.filefusion.roomdatabase.AppDatabase
 import shivam.sycodes.filefusion.roomdatabase.BookmarkEntity
 import shivam.sycodes.filefusion.service.VaultService
@@ -38,7 +38,6 @@ import java.util.Date
 
 class BottomPopUpMenu(private val context: Context) {
 
-    private lateinit var zipArchieve : ZipArchieve
     fun popUpMenuBottom(
         selectedFiles: List<File>, view: View,
         hideNavigationBar: () -> Unit,
@@ -47,7 +46,6 @@ class BottomPopUpMenu(private val context: Context) {
         category: String?,
     ){
         val bottomPopUpMenu = PopupMenu(context,view)
-        zipArchieve =ZipArchieve()
         bottomPopUpMenu.menuInflater.inflate(R.menu.bottompopupmenu, bottomPopUpMenu.menu)
         bottomPopUpMenu.setForceShowIcon(true)
 
@@ -82,7 +80,7 @@ class BottomPopUpMenu(private val context: Context) {
             when (item.itemId) {
                 R.id.archive -> {
 
-                    zipCode(selectedFiles)
+                   ArchiveDialog().zipCode(context,selectedFiles)
                     true
                 }
                 R.id.unarchive ->{
@@ -198,123 +196,13 @@ class BottomPopUpMenu(private val context: Context) {
         bottomPopUpMenu.show()
     }
 
-    private fun zipCode(selectedFiles: List<File>) {
-
-        val archiveDialog = AlertDialog.Builder(context)
-        val archiveDialogView = LayoutInflater.from(context).inflate(R.layout.archieve_dialog,null,false)
-        archiveDialog.setView(archiveDialogView)
-
-        val dialog = archiveDialog.create()
-        val archiveFileName = archiveDialogView.findViewById<EditText>(R.id.archivedFileName)
-        val typeSpinner = archiveDialogView.findViewById<Spinner>(R.id.typeSpinnerArchive)
-        val compressionSpinner = archiveDialogView.findViewById<Spinner>(R.id.spinnerCompressionArchieve)
-        val protectWithPasswordCheckBox = archiveDialogView.findViewById<CheckBox>(R.id.protectWithPasswordCheckBox)
-        val cancelButton = archiveDialogView.findViewById<Button>(R.id.archive_cancel_button)
-        val createButton = archiveDialogView.findViewById<Button>(R.id.create_archieve_button)
-        val passwordEditText = archiveDialogView.findViewById<EditText>(R.id.archivePasswordEditText)
-        val confirmPasswordEditText = archiveDialogView.findViewById<EditText>(R.id.archiveConfirmPasswordEditText)
-        val archievePasswordlayout = archiveDialogView.findViewById<View>(R.id.archivePasswordLayout)
-
-        cancelButton.setOnClickListener {
-            dialog.dismiss()
-        }
-
-        archiveFileName.text = Editable.Factory.getInstance().newEditable(selectedFiles.first().nameWithoutExtension)
-
-        val type = arrayOf("Zip","7z")
-        val zipCompressionLevels = arrayOf("No Compression", "Very Fast", "Fast","Balanced", "High", "Maximum Compression")
-        val sevenZCompressionLevels = arrayOf("Fastest", "Fast", "Normal", "Maximum")
-
-        val typeAdapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, type)
-        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        typeSpinner.adapter = typeAdapter
-        typeSpinner.setSelection(0)
-
-        val compressionAdapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, zipCompressionLevels)
-        compressionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        compressionSpinner.adapter = compressionAdapter
-
-        typeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                when (type[position]) {
-                    "Zip" -> {
-
-                        val zipAdapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, zipCompressionLevels)
-                        zipAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                        compressionSpinner.adapter = zipAdapter
-                    }
-                    "7z" -> {
-
-                        val sevenZAdapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, sevenZCompressionLevels)
-                        sevenZAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                        compressionSpinner.adapter = sevenZAdapter
-                    }
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                compressionSpinner.adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, zipCompressionLevels)
-            }
-        }
-        protectWithPasswordCheckBox.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked){
-                archievePasswordlayout.visibility = View.VISIBLE
-            }
-        }
-
-        createButton.setOnClickListener {
-            val selectedType = typeSpinner.selectedItem.toString()
-            val selectedCompression = compressionSpinner.selectedItem.toString()
-
-            when(selectedType){
-                "Zip" -> {
-                    if (selectedFiles.isNotEmpty()) {
-                        val parentDir = selectedFiles.first().parentFile
-                        if (parentDir != null) {
-                            val outputZipFileName = archiveFileName.text.toString() + ".zip"
-                            val outputZipFilePath = File(parentDir, outputZipFileName).absolutePath
-
-                            if (protectWithPasswordCheckBox.isChecked){
-                                val password = passwordEditText.text.toString()
-                                val confirmPassword = confirmPasswordEditText.text.toString()
-                                if(password.isEmpty() || confirmPassword.isEmpty()){
-                                    Toast.makeText(context, "Password cannot be empty", Toast.LENGTH_SHORT).show()
-                                    return@setOnClickListener
-                                }
-                                if (password != confirmPassword){
-                                    Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
-                                    return@setOnClickListener
-                                }
-                                else{
-                                    zipArchieve.zipFileorFolder(selectedFiles, outputZipFilePath,selectedCompression,password)
-                                }
-                            }else {
-
-                                zipArchieve.zipFileorFolder(
-                                    selectedFiles,
-                                    outputZipFilePath,
-                                    selectedCompression
-                                )
-                            }
-                            Toast.makeText(context, "Files zipped to: $outputZipFilePath", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(context, "Cannot determine parent directory", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
-            }
-        }
-
-        dialog.show()
-    }
-
     private fun determineFileType(selectedFiles: List<File>, outputZipFilePath: String) {
         selectedFiles.forEach { file ->
             val extension = file.extension.lowercase()
             when{
-                extension == "zip" -> zipArchieve.unZipFile(file,outputZipFilePath)
+               // extension == "zip" -> zipArchieve.unZipFile(file,outputZipFilePath)
 
-                else -> Toast.makeText(context,"Unsupported Archieve Format!!",Toast.LENGTH_SHORT).show()
+                else -> Toast.makeText(context,"Unsupported Archive Format!!",Toast.LENGTH_SHORT).show()
             }
         }
     }
