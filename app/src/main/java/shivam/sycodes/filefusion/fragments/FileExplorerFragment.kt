@@ -35,7 +35,6 @@ import shivam.sycodes.filefusion.filehandling.FileOpener
 import shivam.sycodes.filefusion.popupmenus.BottomPopUpMenu
 import shivam.sycodes.filefusion.roomdatabase.AppDatabase
 import shivam.sycodes.filefusion.service.DeleteOperationCallback
-import shivam.sycodes.filefusion.service.PasteService
 import shivam.sycodes.filefusion.utility.CreateFileAndFolder
 import shivam.sycodes.filefusion.utility.FileOperationHelper
 import shivam.sycodes.filefusion.utility.FileRenameHelper
@@ -507,24 +506,16 @@ class FileExplorerFragment : Fragment() {
     private fun showPasteLayout() {
         binding.pastelayout.visibility = View.VISIBLE
         hideNavigationBars()
-        loadFiles(currentPath)
         setupPasteOperation()
+        loadFiles(currentPath)
     }
     private fun setupPasteOperation() {
         binding.pasteButton.setOnClickListener {
             val filesToPaste = fileOperationViewModel.filesToCopyorCut
-            val filePaths = filesToPaste!!.map { it.absolutePath }
             val isCutOperation = fileOperationViewModel.isCutOperation
             permissionHelper.ensureNotificationSetup(requestNotificationPermissionLauncher)
+            fileOperationHelper.pasteOperation(currentPath,filesToPaste,isCutOperation)
 
-            val intent = Intent(context, PasteService::class.java).apply {
-                putExtra("FILES_TO_PASTE", filePaths.toTypedArray())
-                putExtra("DESTINATION_PATH", currentPath)
-                putExtra("IS_CUT_OPERATION", isCutOperation)
-            }
-            ContextCompat.startForegroundService(requireContext(), intent)
-
-            fileOperationViewModel.filesToCopyorCut = null
             binding.pastelayout.visibility = View.GONE
 
         }

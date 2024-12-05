@@ -40,17 +40,18 @@
             android:layout_height="wrap_content"
             android:text="cancel"
             tools:ignore="HardcodedText" />
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/rename_single_ok_button"
         android:layout_width="wrap_content"
-        android:elevation="5dp"
-        android:textColor="@color/white"
-        android:fontFamily="@font/source_sans_pro_semibold"
-        android:textSize="15sp"
-        android:layout_weight="1"
-        android:backgroundTint="@color/lightred"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:backgroundTint="@color/toogleButtonColor"
+        android:elevation="5dp"
+        android:fontFamily="@font/source_sans_pro_semibold"
         android:text="Rename"
+        android:textColor="@color/black"
+        android:textSize="15sp"
         tools:ignore="HardcodedText" />
 </LinearLayout>
 

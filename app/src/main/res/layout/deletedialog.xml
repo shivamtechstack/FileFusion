@@ -68,10 +68,10 @@
             android:elevation="5dp"
             android:textSize="15sp"
             android:fontFamily="@font/source_sans_pro_semibold"
-            android:backgroundTint="@color/lightred"
+            android:backgroundTint="@color/toogleButtonColor"
             android:layout_height="wrap_content"
             android:text="Move to trash"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 </LinearLayout>

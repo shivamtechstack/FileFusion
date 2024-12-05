@@ -1,6 +1,7 @@
 package shivam.sycodes.filefusion.service
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -13,11 +14,13 @@ import androidx.core.app.NotificationManagerCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import shivam.sycodes.filefusion.utility.PermissionHelper
 import java.io.File
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class PasteService : Service() {
 
-    private val channelId = "paste_channel"
     private val notificationId = 1
     private lateinit var filesToPaste: List<File>
     private var destinationPath: String? = null
@@ -35,12 +38,12 @@ class PasteService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         this.intentData = intent
-        val filePaths = intent?.getStringArrayExtra("FILES_TO_PASTE")?.toList() ?: return START_NOT_STICKY
+        val filePaths =
+            intent?.getStringArrayExtra("FILES_TO_PASTE")?.toList() ?: return START_NOT_STICKY
         destinationPath = intent.getStringExtra("DESTINATION_PATH")
         isCutOperation = intent.getBooleanExtra("IS_CUT_OPERATION", false)
         filesToPaste = filePaths.map { File(it) }
 
-        createNotificationChannel()
         startForeground(notificationId, createNotification("Preparing paste operation...", 0, 0))
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -59,8 +62,18 @@ class PasteService : Service() {
             if (isCutOperation) {
                 totalCopied += moveFileOrDirectory(file, targetFile)
             } else {
-                totalCopied += copyFileOrDirectory(file, targetFile, totalSize) { currentFile, copiedBytes ->
-                    updateNotification(currentFile.name, currentFile.length(), copiedBytes, totalCopied, totalSize)
+                totalCopied += copyFileOrDirectory(
+                    file,
+                    targetFile,
+                    totalSize
+                ) { currentFile, copiedBytes ->
+                    updateNotification(
+                        currentFile.name,
+                        currentFile.length(),
+                        copiedBytes,
+                        totalCopied,
+                        totalSize
+                    )
                 }
             }
         }
@@ -68,7 +81,7 @@ class PasteService : Service() {
     }
 
     private fun createNotification(message: String, progress: Int, max: Int): Notification {
-        return NotificationCompat.Builder(this, channelId)
+        return NotificationCompat.Builder(this, "fileoperation")
             .setContentTitle("Paste Operation")
             .setContentText(message)
             .setSmallIcon(android.R.drawable.ic_menu_save)
@@ -85,7 +98,7 @@ class PasteService : Service() {
         totalCopied: Long,
         totalSize: Long
     ) {
-        val notification = NotificationCompat.Builder(this, channelId)
+        val notification = NotificationCompat.Builder(this, "fileoperation")
             .setContentTitle("Pasting: $currentFileName")
             .setContentText("Progress: ${formatSize(totalCopied)} / ${formatSize(totalSize)}")
             .setSmallIcon(android.R.drawable.ic_menu_save)
@@ -96,20 +109,13 @@ class PasteService : Service() {
 
     @SuppressLint("MissingPermission")
     private fun completeNotification() {
-        val notification = NotificationCompat.Builder(this, channelId)
+        val notification = NotificationCompat.Builder(this, "fileoperation")
             .setContentTitle("Paste Complete")
             .setContentText("All files pasted successfully.")
             .setSmallIcon(android.R.drawable.ic_menu_save)
             .setOngoing(false)
             .build()
         NotificationManagerCompat.from(this).notify(notificationId, notification)
-    }
-
-    private fun createNotificationChannel() {
-        val channel = NotificationChannel(channelId, "Paste Operation", NotificationManager.IMPORTANCE_LOW).apply {
-            description = "Notifications for ongoing paste operations"
-        }
-        getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
     }
 
     private fun formatSize(bytes: Long): String {
