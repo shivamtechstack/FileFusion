@@ -641,6 +641,7 @@ class FileExplorerFragment : Fragment() {
             binding.floatingActionButton.visibility = View.VISIBLE
             binding.pathContainer.visibility = View.VISIBLE
         }
+        loadFiles(currentPath)
     }
     override fun onDestroyView() {
         super.onDestroyView()

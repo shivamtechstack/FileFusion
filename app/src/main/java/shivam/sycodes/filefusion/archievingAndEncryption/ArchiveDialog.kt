@@ -1,6 +1,7 @@
 package shivam.sycodes.filefusion.archievingAndEncryption
 
 import android.content.Context
+import android.content.Intent
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
@@ -10,14 +11,20 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Spinner
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import shivam.sycodes.filefusion.R
 import java.io.File
+import java.io.Serializable
 
 class ArchiveDialog {
 
-   fun zipCode(context: Context, selectedFiles: List<File>) {
+   fun zipCode(
+       context: Context,
+       selectedFiles: List<File>,
+       requestNotification: () -> Unit,
+       hideNavigationBar: () -> Unit
+   ) {
 
         val archiveDialog = AlertDialog.Builder(context)
         val archiveDialogView = LayoutInflater.from(context).inflate(R.layout.archieve_dialog,null,false)
@@ -61,6 +68,7 @@ class ArchiveDialog {
                         val zipAdapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, zipCompressionLevels)
                         zipAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                         compressionSpinner.adapter = zipAdapter
+                        archievePasswordlayout.visibility = View.GONE
                     }
                     "7z" -> {
                         val sevenZAdapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, sevenZCompressionLevels)
@@ -81,15 +89,34 @@ class ArchiveDialog {
         }
 
         createButton.setOnClickListener {
+            requestNotification()
             val selectedType = typeSpinner.selectedItem.toString()
             val selectedCompression = compressionSpinner.selectedItem.toString()
+            val archiveFilename = archiveFileName.text.toString() + ".zip"
 
             when(selectedType){
                 "Zip" -> {
-                    
+                    val zipIntent = Intent(context, ZipArchive::class.java).apply {
+                        putExtra("files", listOf(selectedFiles) as Serializable)
+                        putExtra("archive_name", archiveFilename)
+                        putExtra("compression_level", selectedCompression)
+                        putExtra("Action", "zip")
+                    }
+                    ContextCompat.startForegroundService(context,zipIntent)
+                    dialog.dismiss()
+                    hideNavigationBar()
                 }
                 "7z" -> {
-
+                    val sevenZipIntent = Intent(context, SevenZipArchive::class.java).apply {
+                        putExtra("files", listOf(selectedFiles) as Serializable)
+                        putExtra("archive_name", archiveFilename)
+                        putExtra("compression_level", selectedCompression)
+                        putExtra("password", passwordEditText.text.toString())
+                        putExtra("Action", "7zip")
+                    }
+                    ContextCompat.startForegroundService(context,sevenZipIntent)
+                    dialog.dismiss()
+                    hideNavigationBar()
                 }
             }
         }

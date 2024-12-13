@@ -7,20 +7,13 @@ import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
 import android.graphics.drawable.Icon
-import android.text.Editable
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,7 +27,6 @@ import shivam.sycodes.filefusion.roomdatabase.BookmarkEntity
 import shivam.sycodes.filefusion.service.VaultService
 import java.io.File
 import java.util.Date
-
 
 class BottomPopUpMenu(private val context: Context) {
 
@@ -80,7 +72,7 @@ class BottomPopUpMenu(private val context: Context) {
             when (item.itemId) {
                 R.id.archive -> {
 
-                   ArchiveDialog().zipCode(context,selectedFiles)
+                   ArchiveDialog().zipCode(context,selectedFiles,requestNotification,hideNavigationBar)
                     true
                 }
                 R.id.unarchive ->{

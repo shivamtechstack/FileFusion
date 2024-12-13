@@ -48,6 +48,12 @@
         <service android:name=".archievingAndEncryption.AESDecryptionService"
             android:foregroundServiceType="dataSync" />
 
+        <service android:name=".archievingAndEncryption.ZipArchive"
+            android:foregroundServiceType="dataSync" />
+
+        <service android:name=".archievingAndEncryption.SevenZipArchive"
+            android:foregroundServiceType="dataSync" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

@@ -31,7 +31,6 @@ import shivam.sycodes.filefusion.filehandling.FileOpener
 import shivam.sycodes.filefusion.roomdatabase.AppDatabase
 import shivam.sycodes.filefusion.service.DeleteOperationCallback
 import shivam.sycodes.filefusion.service.VaultService
-import shivam.sycodes.filefusion.service.VaultServiceCallback
 import shivam.sycodes.filefusion.utility.FileOperationHelper
 import shivam.sycodes.filefusion.utility.PermissionHelper
 import java.io.File
