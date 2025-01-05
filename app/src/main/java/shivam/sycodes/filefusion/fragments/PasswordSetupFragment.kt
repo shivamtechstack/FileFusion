@@ -10,6 +10,7 @@ import com.itsxtt.patternlock.PatternLockView
 import shivam.sycodes.filefusion.R
 import shivam.sycodes.filefusion.databinding.FragmentPasswordSetupFragementBinding
 import shivam.sycodes.filefusion.utility.PreferencesHelper
+import shivam.sycodes.filefusion.viewModel.PasswordAuthCallBack
 
 
 class PasswordSetupFragment : Fragment() {
@@ -20,6 +21,7 @@ class PasswordSetupFragment : Fragment() {
     private var firstPattern: String? = null
     private var isConfirmingPattern = false
     private var action:String? = null
+    private var callback: PasswordAuthCallBack? = null
 
     companion object {
         private const val ARG_ACTION = "action"
@@ -31,6 +33,9 @@ class PasswordSetupFragment : Fragment() {
                 }
             }
         }
+    }
+    fun setCallback(callback: PasswordAuthCallBack) {
+        this.callback = callback
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,12 +64,17 @@ class PasswordSetupFragment : Fragment() {
                     return true
                 }else{
                     if (enteredPattern == firstPattern) {
+                        preferencesHelper.savePassword(enteredPattern)
                         if (action == "change"){
-                            preferencesHelper.savePassword(enteredPattern)
+
                             Toast.makeText(context, "Pattern changed successfully!", Toast.LENGTH_SHORT).show()
                             requireActivity().finish()
-                        }else {
-                            preferencesHelper.savePassword(enteredPattern)
+                        }else if(action == "moveFile") {
+                            callback?.onAuthenticationSuccess()
+                            parentFragmentManager.popBackStack()
+                        }
+                        else {
+                            
                             Toast.makeText(context, "Pattern set successfully!", Toast.LENGTH_SHORT)
                                 .show()
                             fragmentManager!!.beginTransaction()

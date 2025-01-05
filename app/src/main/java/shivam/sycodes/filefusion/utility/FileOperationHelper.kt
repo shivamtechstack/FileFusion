@@ -180,7 +180,7 @@ class FileOperationHelper(private val context: Context) {
                     val dialog = alertDialog.create()
                     dialog.show()
 
-                    var cancelButton = dialogView.findViewById<Button>(R.id.fileconflict_cancel_button)
+                    val cancelButton = dialogView.findViewById<Button>(R.id.fileconflict_cancel_button)
                     val keepBoth = dialogView.findViewById<Button>(R.id.keepboth_button)
                     val keepNew = dialogView.findViewById<LinearLayout>(R.id.keep_new_file)
                     val keepOld = dialogView.findViewById<LinearLayout>(R.id.keep_old_file)

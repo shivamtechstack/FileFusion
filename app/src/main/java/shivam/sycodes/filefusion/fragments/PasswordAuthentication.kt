@@ -9,6 +9,7 @@ import com.itsxtt.patternlock.PatternLockView
 import shivam.sycodes.filefusion.R
 import shivam.sycodes.filefusion.databinding.FragmentPasswordAuthenticationBinding
 import shivam.sycodes.filefusion.utility.PreferencesHelper
+import shivam.sycodes.filefusion.viewModel.PasswordAuthCallBack
 import java.util.ArrayList
 
 class PasswordAuthentication : Fragment() {
@@ -16,6 +17,7 @@ class PasswordAuthentication : Fragment() {
     private val binding get() = _binding!!
     private lateinit var preferencesHelper : PreferencesHelper
     private var action :String? = null
+    private var callback: PasswordAuthCallBack? = null
 
     companion object {
         private const val ARG_ACTION = "action"
@@ -30,6 +32,10 @@ class PasswordAuthentication : Fragment() {
         }
     }
 
+    fun setCallback(callback: PasswordAuthCallBack) {
+        this.callback = callback
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         preferencesHelper = PreferencesHelper(requireContext())
@@ -37,6 +43,7 @@ class PasswordAuthentication : Fragment() {
             action = it.getString(ARG_ACTION)
         }
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,6 +63,9 @@ class PasswordAuthentication : Fragment() {
                     if (action == "change"){
                         val fragment=PasswordSetupFragment.newInstance("change")
                         fragmentManager!!.beginTransaction().replace(R.id.fragmentContainerView1,fragment).commit()
+                    }else if (action == "moveFile"){
+                        callback?.onAuthenticationSuccess()
+                        parentFragmentManager.popBackStack()
                     }
                     else {
                         val fragment = VaultFragment()

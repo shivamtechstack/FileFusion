@@ -10,9 +10,11 @@ import android.graphics.drawable.Icon
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,9 +24,13 @@ import shivam.sycodes.filefusion.R
 import shivam.sycodes.filefusion.archievingAndEncryption.ArchiveDialog
 import shivam.sycodes.filefusion.archievingAndEncryption.DecryptionDialog
 import shivam.sycodes.filefusion.archievingAndEncryption.EncryptionDialog
+import shivam.sycodes.filefusion.fragments.PasswordAuthentication
+import shivam.sycodes.filefusion.fragments.PasswordSetupFragment
 import shivam.sycodes.filefusion.roomdatabase.AppDatabase
 import shivam.sycodes.filefusion.roomdatabase.BookmarkEntity
 import shivam.sycodes.filefusion.service.VaultService
+import shivam.sycodes.filefusion.utility.PreferencesHelper
+import shivam.sycodes.filefusion.viewModel.PasswordAuthCallBack
 import java.io.File
 import java.util.Date
 
@@ -37,6 +43,7 @@ class BottomPopUpMenu(private val context: Context) {
         isFromCategory: Boolean,
         category: String?,
     ){
+        val preferencesHelper = PreferencesHelper(context)
         val bottomPopUpMenu = PopupMenu(context,view)
         bottomPopUpMenu.menuInflater.inflate(R.menu.bottompopupmenu, bottomPopUpMenu.menu)
         bottomPopUpMenu.setForceShowIcon(true)
@@ -149,11 +156,41 @@ class BottomPopUpMenu(private val context: Context) {
                 }
                 R.id.movetovault -> {
                    if (selectedFiles.isNotEmpty()){
-                       val intent = Intent(context, VaultService::class.java).apply {
-                           putExtra("selectedFiles",ArrayList(selectedFiles))
-                           action = "MOVE_TO_VAULT"
+                       if(preferencesHelper.getPassword()!=null){
+                           val fragment = PasswordAuthentication.newInstance("moveFile")
+                           fragment.setCallback(object : PasswordAuthCallBack {
+                               override fun onAuthenticationSuccess() {
+                                   val intent = Intent(context, VaultService::class.java).apply {
+                                       putExtra("selectedFiles",ArrayList(selectedFiles))
+                                       action = "MOVE_TO_VAULT"
+                                   }
+                                   ContextCompat.startForegroundService(context,intent)
+                               }
+                           })
+                           (context as AppCompatActivity).supportFragmentManager.beginTransaction()
+                               .replace(R.id.fragmentContainerView, fragment)
+                               .addToBackStack(null)
+                               .commit()
+
+                       }else if (preferencesHelper.getPassword() == null){
+
+                           val fragment = PasswordSetupFragment.newInstance("moveFile")
+                           fragment.setCallback(object : PasswordAuthCallBack {
+                               override fun onAuthenticationSuccess() {
+                                   val intent = Intent(context, VaultService::class.java).apply {
+                                       putExtra("selectedFiles",ArrayList(selectedFiles))
+                                       action = "MOVE_TO_VAULT"
+                                   }
+                                   ContextCompat.startForegroundService(context,intent)
+                               }
+                           })
+                           (context as AppCompatActivity).supportFragmentManager.beginTransaction()
+                               .replace(R.id.fragmentContainerView, fragment)
+                               .addToBackStack(null)
+                               .commit()
+                       }else{
+                           Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
                        }
-                       ContextCompat.startForegroundService(context,intent)
                    }else{
                        Toast.makeText(context, "No files selected to move to vault", Toast.LENGTH_SHORT).show()
                    }
