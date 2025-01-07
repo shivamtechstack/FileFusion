@@ -65,20 +65,23 @@ class PasswordSetupFragment : Fragment() {
                 }else{
                     if (enteredPattern == firstPattern) {
                         preferencesHelper.savePassword(enteredPattern)
-                        if (action == "change"){
 
-                            Toast.makeText(context, "Pattern changed successfully!", Toast.LENGTH_SHORT).show()
-                            requireActivity().finish()
-                        }else if(action == "moveFile") {
-                            callback?.onAuthenticationSuccess()
-                            parentFragmentManager.popBackStack()
-                        }
-                        else {
-                            
-                            Toast.makeText(context, "Pattern set successfully!", Toast.LENGTH_SHORT)
-                                .show()
-                            fragmentManager!!.beginTransaction()
-                                .replace(R.id.fragmentContainerView, VaultFragment()).commit()
+                        when (action) {
+                            "change" -> {
+
+                                Toast.makeText(context, "Pattern changed successfully!", Toast.LENGTH_SHORT).show()
+                                requireActivity().finish()
+                            }
+                            "moveFile" -> {
+                                callback?.onAuthenticationSuccess()
+                                parentFragmentManager.popBackStack()
+                            }
+                            else -> {
+                                Toast.makeText(context, "Pattern set successfully!", Toast.LENGTH_SHORT)
+                                    .show()
+                                fragmentManager!!.beginTransaction()
+                                    .replace(R.id.fragmentContainerView, VaultFragment()).commit()
+                            }
                         }
                     } else {
                        binding.patternConfirmationText.text = "Patterns do not match. Try again."

@@ -29,6 +29,11 @@
         android:icon="@drawable/baseline_hide_source_24"
         tools:ignore="HardcodedText" />
 
+    <item android:id="@+id/trashBin_button_toolbar"
+        android:title="Trash Bin"
+        android:icon="@drawable/outline_delete_24"
+        tools:ignore="HardcodedText" />
+
     <item android:id="@+id/setting_button_toolbar"
         android:title="Settings"
         android:icon="@drawable/outline_settings_24"

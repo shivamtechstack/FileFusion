@@ -357,6 +357,10 @@ class FileExplorerFragment : Fragment() {
                         loadFiles(currentPath)
                         true
                     }
+                    R.id.trashBin_button_toolbar ->{
+                        fragmentManager?.beginTransaction()?.replace(R.id.fragmentContainerView,TrashBinFragment())?.addToBackStack(null)?.commit()
+                        true
+                    }
                     R.id.setting_button_toolbar ->{
                         val intent=Intent(this@FileExplorerFragment.requireContext(),AppSettings::class.java)
                         startActivity(intent)
