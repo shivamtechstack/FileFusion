@@ -41,7 +41,7 @@ android {
         viewBinding = true
     }
 }
-
+//noinspection UseTomlInstead
 dependencies {
 
     implementation(libs.androidx.core.ktx)

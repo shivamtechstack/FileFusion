@@ -26,7 +26,7 @@ import java.util.Date
 import kotlin.math.log10
 import kotlin.math.pow
 
-class FileAdapter(val context: Context,private var files : List<File>,
+class FileAdapter(val context: Context, private var files : List<File>,
     private var onItemClick : (File) -> Unit,
     private val onItemLongClick : (File) -> Unit) : RecyclerView.Adapter<FileAdapter.FileViewHolder>() {
 
@@ -126,6 +126,7 @@ class FileAdapter(val context: Context,private var files : List<File>,
                                 }
                             }
                         }
+
                         extension == "pdf" -> fileImage?.setImageResource(R.drawable.pdf)
                         extension == "doc" -> fileImage?.setImageResource(R.drawable.doc)
                         extension == "ppt" -> fileImage?.setImageResource(R.drawable.ppt)

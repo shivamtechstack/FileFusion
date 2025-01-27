@@ -19,6 +19,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import shivam.sycodes.filefusion.AppSettings
 import shivam.sycodes.filefusion.R
 import shivam.sycodes.filefusion.adapters.RecentAdapter
@@ -46,7 +50,9 @@ class HomeScreenFragment : Fragment() {
        _binding = FragmentHomeScreenBinding.inflate(inflater,container,false)
         preferencesHelper = PreferencesHelper(requireContext())
         fileOpener = FileOpener(requireContext())
-        showRecentFiles()
+        CoroutineScope(Dispatchers.IO).launch {
+            showRecentFiles()
+        }
 
         updateStorageDetails(internalStoragePath,binding.storageProgressBar,binding.storagePercentage,binding.storageAvailable)
 
@@ -129,14 +135,19 @@ class HomeScreenFragment : Fragment() {
         return binding.root
     }
 
-    private fun showRecentFiles() {
+    suspend fun showRecentFiles() {
         val allFiles = mutableListOf<File>()
 
         val internalFiles = getFilesFromDirectory(File(internalStoragePath))
         allFiles.addAll(internalFiles)
 
         val recentFiles = allFiles.sortedByDescending { it.lastModified() }.take(20)
-        displayFilesInRecyclerView(recentFiles)
+
+        withContext(Dispatchers.Main) {
+            if (isAdded && view != null) {
+                displayFilesInRecyclerView(recentFiles)
+            }
+        }
     }
 
     private fun displayFilesInRecyclerView(recentFiles: List<File>) {
