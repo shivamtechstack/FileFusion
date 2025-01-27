@@ -12,6 +12,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import shivam.sycodes.filefusion.R
 import java.io.File
 
@@ -52,13 +56,17 @@ class TrashAdapter(val context: Context, var files: Array<File>, private var onI
                     }
 
                     mimeType != null && mimeType.startsWith("video") -> {
-                        val videoThumbnail: Bitmap? = ThumbnailUtils.createVideoThumbnail(
-                            files[position].path, MediaStore.Images.Thumbnails.MINI_KIND
-                        )
-                        if (videoThumbnail != null) {
-                            holder.fileImage.setImageBitmap(videoThumbnail)
-                        } else {
-                            holder.fileImage.setImageResource(R.drawable.videofile)
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val videoThumbnail: Bitmap? = ThumbnailUtils.createVideoThumbnail(
+                                files[position].path, MediaStore.Images.Thumbnails.MINI_KIND
+                            )
+                            withContext(Dispatchers.Main) {
+                                if (videoThumbnail != null) {
+                                    holder.fileImage.setImageBitmap(videoThumbnail)
+                                } else {
+                                    holder.fileImage.setImageResource(R.drawable.videofile)
+                                }
+                            }
                         }
                     }
 

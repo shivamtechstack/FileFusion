@@ -32,6 +32,11 @@ class TrashBinFragment : Fragment() {
         _binding = FragmentTrashBinBinding.inflate(inflater,container,false)
         fileOperationHelper = FileOperationHelper(requireContext())
         trashPath= fileOperationHelper.getTrashDir().toString()
+
+        binding?.trashBinBackButton?.setOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+
         loadFiles(trashPath)
         return binding!!.root
     }
