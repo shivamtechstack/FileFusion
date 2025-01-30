@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_semibold"
         android:text="Archieve"
+        android:background="@color/cardsDarkColor"
         android:textSize="18sp" />
 
     <TextView

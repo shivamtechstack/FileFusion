@@ -22,12 +22,14 @@
                 android:fontFamily="@font/poppins_semibold"
                 android:text="FileFusion"
                 android:textSize="21sp"
+                android:textColor="@color/blackwhite"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 
             <ImageView
                 android:id="@+id/homescreen_settings_button"
                 android:layout_width="27dp"
+                android:tint="@color/blackwhite"
                 android:layout_height="27dp"
                 android:src="@drawable/outline_settings_24"/>
 

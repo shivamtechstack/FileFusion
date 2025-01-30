@@ -4,6 +4,7 @@
     android:layout_width="270dp"
     android:layout_height="wrap_content"
     android:padding="15dp"
+    android:background="@color/cardsDarkColor"
     android:orientation="vertical"
     android:layout_gravity="center">
 

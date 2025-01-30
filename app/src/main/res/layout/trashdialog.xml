@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:gravity="center"
+    android:background="@color/cardsDarkColor"
     android:padding="15dp"
     android:orientation="vertical"
     android:layout_height="wrap_content">
@@ -12,6 +13,7 @@
         android:fontFamily="@font/poppins_medium"
         android:id="@+id/trashFileNameShow"
         android:text="File"
+        android:textColor="@color/blackwhite"
         android:textSize="18sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

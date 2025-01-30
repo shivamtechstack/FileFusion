@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="20dp"
     android:orientation="vertical"
+    android:background="@color/cardsDarkColor"
     android:layout_height="wrap_content">
 
     <TextView

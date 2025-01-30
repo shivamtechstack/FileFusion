@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="13dp"
+    android:background="@color/cardsDarkColor"
     android:orientation="vertical"
     android:layout_height="wrap_content">
 

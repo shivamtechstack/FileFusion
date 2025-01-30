@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:orientation="horizontal"
     android:background="@drawable/filegridviewborder"
+    android:backgroundTint="@color/blackOnDark"
     android:gravity="center"
     android:padding="10dp"
     android:layout_height="110dp">

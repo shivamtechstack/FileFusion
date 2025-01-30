@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".fragments.FileExplorerFragment">
+
 <com.google.android.material.appbar.MaterialToolbar
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
@@ -40,6 +41,7 @@
 </LinearLayout>
 
 </com.google.android.material.appbar.MaterialToolbar>
+
    <HorizontalScrollView
        android:layout_width="match_parent"
        android:layout_height="wrap_content">
@@ -60,7 +62,7 @@
        android:layout_marginHorizontal="7dp"
        android:layout_marginTop="7dp"
        app:cardCornerRadius="12dp"
-       android:backgroundTint="@color/app_pallet"
+       android:backgroundTint="@color/cardsDarkColor"
        android:layout_height="wrap_content"
        android:layout_gravity="top"
        android:visibility="gone">
@@ -116,8 +118,10 @@
    </androidx.cardview.widget.CardView>
 
    <RelativeLayout
+       android:backgroundTint="@color/blackOnDark"
        android:layout_width="match_parent"
-       android:layout_height="match_parent"
+       android:background="@color/blackOnDark"
+       android:layout_height="0dp"
        android:layout_weight="1">
 
       <LinearLayout
@@ -128,11 +132,13 @@
           android:padding="80dp"
           android:visibility="gone"
           android:layout_height="match_parent">
+
       <ImageView
           android:layout_width="match_parent"
           android:layout_height="100dp"
           app:tint="@color/unhighlighted_text"
           android:src="@drawable/emptyfolder"/>
+
          <TextView
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
@@ -141,7 +147,9 @@
              android:textColor="@color/unhighlighted_text"
              android:fontFamily="@font/source_sans_pro_semibold"
              android:text="No content here"/>
+
       </LinearLayout>
+
       <androidx.recyclerview.widget.RecyclerView
           android:id="@+id/RecyclerViewFileExplorer"
           android:layout_width="match_parent"
@@ -249,7 +257,7 @@
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:layout_gravity="bottom"
-       android:backgroundTint="@color/app_pallet"
+       android:backgroundTint="@color/cardsDarkColor"
        android:layout_marginHorizontal="7dp"
        android:layout_marginBottom="7dp"
        app:cardCornerRadius="12dp"
@@ -318,7 +326,7 @@
        android:layout_marginHorizontal="7dp"
        android:layout_marginBottom="7dp"
        app:cardCornerRadius="12dp"
-       android:backgroundTint="@color/app_pallet"
+       android:backgroundTint="@color/cardsDarkColor"
        android:layout_gravity="bottom">
 
       <LinearLayout

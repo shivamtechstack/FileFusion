@@ -9,5 +9,7 @@
     <color name="unhighlighted_text">#A0A0A0</color>
     <color name="alpaviewbackground">#0A000000</color>
     <color name="toogleButtonColor">#F5DF4F</color>
-
+    <color name="blackwhite">#FF000000</color>
+    <color name="blackOnDark">#FFFFFFFF</color>
+    <color name="cardsDarkColor">#FFFFFFFF</color>
 </resources>
