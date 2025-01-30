@@ -73,6 +73,7 @@
             android:id="@+id/EncryptionPasswordEditText"
             android:fontFamily="@font/source_sans_pro_semibold"
             android:textSize="18sp"
+            android:password="true"
             android:layout_width="match_parent"
             android:inputType="textPassword"
             android:layout_height="wrap_content"/>
@@ -92,6 +93,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/source_sans_pro_semibold"
             android:textSize="18sp"
+            android:password="true"
             android:inputType="textPassword"/>
     </LinearLayout>
 

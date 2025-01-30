@@ -45,6 +45,7 @@
             android:textSize="18sp"
             android:layout_width="match_parent"
             android:inputType="textPassword"
+            android:password="true"
             android:layout_height="wrap_content"/>
 
     </LinearLayout>
