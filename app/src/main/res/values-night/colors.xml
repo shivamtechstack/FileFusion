@@ -5,4 +5,5 @@
     <color name="blackwhite">#FFFFFFFF</color>
     <color name="blackOnDark">#FF000000</color>
     <color name="cardsDarkColor">#282828</color>
+    <color name="iconcolor">#FFFFFFFF</color>
 </resources>

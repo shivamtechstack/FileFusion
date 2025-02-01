@@ -83,13 +83,13 @@
              app:tint="@color/red"
              android:src="@drawable/baseline_clear_24"
              tools:ignore="ContentDescription" />
+
          <TextView
              android:id="@+id/number_of_selected_files_textView"
              android:layout_width="0dp"
              android:layout_marginStart="4dp"
              android:layout_height="wrap_content"
-             android:text="Files Selected"
-             android:textColor="@color/white"
+             android:text="1 selected"
              android:layout_weight="9"
              tools:ignore="HardcodedText" />
 
@@ -97,7 +97,7 @@
              android:id="@+id/selectAllButton"
              android:layout_width="26dp"
              android:layout_height="26dp"
-             app:tint="@color/white"
+             app:tint="@color/iconcolor"
              android:layout_weight="1"
              android:layout_marginEnd="2dp"
              android:src="@drawable/baseline_done_all_24"
@@ -109,7 +109,7 @@
              android:layout_width="26dp"
              android:layout_height="26dp"
              android:layout_weight="1"
-             app:tint="@color/white"
+             app:tint="@color/red"
              android:layout_marginEnd="6dp"
              android:src="@drawable/outline_delete_24"
              tools:ignore="ContentDescription" />
@@ -276,7 +276,7 @@
           android:layout_height="wrap_content"
           android:layout_weight="1"
           android:src="@drawable/baseline_content_cut_24"
-          app:tint="@color/white"
+          app:tint="@color/iconcolor"
           tools:ignore="ContentDescription" />
 
       <ImageView
@@ -285,7 +285,7 @@
           android:layout_height="wrap_content"
           android:layout_weight="1"
           android:src="@drawable/baseline_content_copy_24"
-          app:tint="@color/white"
+          app:tint="@color/iconcolor"
           tools:ignore="ContentDescription" />
 
       <ImageView
@@ -295,7 +295,7 @@
           android:layout_gravity="center"
           android:layout_weight="1"
           android:src="@drawable/share_24"
-          app:tint="@color/white"
+          app:tint="@color/iconcolor"
           tools:ignore="ContentDescription" />
 
       <ImageView
@@ -303,7 +303,7 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          app:tint="@color/white"
+          app:tint="@color/iconcolor"
           android:src="@drawable/baseline_drive_file_rename_outline_24"
           tools:ignore="ContentDescription" />
 
@@ -312,7 +312,7 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          app:tint="@color/white"
+          app:tint="@color/iconcolor"
           android:src="@drawable/baseline_more_vert_24"
           tools:ignore="ContentDescription" />
    </LinearLayout>
@@ -338,7 +338,7 @@
              android:layout_width="wrap_content"
              android:layout_height="match_parent"
              android:src="@drawable/outline_content_paste_24"
-             app:tint="@color/white" />
+             app:tint="@color/iconcolor" />
 
          <TextView
              android:id="@+id/paste_button"
@@ -348,7 +348,7 @@
              android:text="Paste"
              android:gravity="center_vertical"
              android:textSize="22sp"
-             android:textColor="@color/white"
+             android:textColor="@color/iconcolor"
              android:textStyle="bold"
              android:layout_weight="1"
              tools:ignore="HardcodedText" />
@@ -361,7 +361,7 @@
              android:layout_gravity="end"
              android:padding="7dp"
              android:layout_marginEnd="12dp"
-             app:tint="@color/white" />
+             app:tint="@color/iconcolor" />
 
          <ImageView
              android:id="@+id/paste_clear"
