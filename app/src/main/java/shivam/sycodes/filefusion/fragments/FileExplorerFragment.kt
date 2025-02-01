@@ -521,6 +521,7 @@ class FileExplorerFragment : Fragment() {
             fileOperationHelper.pasteOperation(currentPath,filesToPaste,isCutOperation)
 
             binding.pastelayout.visibility = View.GONE
+            fileOperationViewModel.filesToCopyorCut = null
 
         }
         binding.newfolderWithpaste.setOnClickListener {

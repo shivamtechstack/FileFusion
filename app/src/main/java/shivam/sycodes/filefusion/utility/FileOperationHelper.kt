@@ -203,6 +203,7 @@ class FileOperationHelper(private val context: Context) {
                         val newFileName = generateNewFileName(destinationPath, file.name)
                         val newFile = File(destinationPath, newFileName)
                         startPasteService(file, newFile.absolutePath, isCutOperation)
+                        fileOperationViewModel.filesToCopyorCut = null
                         dialog.dismiss()
                     }
 
@@ -212,6 +213,7 @@ class FileOperationHelper(private val context: Context) {
                     keepNew.setOnClickListener {
                         startPasteService(file, destinationPath, isCutOperation)
                         destinationFile.delete()
+                        fileOperationViewModel.filesToCopyorCut= null
                         dialog.dismiss()
                     }
                     keepOld.setOnClickListener {
@@ -221,6 +223,7 @@ class FileOperationHelper(private val context: Context) {
 
                 } else {
                     startPasteService(file, destinationPath, isCutOperation)
+                    fileOperationViewModel.filesToCopyorCut= null
                 }
             }
             fileOperationViewModel.filesToCopyorCut = null
