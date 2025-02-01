@@ -8,6 +8,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import shivam.sycodes.filefusion.databinding.ActivityAppSettingsBinding
 import shivam.sycodes.filefusion.fragments.PasswordAuthentication
+import shivam.sycodes.filefusion.utility.PrivacyPolicy
 
 class AppSettings : AppCompatActivity() {
     private lateinit var binding: ActivityAppSettingsBinding
@@ -38,6 +39,9 @@ class AppSettings : AppCompatActivity() {
         }
         binding.settingsBackArrow.setOnClickListener {
             onBackPressed()
+        }
+        binding.privacyPolicyButton.setOnClickListener {
+            PrivacyPolicy(this).showPolicyDialog()
         }
     }
 
