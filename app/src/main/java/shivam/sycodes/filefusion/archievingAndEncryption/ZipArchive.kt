@@ -3,14 +3,10 @@ package shivam.sycodes.filefusion.archievingAndEncryption
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import android.util.Log
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.*
 import shivam.sycodes.filefusion.utility.PermissionHelper.Companion.CHANNEL_ID
 import java.io.*
-import java.util.zip.ZipEntry
-import java.util.zip.ZipOutputStream
 
 class ZipArchive : Service() {
 

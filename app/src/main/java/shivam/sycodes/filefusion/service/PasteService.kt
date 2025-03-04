@@ -1,10 +1,7 @@
 package shivam.sycodes.filefusion.service
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
@@ -14,10 +11,7 @@ import androidx.core.app.NotificationManagerCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import shivam.sycodes.filefusion.utility.PermissionHelper
 import java.io.File
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class PasteService : Service() {
 

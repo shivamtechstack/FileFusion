@@ -12,7 +12,6 @@ import shivam.sycodes.filefusion.databinding.FragmentPasswordSetupFragementBindi
 import shivam.sycodes.filefusion.utility.PreferencesHelper
 import shivam.sycodes.filefusion.viewModel.PasswordAuthCallBack
 
-
 class PasswordSetupFragment : Fragment() {
 
     private var _binding: FragmentPasswordSetupFragementBinding?= null
