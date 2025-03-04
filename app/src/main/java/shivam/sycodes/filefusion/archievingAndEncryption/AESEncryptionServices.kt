@@ -1,13 +1,12 @@
 package shivam.sycodes.filefusion.archievingAndEncryption
 
-import android.app.Notification
+import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStore
+import androidx.core.app.NotificationManagerCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,7 +14,6 @@ import kotlinx.coroutines.withContext
 import shivam.sycodes.filefusion.R
 import shivam.sycodes.filefusion.utility.PermissionHelper
 import java.io.File
-import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.security.MessageDigest
 import java.security.SecureRandom
@@ -33,7 +31,11 @@ class AESEncryptionServices : Service() {
         const val LOCK_FILE_NAME = ".folder_lock_info"
     }
 
-    private fun encryptFile(file: File, password: String, destinationFolder: File) {
+    private fun encryptFile(file: File, password: String, destinationFolder: File, notificationId: Int) {
+        val fileSize = file.length()
+        var bytesCopied = 0L
+        var lastUpdateTime = System.currentTimeMillis()
+
         val salt = ByteArray(16)
         SecureRandom().nextBytes(salt)
 
@@ -47,18 +49,33 @@ class AESEncryptionServices : Service() {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec)
 
         val encryptedFileName = resolveUniqueFileName(destinationFolder, file.name + ".enc")
-
         val encryptedFile = File(destinationFolder, encryptedFileName)
+
         FileOutputStream(encryptedFile).use { fileOut ->
             fileOut.write(salt)
             fileOut.write(iv)
             CipherOutputStream(fileOut, cipher).use { cipherOut ->
                 file.inputStream().use { input ->
-                    input.copyTo(cipherOut)
+
+                    val buffer = ByteArray(4096)
+                    var bytesRead: Int
+                    while (input.read(buffer).also { bytesRead = it } != -1) {
+                        cipherOut.write(buffer, 0, bytesRead)
+                        bytesCopied += bytesRead
+
+                        val progress = ((bytesCopied * 100) / fileSize).toInt()
+                        val currentTime = System.currentTimeMillis()
+
+                        if (currentTime - lastUpdateTime > 100 || progress % 5 == 0) {
+                            updateProgressNotification(notificationId, file.name, progress)
+                            lastUpdateTime = currentTime
+                        }
+                    }
                 }
             }
         }
     }
+
     private fun generateKey(password: String, salt: ByteArray): SecretKey {
         val keySpec = PBEKeySpec(password.toCharArray(), salt, 10000, 256)
         val keyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256")
@@ -73,7 +90,7 @@ class AESEncryptionServices : Service() {
 
         directory.walkTopDown().forEach { file ->
             if (file.isFile) {
-                encryptFile(file, password, encryptedFolder)
+                encryptFile(file, password, encryptedFolder, NOTIFICATION_ID)
             }
         }
 
@@ -92,19 +109,30 @@ class AESEncryptionServices : Service() {
 
         val selectedFiles = intent?.getSerializableExtra("selectedFiles") as? List<File> ?: emptyList()
         val password = intent?.getStringExtra("password")
-        val notification = buildNotification("Encrypting files")
-        startForeground(NOTIFICATION_ID, notification)
+
+        val initialNotification = NotificationCompat.Builder(this, PermissionHelper.CHANNEL_ID)
+            .setContentTitle("Initializing Encryption")
+            .setContentText("Preparing files...")
+            .setSmallIcon(R.drawable.baseline_content_copy_24)
+            .setProgress(100, 0, true)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setOnlyAlertOnce(true)
+            .build()
+
+        startForeground(NOTIFICATION_ID, initialNotification)
 
         CoroutineScope(Dispatchers.IO).launch {
+
             try {
                 selectedFiles.forEach { file ->
                     if (file.isDirectory) {
                         encryptDirectory(file, password.toString())
                     } else {
                         val parentFolder = File(file.parent ?: "")
-                      encryptFile(file,password.toString(),parentFolder)
+                      encryptFile(file,password.toString(),parentFolder, NOTIFICATION_ID)
                     }
                 }
+                showCompletionNotification()
                 withContext(Dispatchers.IO){
                 }
                 stopForeground(true)
@@ -145,12 +173,39 @@ class AESEncryptionServices : Service() {
         return null
     }
 
-    private fun buildNotification(contentText: String): Notification {
-        return NotificationCompat.Builder(this, PermissionHelper.CHANNEL_ID)
-            .setContentTitle("Encryption Service")
-            .setContentText(contentText)
+    @SuppressLint("MissingPermission")
+    private fun updateProgressNotification(notificationId: Int, fileName: String, progress: Int) {
+        val notificationManager = NotificationManagerCompat.from(this)
+
+        val notification = NotificationCompat.Builder(this, PermissionHelper.CHANNEL_ID)
+            .setContentTitle("Encrypting: $fileName")
+            .setContentText("Progress: $progress%")
             .setSmallIcon(R.drawable.baseline_content_copy_24)
+            .setProgress(100, progress, false)
             .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setOnlyAlertOnce(true)
             .build()
+
+        notificationManager.notify(notificationId, notification) // ✅ Update the notification
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun showCompletionNotification() {
+        val notificationManager = NotificationManagerCompat.from(this)
+
+        notificationManager.cancel(NOTIFICATION_ID)
+
+        val notification = NotificationCompat.Builder(this, PermissionHelper.CHANNEL_ID)
+            .setContentTitle("Encryption Complete")
+            .setContentText("All files encrypted successfully.")
+            .setSmallIcon(R.drawable.baseline_done_all_24)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .build()
+
+        notificationManager.notify(NOTIFICATION_ID, notification)
+        CoroutineScope(Dispatchers.Main).launch {
+            kotlinx.coroutines.delay(3000)
+            notificationManager.cancel(NOTIFICATION_ID)
+        }
     }
 }
