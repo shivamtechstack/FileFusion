@@ -8,6 +8,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import shivam.sycodes.filefusion.databinding.ActivityAppSettingsBinding
 import shivam.sycodes.filefusion.fragments.PasswordAuthentication
+import shivam.sycodes.filefusion.utility.AboutUs
 import shivam.sycodes.filefusion.utility.PrivacyPolicy
 
 class AppSettings : AppCompatActivity() {
@@ -42,6 +43,9 @@ class AppSettings : AppCompatActivity() {
         }
         binding.privacyPolicyButton.setOnClickListener {
             PrivacyPolicy(this).showPolicyDialog()
+        }
+        binding.aboutButton.setOnClickListener {
+            AboutUs(this).showAboutUsDialog()
         }
     }
 
