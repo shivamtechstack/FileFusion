@@ -17,10 +17,8 @@ import shivam.sycodes.filefusion.utility.PermissionHelper
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.nio.ByteBuffer
 import java.security.MessageDigest
 import javax.crypto.Cipher
-import javax.crypto.CipherInputStream
 import javax.crypto.SecretKey
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.IvParameterSpec
@@ -44,7 +42,7 @@ class AESDecryptionService : Service() {
         val initialNotification = NotificationCompat.Builder(this, PermissionHelper.CHANNEL_ID)
             .setContentTitle("Initializing decryption")
             .setContentText("Preparing files...")
-            .setSmallIcon(R.drawable.baseline_content_copy_24)
+            .setSmallIcon(R.drawable.baseline_lock_open_24)
             .setProgress(100, 0, true)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setOnlyAlertOnce(true)
@@ -204,7 +202,7 @@ class AESDecryptionService : Service() {
         val notification = NotificationCompat.Builder(this, PermissionHelper.CHANNEL_ID)
             .setContentTitle("Decrypting: $fileName")
             .setContentText("Progress: $progress%")
-            .setSmallIcon(R.drawable.baseline_content_copy_24)
+            .setSmallIcon(R.drawable.baseline_lock_open_24)
             .setProgress(100, progress, false)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setOnlyAlertOnce(true)
