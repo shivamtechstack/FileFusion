@@ -1,12 +1,13 @@
 package shivam.sycodes.filefusion.archievingAndEncryption
 
-import android.app.Notification
+import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,6 +17,7 @@ import shivam.sycodes.filefusion.utility.PermissionHelper
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.nio.ByteBuffer
 import java.security.MessageDigest
 import javax.crypto.Cipher
 import javax.crypto.CipherInputStream
@@ -38,8 +40,17 @@ class AESDecryptionService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val selectedFiles = intent?.getSerializableExtra("selectedFiles") as? List<File> ?: emptyList()
         val password = intent?.getStringExtra("password")
-        val notification = buildNotification("Decrypting files")
-        startForeground(NOTIFICATION_ID, notification)
+
+        val initialNotification = NotificationCompat.Builder(this, PermissionHelper.CHANNEL_ID)
+            .setContentTitle("Initializing decryption")
+            .setContentText("Preparing files...")
+            .setSmallIcon(R.drawable.baseline_content_copy_24)
+            .setProgress(100, 0, true)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setOnlyAlertOnce(true)
+            .build()
+
+        startForeground(NOTIFICATION_ID, initialNotification)
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -48,9 +59,10 @@ class AESDecryptionService : Service() {
                         decryptDirectory(file, password.toString())
                     } else {
                         val parentFolder = File(file.parent ?: "")
-                        decryptFile(file, password.toString(),parentFolder)
+                        decryptFile(file, password.toString(),parentFolder, NOTIFICATION_ID)
                     }
                 }
+                showCompletionNotification()
                 stopForeground(true)
                 stopSelf()
             } catch (e: Exception) {
@@ -68,7 +80,11 @@ class AESDecryptionService : Service() {
         return START_NOT_STICKY
     }
 
-    private fun decryptFile(file: File, password: String, destinationFolder: File) {
+    private fun decryptFile(file: File, password: String, destinationFolder: File, notificationId: Int) {
+        val fileSize = file.length()
+        var bytesCopied = 0L
+        var lastUpdateTime = System.currentTimeMillis()
+
         FileInputStream(file).use { fileIn ->
             val salt = ByteArray(16)
             if (fileIn.read(salt) != 16) {
@@ -83,15 +99,36 @@ class AESDecryptionService : Service() {
             val secretKey = generateKey(password, salt)
             val ivSpec = IvParameterSpec(iv)
 
-            val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+            val cipher = Cipher.getInstance("AES/GCM/NoPadding")
             cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec)
 
             val encryptedFileName = resolveUniqueFileName(destinationFolder, file.nameWithoutExtension)
             val decryptedFile = File(destinationFolder, encryptedFileName)
 
-            CipherInputStream(fileIn, cipher).use { cipherIn ->
-                FileOutputStream(decryptedFile).use { output ->
-                    cipherIn.copyTo(output)
+            FileOutputStream(decryptedFile).use { output ->
+                val inputBuffer = ByteArray(65536)
+                val outputBuffer = ByteArray(65536)
+
+                while (true) {
+                    val bytesRead = fileIn.read(inputBuffer)
+                    if (bytesRead == -1) break
+
+                    val decryptedBytes = cipher.update(inputBuffer, 0, bytesRead, outputBuffer)
+                    output.write(outputBuffer, 0, decryptedBytes)
+
+                    bytesCopied += bytesRead
+                    val progress = ((bytesCopied * 100) / fileSize).toInt()
+                    val currentTime = System.currentTimeMillis()
+
+                    if (currentTime - lastUpdateTime > 100 || progress % 5 == 0) {
+                        updateProgressNotification(notificationId, file.name, progress)
+                        lastUpdateTime = currentTime
+                    }
+                }
+
+                val finalBytes = cipher.doFinal()
+                if (finalBytes.isNotEmpty()) {
+                    output.write(finalBytes)
                 }
             }
 
@@ -129,7 +166,7 @@ class AESDecryptionService : Service() {
 
         directory.walkTopDown().forEach { file ->
             if (file.isFile && file.name != LOCK_FILE_NAME) {
-                decryptFile(file, password, decryptedFolder)
+                decryptFile(file, password, decryptedFolder, NOTIFICATION_ID)
             }
         }
 
@@ -160,12 +197,39 @@ class AESDecryptionService : Service() {
         return uniqueName
     }
 
-    private fun buildNotification(contentText: String): Notification {
-        return NotificationCompat.Builder(this, PermissionHelper.CHANNEL_ID)
-            .setContentTitle("Decryption Service")
-            .setContentText(contentText)
+    @SuppressLint("MissingPermission")
+    private fun updateProgressNotification(notificationId: Int, fileName: String, progress: Int) {
+        val notificationManager = NotificationManagerCompat.from(this)
+
+        val notification = NotificationCompat.Builder(this, PermissionHelper.CHANNEL_ID)
+            .setContentTitle("Decrypting: $fileName")
+            .setContentText("Progress: $progress%")
             .setSmallIcon(R.drawable.baseline_content_copy_24)
+            .setProgress(100, progress, false)
             .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setOnlyAlertOnce(true)
             .build()
+
+        notificationManager.notify(notificationId, notification)
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun showCompletionNotification() {
+        val notificationManager = NotificationManagerCompat.from(this)
+
+        notificationManager.cancel(AESEncryptionServices.NOTIFICATION_ID)
+
+        val notification = NotificationCompat.Builder(this, PermissionHelper.CHANNEL_ID)
+            .setContentTitle("Decryption Complete")
+            .setContentText("All files decrypted successfully.")
+            .setSmallIcon(R.drawable.baseline_done_all_24)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .build()
+
+        notificationManager.notify(AESEncryptionServices.NOTIFICATION_ID, notification)
+        CoroutineScope(Dispatchers.Main).launch {
+            kotlinx.coroutines.delay(3000)
+            notificationManager.cancel(AESEncryptionServices.NOTIFICATION_ID)
+        }
     }
 }

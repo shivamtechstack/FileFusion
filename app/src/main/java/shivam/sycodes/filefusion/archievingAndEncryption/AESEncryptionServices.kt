@@ -41,7 +41,7 @@ class AESEncryptionServices : Service() {
 
         val secretKey = generateKey(password, salt)
 
-        val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
         val iv = ByteArray(16)
         SecureRandom().nextBytes(iv)
         val ivSpec = IvParameterSpec(iv)
@@ -57,7 +57,7 @@ class AESEncryptionServices : Service() {
             CipherOutputStream(fileOut, cipher).use { cipherOut ->
                 file.inputStream().use { input ->
 
-                    val buffer = ByteArray(4096)
+                    val buffer = ByteArray(65536)
                     var bytesRead: Int
                     while (input.read(buffer).also { bytesRead = it } != -1) {
                         cipherOut.write(buffer, 0, bytesRead)
@@ -186,7 +186,7 @@ class AESEncryptionServices : Service() {
             .setOnlyAlertOnce(true)
             .build()
 
-        notificationManager.notify(notificationId, notification) // ✅ Update the notification
+        notificationManager.notify(notificationId, notification)
     }
 
     @SuppressLint("MissingPermission")
