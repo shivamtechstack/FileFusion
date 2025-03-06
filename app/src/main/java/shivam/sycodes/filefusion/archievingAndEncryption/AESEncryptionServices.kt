@@ -1,6 +1,7 @@
 package shivam.sycodes.filefusion.archievingAndEncryption
 
 import android.annotation.SuppressLint
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
@@ -24,8 +25,10 @@ import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.SecretKeySpec
+import kotlin.jvm.java
 
 class AESEncryptionServices : Service() {
+    private var isCancelled = false
     companion object {
         const val NOTIFICATION_ID = 1
         const val LOCK_FILE_NAME = ".folder_lock_info"
@@ -60,6 +63,12 @@ class AESEncryptionServices : Service() {
                     val buffer = ByteArray(65536)
                     var bytesRead: Int
                     while (input.read(buffer).also { bytesRead = it } != -1) {
+
+                        if (isCancelled) {
+                            encryptedFile.delete()
+                            return
+                        }
+
                         cipherOut.write(buffer, 0, bytesRead)
                         bytesCopied += bytesRead
 
@@ -84,19 +93,23 @@ class AESEncryptionServices : Service() {
     }
 
     private fun encryptDirectory(directory: File, password: String) {
-        val encryptedFolderName = resolveUniqueFileName(File(directory.parent!!), directory.name + ".enc")
+        val encryptedFolderName =
+            resolveUniqueFileName(File(directory.parent!!), directory.name + ".enc")
         val encryptedFolder = File(directory.parent, encryptedFolderName)
         if (!encryptedFolder.exists()) encryptedFolder.mkdirs()
 
         directory.walkTopDown().forEach { file ->
+            if (isCancelled) return
             if (file.isFile) {
                 encryptFile(file, password, encryptedFolder, NOTIFICATION_ID)
             }
         }
 
-        val lockFile = File(encryptedFolder, LOCK_FILE_NAME)
-        val hashedPassword = hashPassword(password)
-        lockFile.writeText("Folder locked with AES\nPassword hash: $hashedPassword")
+        if (!isCancelled) {
+            val lockFile = File(encryptedFolder, LOCK_FILE_NAME)
+            val hashedPassword = hashPassword(password)
+            lockFile.writeText("Folder locked with AES\nPassword hash: $hashedPassword")
+        }
     }
 
     private fun hashPassword(password: String): String {
@@ -106,6 +119,13 @@ class AESEncryptionServices : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+
+        if (intent?.action == "ACTION_CANCEL_ENCRYPTION") {
+            isCancelled = true
+            stopForeground(true)
+            stopSelf()
+            return START_NOT_STICKY
+        }
 
         val selectedFiles = intent?.getSerializableExtra("selectedFiles") as? List<File> ?: emptyList()
         val password = intent?.getStringExtra("password")
@@ -125,6 +145,7 @@ class AESEncryptionServices : Service() {
 
             try {
                 selectedFiles.forEach { file ->
+                    if (isCancelled) return@launch
                     if (file.isDirectory) {
                         encryptDirectory(file, password.toString())
                     } else {
@@ -132,9 +153,7 @@ class AESEncryptionServices : Service() {
                       encryptFile(file,password.toString(),parentFolder, NOTIFICATION_ID)
                     }
                 }
-                showCompletionNotification()
-                withContext(Dispatchers.IO){
-                }
+                if (!isCancelled) showCompletionNotification()
                 stopForeground(true)
                 stopSelf()
             } catch (e: Exception) {
@@ -151,11 +170,15 @@ class AESEncryptionServices : Service() {
         return START_NOT_STICKY
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        stopForeground(true)
+    }
+
     private fun resolveUniqueFileName(parentFolder: File, fileName: String): String {
         val baseName = fileName.substringBeforeLast(".")
         val extension = fileName.substringAfterLast(".", "")
         var uniqueName = fileName
-        var counter = 1
 
         while (File(parentFolder, uniqueName).exists()) {
             val timestamp = System.currentTimeMillis()
@@ -175,6 +198,15 @@ class AESEncryptionServices : Service() {
 
     @SuppressLint("MissingPermission")
     private fun updateProgressNotification(notificationId: Int, fileName: String, progress: Int) {
+
+        val cancelIntent = Intent(applicationContext, AESEncryptionServices::class.java).apply {
+            action = "ACTION_CANCEL_ENCRYPTION"
+        }
+
+        val cancelPendingIntent = PendingIntent.getService(
+            applicationContext, 0, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
         val notificationManager = NotificationManagerCompat.from(this)
 
         val notification = NotificationCompat.Builder(this, PermissionHelper.CHANNEL_ID)
@@ -183,6 +215,7 @@ class AESEncryptionServices : Service() {
             .setSmallIcon(R.drawable.outline_lock_24)
             .setProgress(100, progress, false)
             .setPriority(NotificationCompat.PRIORITY_LOW)
+            .addAction(R.drawable.baseline_clear_24,"Cancel",cancelPendingIntent)
             .setOnlyAlertOnce(true)
             .build()
 
