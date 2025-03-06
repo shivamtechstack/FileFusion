@@ -1,6 +1,7 @@
 package shivam.sycodes.filefusion.archievingAndEncryption
 
 import android.annotation.SuppressLint
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
@@ -26,6 +27,7 @@ import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.SecretKeySpec
 
 class AESDecryptionService : Service() {
+    private var isDecryptionCancelled = false
     companion object {
         const val NOTIFICATION_ID = 2
         const val LOCK_FILE_NAME = ".folder_lock_info"
@@ -36,6 +38,16 @@ class AESDecryptionService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+
+        if (intent?.action == "ACTION_CANCEL_DECRYPTION") {
+            isDecryptionCancelled = true
+            val notificationManager = NotificationManagerCompat.from(this)
+            notificationManager.cancel(NOTIFICATION_ID)
+            stopForeground(true)
+            stopSelf()
+            return START_NOT_STICKY
+        }
+
         val selectedFiles = intent?.getSerializableExtra("selectedFiles") as? List<File> ?: emptyList()
         val password = intent?.getStringExtra("password")
 
@@ -53,6 +65,8 @@ class AESDecryptionService : Service() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 selectedFiles.forEach { file ->
+                    if (isDecryptionCancelled) return@launch
+
                     if (file.isDirectory) {
                         decryptDirectory(file, password.toString())
                     } else {
@@ -60,7 +74,8 @@ class AESDecryptionService : Service() {
                         decryptFile(file, password.toString(),parentFolder, NOTIFICATION_ID)
                     }
                 }
-                showCompletionNotification()
+                if (!isDecryptionCancelled) showCompletionNotification()
+
                 stopForeground(true)
                 stopSelf()
             } catch (e: Exception) {
@@ -76,6 +91,10 @@ class AESDecryptionService : Service() {
         }
 
         return START_NOT_STICKY
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        stopForeground(true)
     }
 
     private fun decryptFile(file: File, password: String, destinationFolder: File, notificationId: Int) {
@@ -104,10 +123,22 @@ class AESDecryptionService : Service() {
             val decryptedFile = File(destinationFolder, encryptedFileName)
 
             FileOutputStream(decryptedFile).use { output ->
+
+                if (isDecryptionCancelled){
+                    decryptedFile.delete()
+                    return
+                }
+
                 val inputBuffer = ByteArray(65536)
                 val outputBuffer = ByteArray(65536)
 
                 while (true) {
+
+                    if (isDecryptionCancelled){
+                        decryptedFile.delete()
+                        return
+                    }
+
                     val bytesRead = fileIn.read(inputBuffer)
                     if (bytesRead == -1) break
 
@@ -163,6 +194,12 @@ class AESDecryptionService : Service() {
         if (!decryptedFolder.exists()) decryptedFolder.mkdirs()
 
         directory.walkTopDown().forEach { file ->
+
+            if (isDecryptionCancelled){
+                decryptedFolder.deleteRecursively()
+                return
+            }
+
             if (file.isFile && file.name != LOCK_FILE_NAME) {
                 decryptFile(file, password, decryptedFolder, NOTIFICATION_ID)
             }
@@ -182,7 +219,6 @@ class AESDecryptionService : Service() {
         val baseName = fileName.substringBeforeLast(".")
         val extension = fileName.substringAfterLast(".", "")
         var uniqueName = fileName
-        var counter = 1
 
         while (File(parentFolder, uniqueName).exists()) {
             val timestamp = System.currentTimeMillis()
@@ -197,6 +233,20 @@ class AESDecryptionService : Service() {
 
     @SuppressLint("MissingPermission")
     private fun updateProgressNotification(notificationId: Int, fileName: String, progress: Int) {
+
+        if (isDecryptionCancelled) {
+            val notificationManager = NotificationManagerCompat.from(this)
+            notificationManager.cancel(notificationId) // Cancel progress notification
+            return
+        }
+
+        val cancelDecryptionIntent = Intent(applicationContext, AESDecryptionService::class.java).apply {
+            action = "ACTION_CANCEL_DECRYPTION"
+        }
+
+        val cancelPendingIntent = PendingIntent.getService(
+            applicationContext, 0, cancelDecryptionIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
         val notificationManager = NotificationManagerCompat.from(this)
 
         val notification = NotificationCompat.Builder(this, PermissionHelper.CHANNEL_ID)
@@ -205,6 +255,7 @@ class AESDecryptionService : Service() {
             .setSmallIcon(R.drawable.baseline_lock_open_24)
             .setProgress(100, progress, false)
             .setPriority(NotificationCompat.PRIORITY_LOW)
+            .addAction(R.drawable.baseline_clear_24,"Cancel",cancelPendingIntent)
             .setOnlyAlertOnce(true)
             .build()
 
