@@ -48,11 +48,13 @@ class EncryptionDialog {
 
         encryptButton.setOnClickListener {
             val selectedType = typeSpinner.selectedItem.toString()
+            val pass = password.text.toString().trim()
+            val confirmPass = confirmPassword.text.toString().trim()
 
-                    if(password.text.toString().isEmpty() || confirmPassword.text.toString().isEmpty()){
+                    if(pass.isEmpty() || confirmPass.isEmpty()){
                         errorMessage.text = "Password cannot be empty"
                     }else{
-                        if(password.text.toString() != confirmPassword.text.toString()){
+                        if(pass != confirmPass){
                             errorMessage.text = "Passwords do not match"
                         }else{
                             errorMessage.text = ""
@@ -70,7 +72,6 @@ class EncryptionDialog {
                             }
                         }
                     }
-            dialogBuilder.dismiss()
             }
         dialogBuilder.show()
     }
