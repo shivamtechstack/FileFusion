@@ -9,6 +9,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -236,7 +237,7 @@ class AESDecryptionService : Service() {
 
         if (isDecryptionCancelled) {
             val notificationManager = NotificationManagerCompat.from(this)
-            notificationManager.cancel(notificationId) // Cancel progress notification
+            notificationManager.cancel(notificationId)
             return
         }
 
@@ -276,6 +277,10 @@ class AESDecryptionService : Service() {
             .build()
 
         notificationManager.notify(AESEncryptionServices.NOTIFICATION_ID, notification)
+
+        val intent = Intent("shivam.sycodes.filefusion.DECRYPTION_COMPLETE")
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+
         CoroutineScope(Dispatchers.Main).launch {
             kotlinx.coroutines.delay(3000)
             notificationManager.cancel(AESEncryptionServices.NOTIFICATION_ID)

@@ -78,6 +78,22 @@ class FileExplorerFragment : Fragment() {
             }
         }
     }
+    private val encryptionCompleteReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (isAdded) {
+                Toast.makeText(requireContext(), "Encryption complete", Toast.LENGTH_SHORT).show()
+                loadFiles(currentPath)
+            }
+        }
+    }
+    private val decryptionCompleteReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (isAdded) {
+                Toast.makeText(requireContext(), "Decryption complete", Toast.LENGTH_SHORT).show()
+                loadFiles(currentPath)
+            }
+        }
+    }
 
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -125,15 +141,21 @@ class FileExplorerFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        // Register the receiver when the fragment starts
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
             pasteCompleteReceiver,
             IntentFilter("shivam.sycodes.filefusion.PASTE_COMPLETE")
         )
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(encryptionCompleteReceiver,
+            IntentFilter("shivam.sycodes.filefusion.ENCRYPTION_COMPLETE"))
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(decryptionCompleteReceiver,
+            IntentFilter("shivam.sycodes.filefusion.DECRYPTION_COMPLETE"))
+
     }
     override fun onStop() {
         super.onStop()
         LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(pasteCompleteReceiver)
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(encryptionCompleteReceiver)
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(decryptionCompleteReceiver)
     }
 
     override fun onCreateView(

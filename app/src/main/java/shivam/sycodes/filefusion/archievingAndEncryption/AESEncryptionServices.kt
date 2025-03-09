@@ -8,6 +8,7 @@ import android.os.IBinder
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -236,6 +237,10 @@ class AESEncryptionServices : Service() {
             .build()
 
         notificationManager.notify(NOTIFICATION_ID, notification)
+
+        val intent = Intent("shivam.sycodes.filefusion.ENCRYPTION_COMPLETE")
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+
         CoroutineScope(Dispatchers.Main).launch {
             kotlinx.coroutines.delay(3000)
             notificationManager.cancel(NOTIFICATION_ID)
