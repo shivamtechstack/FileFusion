@@ -1,13 +1,17 @@
 package shivam.sycodes.filefusion.service
 
+import android.Manifest
+import android.R
 import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
+import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,14 +19,14 @@ import java.io.File
 
 class PasteService : Service() {
 
-    private val notificationId = 1
-    private lateinit var filesToPaste: List<File>
+    private val notificationId = 3
+    private lateinit var fileToPaste: File
     private var destinationPath: String? = null
     private var isCutOperation = false
-    private var totalCopied: Long = 0L
-    private var totalSize: Long = 0L
     private val binder = LocalBinder()
     private var intentData: Intent? = null
+    private var totalBytes: Long = 0
+    private var copiedBytes: Long = 0
 
     inner class LocalBinder : Binder() {
         fun getService(): PasteService = this@PasteService
@@ -32,71 +36,63 @@ class PasteService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         this.intentData = intent
-        val filePaths =
-            intent?.getStringArrayExtra("FILES_TO_PASTE")?.toList() ?: return START_NOT_STICKY
+
+        val filePath = intent?.getStringExtra("FILE_TO_PASTE") ?: return START_NOT_STICKY
         destinationPath = intent.getStringExtra("DESTINATION_PATH")
         isCutOperation = intent.getBooleanExtra("IS_CUT_OPERATION", false)
-        filesToPaste = filePaths.map { File(it) }
+        fileToPaste = File(filePath)
 
-        startForeground(notificationId, createNotification("Preparing paste operation...", 0, 0))
+        startForeground(notificationId, createInitialNotification())
 
         CoroutineScope(Dispatchers.IO).launch {
-            pasteFiles()
+            pasteFile()
             stopSelf()
         }
         return START_STICKY
     }
 
-    private suspend fun pasteFiles() {
+    private suspend fun pasteFile() {
         val destinationDirectory = File(destinationPath ?: return).apply { mkdirs() }
-        totalSize = calculateTotalSize(filesToPaste)
+        val targetFile = File(destinationDirectory, fileToPaste.name)
 
-        filesToPaste.forEach { file ->
-            val targetFile = File(destinationDirectory, file.name)
-            if (isCutOperation) {
-                totalCopied += moveFileOrDirectory(file, targetFile)
-            } else {
-                totalCopied += copyFileOrDirectory(
-                    file,
-                    targetFile,
-                    totalSize
-                ) { currentFile, copiedBytes ->
-                    updateNotification(
-                        currentFile.name,
-                        currentFile.length(),
-                        copiedBytes,
-                        totalCopied,
-                        totalSize
-                    )
-                }
-            }
+        totalBytes = getTotalBytes(fileToPaste)
+        copiedBytes = 0
+
+        if (isCutOperation) {
+            moveFileOrDirectory(fileToPaste, targetFile)
+        } else {
+            copyFileOrDirectory(fileToPaste, targetFile)
         }
         completeNotification()
     }
 
-    private fun createNotification(message: String, progress: Int, max: Int): Notification {
+    private fun getTotalBytes(file: File): Long {
+        return if (file.isDirectory) {
+            file.walkBottomUp().sumOf { it.length() }
+        } else {
+            file.length()
+        }
+    }
+
+    private fun createInitialNotification(): Notification {
         return NotificationCompat.Builder(this, "fileoperation")
-            .setContentTitle("Paste Operation")
-            .setContentText(message)
+            .setContentTitle("Pasting File")
+            .setContentText("Pasting ${fileToPaste.name} to $destinationPath")
             .setSmallIcon(android.R.drawable.ic_menu_save)
-            .setProgress(max, progress, false)
             .setOngoing(true)
+            .setProgress(100, 0, false)
             .build()
     }
 
-    @SuppressLint("MissingPermission")
-    private fun updateNotification(
-        currentFileName: String,
-        currentFileSize: Long,
-        copiedBytes: Long,
-        totalCopied: Long,
-        totalSize: Long
-    ) {
+    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
+    private fun updateNotificationProgress(progress: Int) {
         val notification = NotificationCompat.Builder(this, "fileoperation")
-            .setContentTitle("Pasting: $currentFileName")
-            .setContentText("Progress: ${formatSize(totalCopied)} / ${formatSize(totalSize)}")
-            .setSmallIcon(android.R.drawable.ic_menu_save)
-            .setProgress(100, ((totalCopied.toDouble() / totalSize) * 100).toInt(), false)
+            .setContentTitle("Pasting File")
+            .setContentText("Pasting ${fileToPaste.name} to $destinationPath")
+            .setSmallIcon(R.drawable.ic_menu_save)
+            .setOngoing(true)
+            .setOnlyAlertOnce(true)
+            .setProgress(100, progress, false)
             .build()
         NotificationManagerCompat.from(this).notify(notificationId, notification)
     }
@@ -105,49 +101,30 @@ class PasteService : Service() {
     private fun completeNotification() {
         val notification = NotificationCompat.Builder(this, "fileoperation")
             .setContentTitle("Paste Complete")
-            .setContentText("All files pasted successfully.")
+            .setContentText("${fileToPaste.name} pasted successfully.")
             .setSmallIcon(android.R.drawable.ic_menu_save)
             .setOngoing(false)
+            .setProgress(0, 0, false)
             .build()
         NotificationManagerCompat.from(this).notify(notificationId, notification)
-    }
 
-    private fun formatSize(bytes: Long): String {
-        val kb = 1024L
-        val mb = kb * 1024
-        val gb = mb * 1024
+        val intent = Intent("shivam.sycodes.filefusion.PASTE_COMPLETE")
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
 
-        return when {
-            bytes >= gb -> String.format("%.2f GB", bytes / gb.toFloat())
-            bytes >= mb -> String.format("%.2f MB", bytes / mb.toFloat())
-            bytes >= kb -> String.format("%.2f KB", bytes / kb.toFloat())
-            else -> "$bytes Bytes"
+        CoroutineScope(Dispatchers.Main).launch {
+            kotlinx.coroutines.delay(5000)
+            NotificationManagerCompat.from(this@PasteService).cancel(notificationId)
         }
     }
 
-    private fun calculateTotalSize(files: List<File>): Long {
-        return files.sumOf { file ->
-            if (file.isDirectory) {
-                file.walkTopDown().filter { it.isFile }.sumOf { it.length() }
-            } else {
-                file.length()
-            }
-        }
-    }
-
-    private fun copyFileOrDirectory(
-        source: File,
-        destination: File,
-        totalSize: Long,
-        onProgress: (File, Long) -> Unit
-    ): Long {
-        var copiedBytes = 0L
+    @SuppressLint("MissingPermission")
+    private fun copyFileOrDirectory(source: File, destination: File) {
         val buffer = ByteArray(1024 * 128)
 
         if (source.isDirectory) {
             destination.mkdirs()
             source.listFiles()?.forEach { child ->
-                copiedBytes += copyFileOrDirectory(child, File(destination, child.name), totalSize, onProgress)
+                copyFileOrDirectory(child, File(destination, child.name))
             }
         } else {
             source.inputStream().use { input ->
@@ -156,17 +133,16 @@ class PasteService : Service() {
                     while (bytes >= 0) {
                         output.write(buffer, 0, bytes)
                         copiedBytes += bytes
-                        onProgress(source, copiedBytes)
+                        val progress = ((copiedBytes * 100) / totalBytes).toInt()
+                        updateNotificationProgress(progress)
                         bytes = input.read(buffer)
                     }
                 }
             }
         }
-        return copiedBytes
     }
 
-    private fun moveFileOrDirectory(source: File, destination: File): Long {
-        val size = source.length()
+    private fun moveFileOrDirectory(source: File, destination: File) {
         if (source.isDirectory) {
             destination.mkdirs()
             source.listFiles()?.forEach { child ->
@@ -176,7 +152,6 @@ class PasteService : Service() {
         } else {
             source.renameTo(destination)
         }
-        return size
     }
 }
 

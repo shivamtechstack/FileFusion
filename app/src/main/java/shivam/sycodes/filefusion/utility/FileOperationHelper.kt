@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
@@ -155,23 +157,37 @@ class FileOperationHelper(private val context: Context) {
     }
 
     fun pasteOperation(currentPath: String?, filesToPaste: List<File>?, isCutOperation: Boolean) {
-
         if (filesToPaste.isNullOrEmpty()) {
             Log.e("PasteOperation", "No files to paste")
             return
         }
+        Log.d("Received in pasteOperation", filesToPaste.toString() + " (" + filesToPaste.size + " files)")
 
         currentPath?.let { destinationPath ->
-            filesToPaste.forEach { file ->
-                val destinationFile = File(destinationPath, file.name)
+            // Create a temporary mutable list from the selected files.
+            val tempFilesToPaste = filesToPaste.toMutableList()
 
-                if (destinationPath == file.absolutePath){
-                    Toast.makeText(context, "Cannot paste on same location", Toast.LENGTH_SHORT).show()
+            fun processNextFile() {
+                // If no more files remain, clear the global state and finish.
+                if (tempFilesToPaste.isEmpty()) {
+                    fileOperationViewModel.filesToCopyorCut = null
+                    return
                 }
 
-                if (destinationFile.exists()) {
-                    Log.d("PasteOperation", "Conflict detected for file: ${file.name}")
+                // Remove the first file from the list.
+                val file = tempFilesToPaste.removeAt(0)
+                val destinationFile = File(destinationPath, file.name)
 
+                // Check if trying to paste in the same folder.
+                if (destinationPath == file.parent) {
+                    Toast.makeText(context, "Cannot paste in same location", Toast.LENGTH_SHORT).show()
+                    processNextFile() // Skip this file and continue.
+                    return
+                }
+
+                // If a conflict exists, show a dialog and then, in the dialog's click handler,
+                // call processNextFile() after starting the paste service.
+                if (destinationFile.exists()) {
                     val alertDialog = AlertDialog.Builder(context)
                     val dialogView = LayoutInflater.from(context).inflate(R.layout.fileconflictdialog, null)
                     alertDialog.setView(dialogView)
@@ -179,53 +195,58 @@ class FileOperationHelper(private val context: Context) {
                     val dialog = alertDialog.create()
                     dialog.show()
 
+                    // Find dialog views.
                     val cancelButton = dialogView.findViewById<Button>(R.id.fileconflict_cancel_button)
                     val keepBoth = dialogView.findViewById<Button>(R.id.keepboth_button)
                     val keepNew = dialogView.findViewById<LinearLayout>(R.id.keep_new_file)
                     val keepOld = dialogView.findViewById<LinearLayout>(R.id.keep_old_file)
-                    val sourceFileImage = dialogView.findViewById<ImageView>(R.id.source_file_preview)
-                    val destinationFileImage = dialogView.findViewById<ImageView>(R.id.destination_file_preview)
-
                     val sourceFileName = dialogView.findViewById<TextView>(R.id.source_file_name)
                     val destinationFileName = dialogView.findViewById<TextView>(R.id.destination_file_name)
-
                     val sourceFileSize = dialogView.findViewById<TextView>(R.id.source_file_size)
                     val destinationFileSize = dialogView.findViewById<TextView>(R.id.destination_file_size)
 
                     sourceFileName.text = file.name
                     destinationFileName.text = destinationFile.name
-
                     sourceFileSize.text = convertFileSize(file.length())
                     destinationFileSize.text = convertFileSize(destinationFile.length())
 
+                    // "Keep Both" option: paste with a new name.
                     keepBoth.setOnClickListener {
                         val newFileName = generateNewFileName(destinationPath, file.name)
                         val newFile = File(destinationPath, newFileName)
-                        startPasteService(file, newFile.absolutePath, isCutOperation)
-                        fileOperationViewModel.filesToCopyorCut = null
-                        dialog.dismiss()
+                        startPasteService(file, newFile.absolutePath, isCutOperation) {
+                            dialog.dismiss()
+                            processNextFile()
+                        }
                     }
-
+                    // "Keep New" option: replace the destination file.
+                    keepNew.setOnClickListener {
+                        destinationFile.delete()
+                        startPasteService(file, destinationPath, isCutOperation) {
+                            dialog.dismiss()
+                            processNextFile()
+                        }
+                    }
+                    // "Cancel" option: simply dismiss the dialog and skip this file.
                     cancelButton.setOnClickListener {
                         dialog.dismiss()
+                        processNextFile()
                     }
-                    keepNew.setOnClickListener {
-                        startPasteService(file, destinationPath, isCutOperation)
-                        destinationFile.delete()
-                        fileOperationViewModel.filesToCopyorCut= null
-                        dialog.dismiss()
-                    }
+                    // "Keep Old" option: skip pasting this file.
                     keepOld.setOnClickListener {
-                        fileOperationViewModel.filesToCopyorCut = null
                         dialog.dismiss()
+                        processNextFile()
                     }
-
                 } else {
-                    startPasteService(file, destinationPath, isCutOperation)
-                    fileOperationViewModel.filesToCopyorCut= null
+                    // No conflict: start paste service and then process next file upon completion.
+                    startPasteService(file, destinationPath, isCutOperation) {
+                        processNextFile()
+                    }
                 }
             }
-            fileOperationViewModel.filesToCopyorCut = null
+
+            // Begin processing with the first file.
+            processNextFile()
         }
     }
 
@@ -266,14 +287,22 @@ class FileOperationHelper(private val context: Context) {
     }
 
 
-    private fun startPasteService(file: File, destinationPath: String, isCutOperation: Boolean) {
+    private fun startPasteService(
+        file: File,
+        destinationPath: String,
+        isCutOperation: Boolean,
+        onComplete: () -> Unit
+    ) {
         val intent = Intent(context, PasteService::class.java).apply {
-            putExtra("FILES_TO_PASTE", arrayOf(file.absolutePath))
+            putExtra("FILE_TO_PASTE", file.absolutePath)
             putExtra("DESTINATION_PATH", destinationPath)
             putExtra("IS_CUT_OPERATION", isCutOperation)
         }
         ContextCompat.startForegroundService(context, intent)
+
+        Handler(Looper.getMainLooper()).postDelayed({ onComplete() }, 2000)
     }
+
 
     private fun convertFileSize(sizeInBytes: Long): String {
         val kb = 1024

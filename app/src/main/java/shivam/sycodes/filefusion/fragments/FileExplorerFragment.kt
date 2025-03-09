@@ -1,10 +1,14 @@
 package shivam.sycodes.filefusion.fragments
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +24,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.CoroutineScope
@@ -65,6 +70,15 @@ class FileExplorerFragment : Fragment() {
     private lateinit var pathDisplayHelper : PathDisplayHelper
     private var isFromCategory: Boolean = false
 
+    private val pasteCompleteReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (isAdded) {
+                Toast.makeText(requireContext(), "Paste complete", Toast.LENGTH_SHORT).show()
+                loadFiles(currentPath)
+            }
+        }
+    }
+
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
@@ -108,6 +122,20 @@ class FileExplorerFragment : Fragment() {
             }
         })
     }
+
+    override fun onStart() {
+        super.onStart()
+        // Register the receiver when the fragment starts
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
+            pasteCompleteReceiver,
+            IntentFilter("shivam.sycodes.filefusion.PASTE_COMPLETE")
+        )
+    }
+    override fun onStop() {
+        super.onStop()
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(pasteCompleteReceiver)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -421,7 +449,9 @@ class FileExplorerFragment : Fragment() {
         }
         binding.copyButton.setOnClickListener {
             val selectedFilesCopy = fileAdapter.getSelectedFiles()
+            Log.d("FileSelection", "Copy selected ${selectedFilesCopy.size} file(s): ${selectedFilesCopy.joinToString { it.name }}")
             fileOperationViewModel.filesToCopyorCut = selectedFilesCopy
+            Log.d("FileSelection", "Global list now has ${fileOperationViewModel.filesToCopyorCut?.size} file(s)")
             fileOperationViewModel.isCutOperation = false
             showPasteLayout()
         }
@@ -517,7 +547,9 @@ class FileExplorerFragment : Fragment() {
         binding.pasteButton.setOnClickListener {
             val filesToPaste = fileOperationViewModel.filesToCopyorCut
             val isCutOperation = fileOperationViewModel.isCutOperation
+
             permissionHelper.ensureNotificationSetup(requestNotificationPermissionLauncher)
+
             fileOperationHelper.pasteOperation(currentPath,filesToPaste,isCutOperation)
 
             binding.pastelayout.visibility = View.GONE
