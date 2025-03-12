@@ -14,7 +14,7 @@ class PrivacyPolicy(private val context: Context) {
         val textView = TextView(context).apply {
             text = """
                 Privacy Policy for FileFusion
-                Effective Date: [Insert Date]
+                Effective Date: 12-03-2025
 
                 Welcome to FileFusion! Your privacy is important to us, and we want to ensure you have a clear understanding of how our app handles data and the features it provides.
 

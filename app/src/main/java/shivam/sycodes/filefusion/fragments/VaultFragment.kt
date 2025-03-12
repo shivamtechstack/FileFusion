@@ -213,4 +213,10 @@ class VaultFragment : Fragment(){
         binding?.vaultBottomPopUpNavigation?.visibility = View.GONE
     }
 
+    override fun onDestroy() {
+        _binding = null
+
+        super.onDestroy()
+    }
+
 }

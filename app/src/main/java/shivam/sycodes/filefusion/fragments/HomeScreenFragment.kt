@@ -62,12 +62,14 @@ class HomeScreenFragment : Fragment() {
             binding.ExternalStorageCardview.visibility = View.GONE
         }else{
             binding.ExternalStorageCardview.visibility = View.VISIBLE
+            updateStorageDetails(sdCardPath,binding.sdcardstorageProgressBar,binding.sdcardprogressPercentage,binding.sdcardstorageAvailable)
         }
 
         if (usbPath == null){
             binding.usbStorageCardview.visibility = View.GONE
         }else{
             binding.usbStorageCardview.visibility = View.VISIBLE
+            updateStorageDetails(usbPath,binding.usbstorageProgressBar,binding.usbprogressPercentage,binding.usbstorageAvailable)
         }
 
         binding.InternalStorageCardview.setOnClickListener {
@@ -76,7 +78,6 @@ class HomeScreenFragment : Fragment() {
         binding.ExternalStorageCardview.setOnClickListener {
             sdCardPath?.let { path ->
                 fragment(path, null)
-                updateStorageDetails(sdCardPath,binding.sdcardstorageProgressBar,binding.sdcardprogressPercentage,binding.sdcardstorageAvailable)
             } ?: run {
                 Toast.makeText(requireContext(),"No SD Card Detected.",Toast.LENGTH_SHORT).show()
             }
@@ -84,7 +85,6 @@ class HomeScreenFragment : Fragment() {
         binding.usbStorageCardview.setOnClickListener {
             usbPath?.let { path ->
                 fragment(path,null)
-                updateStorageDetails(usbPath,binding.usbstorageProgressBar,binding.usbprogressPercentage,binding.usbstorageAvailable)
             }?: run{
                 Toast.makeText(requireContext(),"No USB Storage Detected.",Toast.LENGTH_SHORT).show()
             }
