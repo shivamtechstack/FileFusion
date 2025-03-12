@@ -8,6 +8,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
+import android.util.Log
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -142,6 +143,18 @@ class PasteService : Service() {
         }
     }
 
+//    private fun moveFileOrDirectory(source: File, destination: File) {
+//        if (source.isDirectory) {
+//            destination.mkdirs()
+//            source.listFiles()?.forEach { child ->
+//                moveFileOrDirectory(child, File(destination, child.name))
+//            }
+//            source.deleteRecursively()
+//        } else {
+//            source.renameTo(destination)
+//        }
+//    }
+
     private fun moveFileOrDirectory(source: File, destination: File) {
         if (source.isDirectory) {
             destination.mkdirs()
@@ -150,8 +163,16 @@ class PasteService : Service() {
             }
             source.deleteRecursively()
         } else {
-            source.renameTo(destination)
+            try {
+                if (!source.renameTo(destination)) {
+                    copyFileOrDirectory(source, destination)
+                    source.delete()
+                }
+            } catch (e: Exception) {
+                Log.e("MoveFile", "Failed to move file: ${source.path} -> ${destination.path}", e)
+            }
         }
     }
+
 }
 
