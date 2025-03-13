@@ -7,9 +7,9 @@ import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
 import android.graphics.drawable.Icon
+import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
@@ -22,6 +22,8 @@ import shivam.sycodes.filefusion.R
 import shivam.sycodes.filefusion.archievingAndEncryption.ArchiveDialog
 import shivam.sycodes.filefusion.archievingAndEncryption.DecryptionDialog
 import shivam.sycodes.filefusion.archievingAndEncryption.EncryptionDialog
+import shivam.sycodes.filefusion.fragments.FileExplorerFragment
+import shivam.sycodes.filefusion.fragments.FileInfoFragment
 import shivam.sycodes.filefusion.fragments.PasswordAuthentication
 import shivam.sycodes.filefusion.fragments.PasswordSetupFragment
 import shivam.sycodes.filefusion.roomdatabase.AppDatabase
@@ -30,9 +32,8 @@ import shivam.sycodes.filefusion.service.VaultService
 import shivam.sycodes.filefusion.utility.PreferencesHelper
 import shivam.sycodes.filefusion.viewModel.PasswordAuthCallBack
 import java.io.File
-import java.util.Date
 
-class BottomPopUpMenu(private val context: Context) {
+class BottomPopUpMenu(private var context1: FileExplorerFragment, private val context: Context) {
 
     fun popUpMenuBottom(
         selectedFiles: List<File>, view: View,
@@ -125,7 +126,17 @@ class BottomPopUpMenu(private val context: Context) {
                 }
                 R.id.properties -> {
                     if (selectedFiles.isNotEmpty()) {
-                        showFileProperties(selectedFiles)
+                        val filePaths = ArrayList(selectedFiles.map { it.absolutePath })
+                        val bundle = Bundle().apply {
+                            putStringArrayList("selected_file_paths", filePaths)
+                        }
+                        val fragment = FileInfoFragment()
+                        fragment.arguments = bundle
+
+                        context1.parentFragmentManager.beginTransaction()
+                            .replace(R.id.fragmentContainerView, fragment)
+                            .addToBackStack(null)
+                            .commit()
                     }
                     true
                 }
@@ -263,22 +274,6 @@ class BottomPopUpMenu(private val context: Context) {
         } else {
             Toast.makeText(context, "Shortcut creation is not supported", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun showFileProperties(files: List<File>) {
-        val properties = StringBuilder()
-        files.forEach { file ->
-            properties.append("Name: ${file.name}\n")
-            properties.append("Path: ${file.absolutePath}\n")
-            properties.append("Size: ${if (file.isDirectory) "Directory" else "${file.length()} bytes"}\n")
-            properties.append("Last Modified: ${Date(file.lastModified())}\n")
-            properties.append("\n")
-        }
-        AlertDialog.Builder(context)
-            .setTitle("File Properties")
-            .setMessage(properties.toString())
-            .setPositiveButton("OK", null)
-            .show()
     }
 
 }

@@ -63,11 +63,13 @@ class DeleteWorker(private val context: Context, workerParams: WorkerParameters)
                 .setSmallIcon(android.R.drawable.ic_menu_delete)
                 .setContentTitle(if (success) "Deleted" else "Failed to delete")
                 .setContentText("File: $fileName")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setAutoCancel(true)
+                .setOnlyAlertOnce(true)
                 .build()
 
             NotificationManagerCompat.from(context).notify(fileName.hashCode(), notification)
+
         }
     }
 

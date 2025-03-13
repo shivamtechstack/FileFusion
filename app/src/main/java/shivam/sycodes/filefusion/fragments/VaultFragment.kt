@@ -100,6 +100,7 @@ class VaultFragment : Fragment(){
 
     @SuppressLint("SetTextI18n")
     private fun popUpMenu() {
+        binding?.vaultToolBar?.visibility = View.GONE
         binding?.VaultTopPopUpNavigation?.visibility = View.VISIBLE
         binding?.vaultBottomPopUpNavigation?.visibility = View.VISIBLE
 
@@ -146,6 +147,7 @@ class VaultFragment : Fragment(){
             cancelDeleteButton.setOnClickListener {
                 deletedialog.dismiss()
             }
+            movetoTrashButton.text = "Delete"
             movetoTrashButton.setOnClickListener {
                 if (permanentDeletecheckBox.isChecked){
                     if (!permissionHelper.isNotificationPermissionGranted()){
@@ -203,6 +205,18 @@ class VaultFragment : Fragment(){
 
 
         binding?.vaultFileInfo?.setOnClickListener {
+            val selectedFiles = vaultAdapter.getSelectedFiles()
+            if (selectedFiles.isNotEmpty()) {
+                val filePaths = ArrayList(selectedFiles.map { it.absolutePath })
+                val bundle = Bundle().apply {
+                    putStringArrayList("selected_file_paths", filePaths)
+                }
+                parentFragmentManager.beginTransaction().replace(
+                    R.id.fragmentContainerView,
+                    FileInfoFragment::class.java,
+                    bundle
+                ).addToBackStack(null).commit()
+            }
 
         }
 
@@ -211,6 +225,7 @@ class VaultFragment : Fragment(){
     private fun hideOptionMenu(){
         binding?.VaultTopPopUpNavigation?.visibility = View.GONE
         binding?.vaultBottomPopUpNavigation?.visibility = View.GONE
+        binding?.vaultToolBar?.visibility = View.VISIBLE
     }
 
     override fun onDestroy() {

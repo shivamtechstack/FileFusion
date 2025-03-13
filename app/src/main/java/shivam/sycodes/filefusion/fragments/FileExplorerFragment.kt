@@ -127,7 +127,7 @@ class FileExplorerFragment : Fragment() {
         fileSharingHelper=FileSharingHelper(requireContext())
         fileRenameHelper= FileRenameHelper(requireContext())
         fileOperationHelper= FileOperationHelper(requireContext())
-        bottomPopUpMenu= BottomPopUpMenu(requireContext())
+        bottomPopUpMenu= BottomPopUpMenu(this,requireContext())
         createFileFolderClass = CreateFileAndFolder(requireContext())
         fileOpener = FileOpener(requireContext())
         permissionHelper = PermissionHelper(requireContext())
