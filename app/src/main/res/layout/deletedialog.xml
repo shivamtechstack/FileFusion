@@ -22,8 +22,17 @@
         android:layout_marginTop="15dp"
         android:fontFamily="@font/source_sans_pro_semibold"
         android:text="File"
-        android:textSize="18sp"
+        android:textSize="14sp"
         tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/deleting_file_names"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="6"
+        android:layout_marginTop="7dp"
+        android:fontFamily="@font/source_sans_pro_semibold"
+        android:textSize="14sp"/>
 
     <LinearLayout
         android:id="@+id/delete_permanently_checkbox_layout"

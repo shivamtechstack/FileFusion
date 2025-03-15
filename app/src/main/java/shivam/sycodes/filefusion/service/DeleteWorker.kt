@@ -30,7 +30,7 @@ class DeleteWorker(private val context: Context, workerParams: WorkerParameters)
         filesToDelete.forEach {
             val file = File(it)
             val deleted = if (file.isDirectory) deleteDirectory(file) else file.delete()
-            updateNotification(file.name, deleted)
+            //updateNotification(file.name, deleted)
             if (!deleted){
                 success = false
             }

@@ -8,6 +8,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -27,6 +29,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.search.SearchBar
+import com.google.android.material.search.SearchView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -180,6 +184,8 @@ class FileExplorerFragment : Fragment() {
         } else {
             binding.pastelayout.visibility = View.GONE
         }
+
+
         val category = arguments?.getString(ARG_CATEGORY)
         when(category){
             "recent" -> loadFilesFromStorage(this::getRecentFiles)
@@ -191,6 +197,7 @@ class FileExplorerFragment : Fragment() {
             "bookmarks"-> loadBookmarks()
             else -> loadFiles(currentPath)
         }
+
         binding.pasteClear.setOnClickListener {
             binding.pastelayout.visibility = View.GONE
             fileOperationViewModel.filesToCopyorCut = null
@@ -226,6 +233,7 @@ class FileExplorerFragment : Fragment() {
         val fileList = mutableListOf<File>()
         getFilesMethod(Environment.getExternalStorageDirectory(), fileList)
         fileList.sortByDescending { it.lastModified() }
+
         displayFilesInRecyclerView(fileList)
     }
 
@@ -276,7 +284,6 @@ class FileExplorerFragment : Fragment() {
         val oneWeekInMillis = 7 * 24 * 60 * 60 * 1000
         val recentTimeLimit = System.currentTimeMillis() - oneWeekInMillis
         getFilesWithCondition(directory, fileList) { !it.isHidden && it.lastModified() >= recentTimeLimit }
-
         fileList.sortByDescending { it.lastModified() }
     }
 
@@ -330,6 +337,7 @@ class FileExplorerFragment : Fragment() {
                 }
 
                 val sortedFiles = sortFiles(visibleFiles)
+
                 if (sortedFiles.isNotEmpty()) {
                     fileAdapter = FileAdapter(requireContext(),sortedFiles, onItemClick = { selectedFile ->
                         if (selectedFile.isDirectory) {
@@ -495,11 +503,13 @@ class FileExplorerFragment : Fragment() {
             deleteAlertDialog.setView(deleteDialogView)
 
             val filesizeTextview= deleteDialogView.findViewById<TextView>(R.id.deleting_file_size)
+            val filesNamesTextview= deleteDialogView.findViewById<TextView>(R.id.deleting_file_names)
             val permanentDeletecheckBox=deleteDialogView.findViewById<CheckBox>(R.id.delete_permanently_checkbox)
             val cancelDeleteButton = deleteDialogView.findViewById<Button>(R.id.delete_operation_cancel_button)
             val movetoTrashButton = deleteDialogView.findViewById<Button>(R.id.moveto_trash_button)
 
-            filesizeTextview.text=fileAdapter.getSelectedFiles().size.toString()
+            filesizeTextview.text="No. of file/Folder: ${fileAdapter.getSelectedFiles().size.toString()}"
+            filesNamesTextview.text = "Name : ${fileAdapter.getSelectedFiles().joinToString { it.name }}"
 
             val deletedialog = deleteAlertDialog.create()
             val selectedFiles = fileAdapter.getSelectedFiles()
@@ -702,6 +712,7 @@ class FileExplorerFragment : Fragment() {
             }
         }
     }
+
 
     private fun hideNavigationBars(){
         binding.bottomNavigation.visibility=View.GONE

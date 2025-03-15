@@ -7,40 +7,50 @@
     android:orientation="vertical"
     tools:context=".fragments.FileExplorerFragment">
 
-<com.google.android.material.appbar.MaterialToolbar
-    android:id="@+id/toolbar"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:popupTheme="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary">
+   <com.google.android.material.appbar.MaterialToolbar
+       android:id="@+id/toolbar"
+       android:layout_width="match_parent"
+       android:layout_height="80dp"
+       app:popupTheme="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary">
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_vertical">
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal"
+          android:gravity="center_vertical">
 
-   <com.google.android.material.search.SearchBar
-       android:id="@+id/search_view"
-       android:layout_width="0dp"
-       android:layout_height="40dp"
-       android:layout_gravity="top"
-       android:hint="Search files...."
-       android:layout_weight="1"
-       tools:ignore="HardcodedText" />
+         <androidx.coordinatorlayout.widget.CoordinatorLayout
+             android:layout_width="0dp"
+             android:layout_weight="1"
+             android:layout_height="wrap_content">
 
-   <ImageView
-       android:id="@+id/toolbar_popup_menu"
-       android:layout_width="30dp"
-       android:layout_height="match_parent"
-       android:layout_gravity="top"
-       android:layout_marginEnd="8dp"
-       android:contentDescription="toolbar menu button"
-       android:src="@drawable/baseline_more_vert_24"
-       app:tint="@color/iconcolor"
-       tools:ignore="HardcodedText" />
+            <com.google.android.material.search.SearchBar
+                android:id="@+id/search_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Search files..."
+                tools:ignore="HardcodedText" />
 
-</LinearLayout>
+            <com.google.android.material.search.SearchView
+                android:id="@+id/search_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-</com.google.android.material.appbar.MaterialToolbar>
+         <ImageView
+             android:id="@+id/toolbar_popup_menu"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginStart="8dp"
+             android:contentDescription="toolbar menu button"
+             android:src="@drawable/baseline_more_vert_24"
+             app:tint="@color/iconcolor"
+             android:padding="8dp"/>
+
+      </LinearLayout>
+
+   </com.google.android.material.appbar.MaterialToolbar>
 
    <HorizontalScrollView
        android:layout_width="match_parent"
