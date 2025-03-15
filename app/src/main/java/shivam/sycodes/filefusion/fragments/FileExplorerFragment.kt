@@ -502,6 +502,20 @@ class FileExplorerFragment : Fragment() {
             filesizeTextview.text=fileAdapter.getSelectedFiles().size.toString()
 
             val deletedialog = deleteAlertDialog.create()
+            val selectedFiles = fileAdapter.getSelectedFiles()
+
+            val isExternalStorage = selectedFiles.any { filePath ->
+                filePath.startsWith("/storage/") && !filePath.startsWith("/storage/emulated/0/")
+            }
+
+            if (isExternalStorage) {
+                // If the file is from SD card or USB, force permanent delete
+                permanentDeletecheckBox.isChecked = true
+                permanentDeletecheckBox.isEnabled = false
+                movetoTrashButton.text = "Delete"
+            } else {
+                permanentDeletecheckBox.isEnabled = true
+            }
 
             permanentDeletecheckBox.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
