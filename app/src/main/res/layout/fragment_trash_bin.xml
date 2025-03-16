@@ -3,39 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:layout_margin="12dp"
     tools:context=".fragments.TrashBinFragment">
 
-    <LinearLayout
+    <com.google.android.material.appbar.MaterialToolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical">
-
-        <ImageView
-            android:id="@+id/trashBin_backButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="15dp"
-            android:tint="@color/blackwhite"
-            android:src="@drawable/baseline_arrow_back_24"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/poppins_semibold"
-        android:text="TrashBin"
-        android:textColor="@color/blackwhite"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        tools:ignore="HardcodedText" />
-
-    </LinearLayout>
+        android:background="@color/toolBarColor"
+        app:title="Trash Bin" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/trashBinRecyclerView"
         android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="3dp"
         android:layout_height="match_parent"/>
 
 </LinearLayout>

@@ -17,37 +17,11 @@
         android:visibility="gone"/>
 
 
-    <androidx.cardview.widget.CardView
-    android:layout_width="match_parent"
-        android:layout_gravity="center_vertical"
-    android:layout_height="50dp">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="9dp">
-
-    <ImageView
-        android:id="@+id/settings_backArrow"
-        android:layout_width="wrap_content"
-        android:tint="@color/blackwhite"
-        android:layout_height="match_parent"
-        android:src="@drawable/baseline_arrow_back_24"
-        android:layout_marginEnd="13dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="bottom"
-            android:fontFamily="@font/poppins_medium"
-            android:text="Settings"
-            android:textColor="@color/blackwhite"
-            android:textSize="19sp"/>
-
-    </LinearLayout>
-</androidx.cardview.widget.CardView>
+   <com.google.android.material.appbar.MaterialToolbar
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:background="@color/toolBarColor"
+       app:title="Settings"/>
 
     <GridLayout
         android:layout_width="match_parent"

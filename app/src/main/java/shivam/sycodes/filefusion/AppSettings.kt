@@ -38,9 +38,6 @@ class AppSettings : AppCompatActivity() {
                 .addToBackStack(null)
                 .commit()
         }
-        binding.settingsBackArrow.setOnClickListener {
-            onBackPressed()
-        }
         binding.privacyPolicyButton.setOnClickListener {
             PrivacyPolicy(this).showPolicyDialog()
         }
