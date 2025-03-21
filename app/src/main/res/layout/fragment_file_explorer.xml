@@ -27,6 +27,7 @@
             <com.google.android.material.search.SearchBar
                 android:id="@+id/search_bar"
                 android:layout_width="match_parent"
+                android:layout_gravity="center_vertical"
                 android:layout_height="wrap_content"
                 android:hint="Search files..."
                 tools:ignore="HardcodedText" />
@@ -34,8 +35,8 @@
             <com.google.android.material.search.SearchView
                 android:id="@+id/search_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+                android:layout_gravity="center_vertical"
+                android:layout_height="wrap_content" />
          </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
          <ImageView

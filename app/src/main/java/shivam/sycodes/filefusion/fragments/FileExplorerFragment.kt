@@ -136,6 +136,7 @@ class FileExplorerFragment : Fragment() {
         fileOpener = FileOpener(requireContext())
         permissionHelper = PermissionHelper(requireContext())
 
+
         requireActivity().onBackPressedDispatcher.addCallback(this,object : OnBackPressedCallback(true){
             override fun handleOnBackPressed() {
                 handleBackPress()
@@ -208,10 +209,52 @@ class FileExplorerFragment : Fragment() {
         binding.floatingActionButton.setOnClickListener {
             toogleFabMenu()
         }
+        binding.searchBar.setOnClickListener {
+            binding.searchView.visibility = View.VISIBLE
+            binding.searchView.show()
+        }
+        binding.searchView.editText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(query: CharSequence?, start: Int, before: Int, count: Int) {
+                if (!query.isNullOrEmpty()) {
+                    performGlobalSearch(query.toString())
+                } else {
+                    loadFiles(currentPath)
+                }
+            }
+        })
+
         popUpMenuTop()
 
 
         return binding.root
+    }
+
+    private fun performGlobalSearch(query: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val allFiles = mutableListOf<File>()
+            searchFiles(Environment.getExternalStorageDirectory(), allFiles, query)
+
+            withContext(Dispatchers.Main) {
+                displayFilesInRecyclerView(allFiles)
+            }
+        }
+    }
+
+    private fun searchFiles(directory: File, resultList: MutableList<File>, query: String) {
+        if (directory.isDirectory) {
+            directory.listFiles()?.forEach { file ->
+                if (file.name.contains(query, ignoreCase = true)) {
+                    resultList.add(file)
+                }
+                if (file.isDirectory) {
+                    searchFiles(file, resultList, query)
+                }
+            }
+        }
     }
 
     private fun loadBookmarks(){
@@ -306,7 +349,16 @@ class FileExplorerFragment : Fragment() {
 
     private fun displayFilesInRecyclerView(filesList: List<File>) {
         if (filesList.isNotEmpty()) {
-            fileAdapter = FileAdapter(requireContext(), filesList, onItemClick = { fileOpener.openFile(it) }, onItemLongClick = { bottomNavigation() })
+            fileAdapter = FileAdapter(requireContext(), filesList,
+                onItemClick = { file ->
+                    if (file.isDirectory) {
+                        currentPath = file.absolutePath
+                        binding.searchView.setText("")
+                        loadFiles(currentPath)
+                    } else {
+                        fileOpener.openFile(file)
+                    } },
+                onItemLongClick = { bottomNavigation() })
             showRecyclerView()
             binding.RecyclerViewFileExplorer.adapter = fileAdapter
         } else {
