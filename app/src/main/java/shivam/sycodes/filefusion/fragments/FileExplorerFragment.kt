@@ -24,13 +24,12 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.search.SearchBar
-import com.google.android.material.search.SearchView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -209,21 +208,20 @@ class FileExplorerFragment : Fragment() {
         binding.floatingActionButton.setOnClickListener {
             toogleFabMenu()
         }
-        binding.searchBar.setOnClickListener {
-            binding.searchView.visibility = View.VISIBLE
-            binding.searchView.show()
-        }
-        binding.searchView.editText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let { performGlobalSearch(it) }
+                return true
+            }
 
-            override fun onTextChanged(query: CharSequence?, start: Int, before: Int, count: Int) {
-                if (!query.isNullOrEmpty()) {
-                    performGlobalSearch(query.toString())
-                } else {
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText.isNullOrBlank()) {
                     loadFiles(currentPath)
+                } else {
+                    performGlobalSearch(newText)
                 }
+                return true
             }
         })
 
@@ -353,7 +351,7 @@ class FileExplorerFragment : Fragment() {
                 onItemClick = { file ->
                     if (file.isDirectory) {
                         currentPath = file.absolutePath
-                        binding.searchView.setText("")
+                        binding.searchView.setQuery("",false)
                         loadFiles(currentPath)
                     } else {
                         fileOpener.openFile(file)

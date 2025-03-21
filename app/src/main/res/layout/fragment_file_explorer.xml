@@ -11,39 +11,33 @@
        android:id="@+id/toolbar"
        android:layout_width="match_parent"
        android:layout_height="80dp"
+       app:title="FileFusion"
        app:popupTheme="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary">
 
       <LinearLayout
-          android:layout_width="match_parent"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_gravity="end"
           android:orientation="horizontal"
-          android:gravity="center_vertical">
+          android:gravity="end">
 
-         <androidx.coordinatorlayout.widget.CoordinatorLayout
-             android:layout_width="0dp"
-             android:layout_weight="1"
-             android:layout_height="wrap_content">
-
-            <com.google.android.material.search.SearchBar
-                android:id="@+id/search_bar"
-                android:layout_width="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_height="wrap_content"
-                android:hint="Search files..."
-                tools:ignore="HardcodedText" />
-
-            <com.google.android.material.search.SearchView
-                android:id="@+id/search_view"
-                android:layout_width="match_parent"
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchView"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:layout_width="0dp"
+                app:iconifiedByDefault="true"
+                app:queryHint="search.."
                 android:layout_gravity="center_vertical"
                 android:layout_height="wrap_content" />
-         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
          <ImageView
              android:id="@+id/toolbar_popup_menu"
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
-             android:layout_marginStart="8dp"
+             android:layout_marginStart="5dp"
+             android:layout_gravity="center_vertical"
+             android:layout_marginEnd="8dp"
              android:contentDescription="toolbar menu button"
              android:src="@drawable/baseline_more_vert_24"
              app:tint="@color/iconcolor"
