@@ -9,6 +9,7 @@ import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -35,6 +36,7 @@ import java.util.Date
 class FileOperationHelper(private val context: Context) {
 
     private val fileOperationViewModel = FileOperationViewModel()
+    var rememberedChoice: String? = null
 
     private fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -163,11 +165,9 @@ class FileOperationHelper(private val context: Context) {
         Log.d("Received in pasteOperation", filesToPaste.toString() + " (" + filesToPaste.size + " files)")
 
         currentPath?.let { destinationPath ->
-
             val tempFilesToPaste = filesToPaste.toMutableList()
 
             fun processNextFile() {
-
                 if (tempFilesToPaste.isEmpty()) {
                     fileOperationViewModel.filesToCopyorCut = null
                     return
@@ -183,6 +183,11 @@ class FileOperationHelper(private val context: Context) {
                 }
 
                 if (destinationFile.exists()) {
+                    if (rememberedChoice != null) {
+                        applyRememberedChoice(rememberedChoice!!, file, destinationFile, destinationPath, isCutOperation, ::processNextFile)
+                        return
+                    }
+
                     val alertDialog = AlertDialog.Builder(context)
                     val dialogView = LayoutInflater.from(context).inflate(R.layout.fileconflictdialog, null)
                     alertDialog.setView(dialogView)
@@ -198,13 +203,21 @@ class FileOperationHelper(private val context: Context) {
                     val destinationFileName = dialogView.findViewById<TextView>(R.id.destination_file_name)
                     val sourceFileSize = dialogView.findViewById<TextView>(R.id.source_file_size)
                     val destinationFileSize = dialogView.findViewById<TextView>(R.id.destination_file_size)
+                    val rememberChoiceCheckbox = dialogView.findViewById<CheckBox>(R.id.choice_remember_checkBox)
 
                     sourceFileName.text = file.name
                     destinationFileName.text = destinationFile.name
                     sourceFileSize.text = convertFileSize(file.length())
                     destinationFileSize.text = convertFileSize(destinationFile.length())
 
+                    fun rememberChoice(choice: String) {
+                        if (rememberChoiceCheckbox.isChecked) {
+                            rememberedChoice = choice
+                        }
+                    }
+
                     keepBoth.setOnClickListener {
+                        rememberChoice("keepBoth")
                         val newFileName = generateNewFileName(destinationPath, file.name)
                         val newFile = File(destinationPath, newFileName)
                         startPasteService(file, newFile.absolutePath, isCutOperation) {
@@ -214,6 +227,7 @@ class FileOperationHelper(private val context: Context) {
                     }
 
                     keepNew.setOnClickListener {
+                        rememberChoice("keepNew")
                         destinationFile.delete()
                         startPasteService(file, destinationPath, isCutOperation) {
                             dialog.dismiss()
@@ -222,16 +236,17 @@ class FileOperationHelper(private val context: Context) {
                     }
 
                     cancelButton.setOnClickListener {
+                        rememberChoice("cancel")
                         dialog.dismiss()
                         processNextFile()
                     }
 
                     keepOld.setOnClickListener {
+                        rememberChoice("keepOld")
                         dialog.dismiss()
                         processNextFile()
                     }
                 } else {
-
                     startPasteService(file, destinationPath, isCutOperation) {
                         processNextFile()
                     }
@@ -239,6 +254,37 @@ class FileOperationHelper(private val context: Context) {
             }
 
             processNextFile()
+        }
+    }
+
+    fun applyRememberedChoice(
+        choice: String,
+        file: File,
+        destinationFile: File,
+        destinationPath: String,
+        isCutOperation: Boolean,
+        processNextFile: () -> Unit
+    ) {
+        when (choice) {
+            "keepBoth" -> {
+                val newFileName = generateNewFileName(destinationPath, file.name)
+                val newFile = File(destinationPath, newFileName)
+                startPasteService(file, newFile.absolutePath, isCutOperation) {
+                    processNextFile()
+                }
+            }
+            "keepNew" -> {
+                destinationFile.delete()
+                startPasteService(file, destinationPath, isCutOperation) {
+                    processNextFile()
+                }
+            }
+            "cancel" -> {
+                processNextFile()
+            }
+            "keepOld" -> {
+                processNextFile()
+            }
         }
     }
 
@@ -308,6 +354,5 @@ class FileOperationHelper(private val context: Context) {
             else -> "$sizeInBytes B"
         }
     }
-
 
 }

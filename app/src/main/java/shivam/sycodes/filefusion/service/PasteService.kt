@@ -4,6 +4,7 @@ import android.Manifest
 import android.R
 import android.annotation.SuppressLint
 import android.app.Notification
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
@@ -15,6 +16,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -29,6 +31,10 @@ class PasteService : Service() {
     private var totalBytes: Long = 0
     private var copiedBytes: Long = 0
 
+    @Volatile
+    private var isCancelled = false
+    private var pasteJob: Job? = null
+
     inner class LocalBinder : Binder() {
         fun getService(): PasteService = this@PasteService
     }
@@ -36,6 +42,10 @@ class PasteService : Service() {
     override fun onBind(intent: Intent?): IBinder = binder
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if(intent?.action == "ACTION_CANCEL_PASTEOPERATION"){
+            cancelPasteOperation()
+            return START_NOT_STICKY
+        }
         this.intentData = intent
 
         val filePath = intent?.getStringExtra("FILE_TO_PASTE") ?: return START_NOT_STICKY
@@ -45,11 +55,12 @@ class PasteService : Service() {
 
         startForeground(notificationId, createInitialNotification())
 
-        CoroutineScope(Dispatchers.IO).launch {
+        pasteJob = CoroutineScope(Dispatchers.IO).launch {
             pasteFile()
             stopSelf()
         }
-        return START_STICKY
+
+        return START_NOT_STICKY
     }
 
     private suspend fun pasteFile() {
@@ -58,6 +69,8 @@ class PasteService : Service() {
 
         totalBytes = getTotalBytes(fileToPaste)
         copiedBytes = 0
+
+        if (isCancelled) return
 
         if (isCutOperation) {
             moveFileOrDirectory(fileToPaste, targetFile)
@@ -75,6 +88,14 @@ class PasteService : Service() {
         }
     }
 
+    private fun cancelPasteOperation() {
+        isCancelled = true
+        pasteJob?.cancel()
+
+        stopForeground(true)
+        stopSelf()
+    }
+
     private fun createInitialNotification(): Notification {
         return NotificationCompat.Builder(this, "fileoperation")
             .setContentTitle("Pasting File")
@@ -87,6 +108,15 @@ class PasteService : Service() {
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     private fun updateNotificationProgress(progress: Int) {
+
+        val cancelIntent = Intent(applicationContext, PasteService::class.java).apply {
+            action = "ACTION_CANCEL_PASTEOPERATION"
+        }
+
+        val cancelPendingIntent = PendingIntent.getService(
+            applicationContext, 0, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
         val notification = NotificationCompat.Builder(this, "fileoperation")
             .setContentTitle("Pasting File")
             .setContentText("Pasting ${fileToPaste.name} to $destinationPath")
@@ -94,6 +124,7 @@ class PasteService : Service() {
             .setOngoing(true)
             .setOnlyAlertOnce(true)
             .setProgress(100, progress, false)
+            .addAction(R.drawable.ic_menu_close_clear_cancel,"Cancel", cancelPendingIntent)
             .build()
         NotificationManagerCompat.from(this).notify(notificationId, notification)
     }
@@ -125,6 +156,10 @@ class PasteService : Service() {
         if (source.isDirectory) {
             destination.mkdirs()
             source.listFiles()?.forEach { child ->
+                if (isCancelled) {
+                    deleteRecursively(destination)
+                    return
+                }
                 copyFileOrDirectory(child, File(destination, child.name))
             }
         } else {
@@ -132,6 +167,10 @@ class PasteService : Service() {
                 destination.outputStream().use { output ->
                     var bytes = input.read(buffer)
                     while (bytes >= 0) {
+                        if (isCancelled) {
+                            destination.delete()
+                            return
+                        }
                         output.write(buffer, 0, bytes)
                         copiedBytes += bytes
                         val progress = ((copiedBytes * 100) / totalBytes).toInt()
@@ -143,22 +182,18 @@ class PasteService : Service() {
         }
     }
 
-//    private fun moveFileOrDirectory(source: File, destination: File) {
-//        if (source.isDirectory) {
-//            destination.mkdirs()
-//            source.listFiles()?.forEach { child ->
-//                moveFileOrDirectory(child, File(destination, child.name))
-//            }
-//            source.deleteRecursively()
-//        } else {
-//            source.renameTo(destination)
-//        }
-//    }
+    private fun deleteRecursively(file: File) {
+        if (file.isDirectory) {
+            file.listFiles()?.forEach { child -> deleteRecursively(child) }
+        }
+        file.delete()
+    }
 
     private fun moveFileOrDirectory(source: File, destination: File) {
         if (source.isDirectory) {
             destination.mkdirs()
             source.listFiles()?.forEach { child ->
+                if (isCancelled) return
                 moveFileOrDirectory(child, File(destination, child.name))
             }
             source.deleteRecursively()
