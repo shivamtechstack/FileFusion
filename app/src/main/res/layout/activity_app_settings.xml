@@ -16,7 +16,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"/>
 
-
    <com.google.android.material.appbar.MaterialToolbar
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
@@ -27,6 +26,75 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:columnCount="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:src="@drawable/night_day_24"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                app:tint="@color/iconcolor" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Color theme"
+                android:textSize="17sp"
+                tools:ignore="HardcodedText" />
+
+            <Spinner
+                android:id="@+id/settings_theme_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginStart="50dp"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/alpaviewbackground"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:src="@drawable/baseline_hide_source_24"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                app:tint="@color/iconcolor" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hidden files/folders"
+                android:textSize="17sp"
+                tools:ignore="HardcodedText" />
+
+            <Switch
+                android:id="@+id/settings_hiddenButton_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/alpaviewbackground"/>
 
         <LinearLayout
             android:id="@+id/vaultPasswordChangeButton"
