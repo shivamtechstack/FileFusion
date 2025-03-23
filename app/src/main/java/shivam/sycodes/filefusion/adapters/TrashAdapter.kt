@@ -19,7 +19,7 @@ import kotlinx.coroutines.withContext
 import shivam.sycodes.filefusion.R
 import java.io.File
 
-class TrashAdapter(val context: Context, var files: Array<File>, private var onItemClick: (File)-> Unit): RecyclerView.Adapter<TrashAdapter.TrashViewHolder>(){
+class TrashAdapter(val context: Context, var files: Array<File>,private var onItemClick: (File)-> Unit, private var onItemLongClick: (File)-> Unit): RecyclerView.Adapter<TrashAdapter.TrashViewHolder>(){
     inner class TrashViewHolder(view : View):RecyclerView.ViewHolder(view){
         var fileName = view.findViewById<TextView>(R.id.directory_name)!!
         var fileImage = view.findViewById<ImageView>(R.id.directory_image)!!
@@ -101,6 +101,10 @@ class TrashAdapter(val context: Context, var files: Array<File>, private var onI
             }
         }
         holder.itemView.setOnLongClickListener {
+            onItemLongClick(file)
+            true
+        }
+        holder.itemView.setOnClickListener {
             onItemClick(file)
             true
         }

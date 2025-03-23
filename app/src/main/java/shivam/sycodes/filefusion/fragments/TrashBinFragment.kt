@@ -9,10 +9,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import shivam.sycodes.filefusion.R
 import shivam.sycodes.filefusion.adapters.TrashAdapter
 import shivam.sycodes.filefusion.databinding.FragmentTrashBinBinding
+import shivam.sycodes.filefusion.filehandling.FileOpener
 import shivam.sycodes.filefusion.service.DeleteOperationCallback
 import shivam.sycodes.filefusion.utility.FileOperationHelper
 import java.io.File
@@ -30,12 +32,52 @@ class TrashBinFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTrashBinBinding.inflate(inflater,container,false)
+
+        requireActivity().window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.toolBarColor)
         fileOperationHelper = FileOperationHelper(requireContext())
         trashPath= fileOperationHelper.getTrashDir().toString()
 
         loadFiles(trashPath)
+
+        binding?.trashBinDeleteAllButton?.setOnClickListener {
+            showDeleteAllConfirmationDialog()
+        }
+
         return binding!!.root
     }
+
+    private fun showDeleteAllConfirmationDialog() {
+        val alertDialog = AlertDialog.Builder(requireContext())
+            .setTitle("Delete All Files")
+            .setMessage("Are you sure you want to permanently delete all files from the trash bin?")
+            .setPositiveButton("Delete") { _, _ -> deleteAllFiles() }
+            .setNegativeButton("Cancel", null)
+            .create()
+
+        alertDialog.show()
+    }
+
+    private fun deleteAllFiles() {
+        val directory = File(trashPath)
+        if (directory.isDirectory && directory.exists()) {
+            val files: Array<File> = directory.listFiles() ?: arrayOf()
+            if (files.isNotEmpty()) {
+                fileOperationHelper.deleteOperation(files.toList(), object : DeleteOperationCallback {
+                    override fun onSuccess(deletedFiles: List<String>) {
+                        Toast.makeText(requireContext(), "All files deleted successfully", Toast.LENGTH_SHORT).show()
+                        loadFiles(trashPath)
+                    }
+
+                    override fun onFailure(errorMessage: String) {
+                        Toast.makeText(requireContext(), "Failed to delete files", Toast.LENGTH_SHORT).show()
+                    }
+                })
+            } else {
+                showToast("Trash bin is already empty")
+            }
+        }
+    }
+
     private fun loadFiles(trashPath: String) {
         val directory = File(trashPath)
         if (directory.isDirectory && directory.exists()) {
@@ -49,7 +91,11 @@ class TrashBinFragment : Fragment() {
                     trashAdapter.notifyDataSetChanged()
                 } else {
 
-                    trashAdapter = TrashAdapter(requireContext(), sortedFiles.toTypedArray(), onItemClick = { selectedFile ->
+                    trashAdapter = TrashAdapter(requireContext(), sortedFiles.toTypedArray(),onItemClick = { selectedFile ->
+                        val fileOpener = FileOpener(requireContext())
+                        fileOpener.openFile(selectedFile)
+
+                    }, onItemLongClick = { selectedFile ->
                         val trashDialog = AlertDialog.Builder(requireContext())
                         val trashDialogView = LayoutInflater.from(requireContext()).inflate(R.layout.trashdialog, null, false)
                         trashDialog.setView(trashDialogView)
