@@ -1,9 +1,13 @@
 package shivam.sycodes.filefusion
 
+import android.content.Context
 import android.os.Bundle
+import android.util.AttributeSet
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import shivam.sycodes.filefusion.databinding.ActivityAppSettingsBinding

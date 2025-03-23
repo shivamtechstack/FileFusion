@@ -11,6 +11,7 @@ import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -92,7 +93,19 @@ class VaultService : Service() {
 
     private suspend fun moveOutOfVault(context: Context, vaultFile: File, originalPath: String) {
         val originalFile = File(originalPath)
-        if (originalFile.parentFile?.canWrite() != true) {
+        val parentFolder = originalFile.parentFile
+
+        if (parentFolder != null && !parentFolder.exists()) {
+            if (!parentFolder.mkdirs()) {
+                Log.e("VaultService", "Failed to create parent directory: ${parentFolder.absolutePath}")
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Failed to create parent directory", Toast.LENGTH_SHORT).show()
+                }
+                return
+            }
+        }
+
+        if (parentFolder?.canWrite() != true) {
             Log.e("VaultService", "Original file path is not writable!")
             withContext(Dispatchers.Main) {
                 Toast.makeText(context, "Original file path is not writable", Toast.LENGTH_SHORT).show()
@@ -124,6 +137,8 @@ class VaultService : Service() {
                     Toast.LENGTH_LONG
                 ).show()
             }
+            val intent = Intent("shivam.sycodes.filefusion.MOVE_OUT_OF_VAULT_COMPLETE")
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
         } catch (e: Exception) {
             Log.e("VaultService", "Error while restoring file: ${e.localizedMessage}")
             withContext(Dispatchers.Main) {

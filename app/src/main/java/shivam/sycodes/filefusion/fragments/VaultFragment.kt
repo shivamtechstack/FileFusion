@@ -1,7 +1,10 @@
 package shivam.sycodes.filefusion.fragments
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,6 +16,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,6 +51,14 @@ class VaultFragment : Fragment(){
             }
         }
 
+    private val moveOutOfVaultCompleteReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (isAdded) {
+                loadFiles(vaultDir)
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fileOperationHelper = FileOperationHelper(requireContext())
@@ -66,13 +79,24 @@ class VaultFragment : Fragment(){
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(moveOutOfVaultCompleteReceiver,
+            IntentFilter("shivam.sycodes.filefusion.MOVE_OUT_OF_VAULT_COMPLETE"))
+    }
+
+    override fun onStop() {
+        super.onStop()
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(moveOutOfVaultCompleteReceiver)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentVaultBinding.inflate(inflater,container,false)
         loadFiles(vaultDir)
-
         return binding?.root
     }
 

@@ -19,7 +19,6 @@
             android:layout_marginStart="0dp"
             android:elevation="1dp"
             android:padding="20dp"
-            android:tint="@color/toogleButtonColor"
            android:src="@drawable/baseline_arrow_back_24"/>
 
         <ImageView
@@ -46,7 +45,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
+        android:background="@color/blackOnDark"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -56,135 +57,134 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Properties"
-                android:textColor="@color/toogleButtonColor"
-                android:layout_marginTop="30dp" />
+                android:layout_marginTop="30dp"
+                android:text="Properties" />
 
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginVertical="7dp"
-                android:background="@color/unhighlighted_text"/>
+                android:background="@color/unhighlighted_text" />
 
 
             <LinearLayout
-                android:layout_marginVertical="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Location"/>
+                    android:text="Location" />
 
                 <TextView
                     android:id="@+id/fileinfo_fileLocation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="My files"/>
+                    android:hint="My files" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginVertical="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Name"/>
+                    android:text="Name" />
 
                 <TextView
                     android:id="@+id/fileinfo_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="name"/>
+                    android:hint="name" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginVertical="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Last Modified"/>
+                    android:text="Last Modified" />
 
                 <TextView
                     android:id="@+id/fileinfo_lastModified"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="modificatin date"/>
+                    android:hint="modificatin date" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginVertical="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Size"/>
+                    android:text="Size" />
 
                 <TextView
                     android:id="@+id/fileinfo_size"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="size"/>
+                    android:hint="size" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginVertical="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="type"/>
+                    android:text="type" />
 
                 <TextView
                     android:id="@+id/fileinfo_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="file type"/>
+                    android:hint="file type" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginVertical="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Count"/>
+                    android:text="Count" />
 
                 <TextView
                     android:id="@+id/fileinfo_count"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="file count"/>
+                    android:hint="file count" />
 
             </LinearLayout>
 

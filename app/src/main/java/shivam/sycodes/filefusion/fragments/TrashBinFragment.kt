@@ -32,8 +32,6 @@ class TrashBinFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTrashBinBinding.inflate(inflater,container,false)
-
-        requireActivity().window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.toolBarColor)
         fileOperationHelper = FileOperationHelper(requireContext())
         trashPath= fileOperationHelper.getTrashDir().toString()
 

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/blackOnDark"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".fragments.TrashBinFragment">
@@ -11,7 +12,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/toolBarColor"
-        app:title="Trash Bin" />
+        app:title="Trash Bin">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:layout_marginEnd="18dp">
+
+            <ImageView
+                android:id="@+id/trashBin_deleteAllButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/outline_delete_24"/>
+
+        </LinearLayout>
+
+    </com.google.android.material.appbar.MaterialToolbar>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/trashBinRecyclerView"

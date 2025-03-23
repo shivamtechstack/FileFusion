@@ -47,9 +47,9 @@
             android:elevation="5dp"
             android:textSize="15sp"
             android:fontFamily="@font/source_sans_pro_semibold"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:layout_weight="1"
-            android:backgroundTint="@color/lightred"
+            android:backgroundTint="@color/toogleButtonColor"
             android:layout_height="wrap_content"
             android:text="create"
             tools:ignore="HardcodedText" />
