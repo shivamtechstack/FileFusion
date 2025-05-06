@@ -6,12 +6,12 @@ plugins {
     }
 android {
     namespace = "shivam.sycodes.filefusion"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "shivam.sycodes.filefusion"
         minSdk = 33
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 

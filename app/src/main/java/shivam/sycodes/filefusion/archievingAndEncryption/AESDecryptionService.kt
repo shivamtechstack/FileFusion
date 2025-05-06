@@ -20,12 +20,14 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.security.MessageDigest
+import javax.crypto.AEADBadTagException
 import javax.crypto.Cipher
 import javax.crypto.SecretKey
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.SecretKeySpec
+import kotlin.coroutines.cancellation.CancellationException
 
 class AESDecryptionService : Service() {
     private var isDecryptionCancelled = false
@@ -98,75 +100,140 @@ class AESDecryptionService : Service() {
         stopForeground(true)
     }
 
-    private fun decryptFile(file: File, password: String, destinationFolder: File, notificationId: Int) {
-        val fileSize = file.length()
-        var bytesCopied = 0L
-        var lastUpdateTime = System.currentTimeMillis()
+//    private fun decryptFile(file: File, password: String, destinationFolder: File, notificationId: Int) {
+//        val fileSize = file.length()
+//        var bytesCopied = 0L
+//        var lastUpdateTime = System.currentTimeMillis()
+//
+//        FileInputStream(file).use { fileIn ->
+//            val salt = ByteArray(16)
+//            if (fileIn.read(salt) != 16) {
+//                throw IllegalArgumentException("Invalid file format: Salt missing")
+//            }
+//
+//            val iv = ByteArray(16)
+//            if (fileIn.read(iv) != 16) {
+//                throw IllegalArgumentException("Invalid file format: IV missing")
+//            }
+//
+//            val secretKey = generateKey(password, salt)
+//            val ivSpec = IvParameterSpec(iv)
+//
+//            val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+//            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec)
+//
+//            val encryptedFileName = resolveUniqueFileName(destinationFolder, file.nameWithoutExtension)
+//            val decryptedFile = File(destinationFolder, encryptedFileName)
+//
+//            FileOutputStream(decryptedFile).use { output ->
+//
+//                if (isDecryptionCancelled){
+//                    decryptedFile.delete()
+//                    return
+//                }
+//
+//                val inputBuffer = ByteArray(65536)
+//                val outputBuffer = ByteArray(65536)
+//
+//                while (true) {
+//
+//                    if (isDecryptionCancelled){
+//                        decryptedFile.delete()
+//                        return
+//                    }
+//
+//                    val bytesRead = fileIn.read(inputBuffer)
+//                    if (bytesRead == -1) break
+//
+//                    val decryptedBytes = cipher.update(inputBuffer, 0, bytesRead, outputBuffer)
+//                    output.write(outputBuffer, 0, decryptedBytes)
+//
+//                    bytesCopied += bytesRead
+//                    val progress = ((bytesCopied * 100) / fileSize).toInt()
+//                    val currentTime = System.currentTimeMillis()
+//
+//                    if (currentTime - lastUpdateTime > 100 || progress % 5 == 0) {
+//                        updateProgressNotification(notificationId, file.name, progress)
+//                        lastUpdateTime = currentTime
+//                    }
+//                }
+//
+//                val finalBytes = cipher.doFinal()
+//                if (finalBytes.isNotEmpty()) {
+//                    output.write(finalBytes)
+//                }
+//            }
+//
+//            if (decryptedFile.exists() && decryptedFile.length() > 0) {
+//                Log.d("AESDecryptionService", "Decryption successful: ${decryptedFile.absolutePath}")
+//            } else {
+//                Log.e("AESDecryptionService", "Decryption failed: No output file generated")
+//            }
+//        }
+//    }
 
-        FileInputStream(file).use { fileIn ->
-            val salt = ByteArray(16)
-            if (fileIn.read(salt) != 16) {
-                throw IllegalArgumentException("Invalid file format: Salt missing")
-            }
+    private fun decryptFile(file: File, password: String, destinationFolder: File, notificationId : Int): Boolean {
+        var decryptedFile: File? = null
+        return try {
+            val fileSize = file.length()
+            var bytesCopied = 0L
+            var lastUpdateTime = System.currentTimeMillis()
 
-            val iv = ByteArray(16)
-            if (fileIn.read(iv) != 16) {
-                throw IllegalArgumentException("Invalid file format: IV missing")
-            }
+            FileInputStream(file).use { fileIn ->
+                val salt = ByteArray(16)
+                if (fileIn.read(salt) != 16) throw IllegalArgumentException("Salt missing")
 
-            val secretKey = generateKey(password, salt)
-            val ivSpec = IvParameterSpec(iv)
+                val iv = ByteArray(16)
+                if (fileIn.read(iv) != 16) throw IllegalArgumentException("IV missing")
 
-            val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec)
-
-            val encryptedFileName = resolveUniqueFileName(destinationFolder, file.nameWithoutExtension)
-            val decryptedFile = File(destinationFolder, encryptedFileName)
-
-            FileOutputStream(decryptedFile).use { output ->
-
-                if (isDecryptionCancelled){
-                    decryptedFile.delete()
-                    return
+                val secretKey = generateKey(password, salt)
+                val cipher = Cipher.getInstance("AES/GCM/NoPadding").apply {
+                    init(Cipher.DECRYPT_MODE, secretKey, IvParameterSpec(iv))
                 }
 
-                val inputBuffer = ByteArray(65536)
-                val outputBuffer = ByteArray(65536)
+                val uniqueName = resolveUniqueFileName(destinationFolder, file.nameWithoutExtension)
+                decryptedFile = File(destinationFolder, uniqueName)
 
-                while (true) {
+                FileOutputStream(decryptedFile!!).use { output ->
+                    val inputBuffer = ByteArray(65536)
+                    val outputBuffer = ByteArray(65536)
 
-                    if (isDecryptionCancelled){
-                        decryptedFile.delete()
-                        return
-                    }
+                    while (true) {
+                        if (isDecryptionCancelled) throw CancellationException()
 
-                    val bytesRead = fileIn.read(inputBuffer)
-                    if (bytesRead == -1) break
+                        val bytesRead = fileIn.read(inputBuffer)
+                        if (bytesRead == -1) break
 
-                    val decryptedBytes = cipher.update(inputBuffer, 0, bytesRead, outputBuffer)
-                    output.write(outputBuffer, 0, decryptedBytes)
+                        val decryptedLen = cipher.update(inputBuffer, 0, bytesRead, outputBuffer)
+                        output.write(outputBuffer, 0, decryptedLen)
 
-                    bytesCopied += bytesRead
-                    val progress = ((bytesCopied * 100) / fileSize).toInt()
-                    val currentTime = System.currentTimeMillis()
+                        bytesCopied += bytesRead
+                        val progress = ((bytesCopied * 100) / fileSize).toInt()
+                        val currentTime = System.currentTimeMillis()
 
-                    if (currentTime - lastUpdateTime > 100 || progress % 5 == 0) {
+                        if (currentTime - lastUpdateTime > 100 || progress % 5 == 0) {
                         updateProgressNotification(notificationId, file.name, progress)
-                        lastUpdateTime = currentTime
+                       lastUpdateTime = currentTime
+                   }
+                    }
+
+                    val finalBytes = cipher.doFinal()
+                    if (finalBytes.isNotEmpty()) {
+                        output.write(finalBytes)
                     }
                 }
-
-                val finalBytes = cipher.doFinal()
-                if (finalBytes.isNotEmpty()) {
-                    output.write(finalBytes)
-                }
             }
 
-            if (decryptedFile.exists() && decryptedFile.length() > 0) {
-                Log.d("AESDecryptionService", "Decryption successful: ${decryptedFile.absolutePath}")
-            } else {
-                Log.e("AESDecryptionService", "Decryption failed: No output file generated")
-            }
+            Log.d("AESDecryptionService", "Decrypted: ${'$'}{decryptedFile!!.absolutePath}")
+            true
+        } catch (e: AEADBadTagException) {
+            decryptedFile?.delete()
+            notifyError("Incorrect password for file: ${file.name}")
+            false
+        } catch (e: Exception) {
+            decryptedFile?.delete()
+            notifyError("Failed to decrypt ${'$'}{file.name}: ${'$'}{e.message}")
+            false
         }
     }
 
@@ -261,6 +328,21 @@ class AESDecryptionService : Service() {
             .build()
 
         notificationManager.notify(notificationId, notification)
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun notifyError(message: String) {
+        CoroutineScope(Dispatchers.Main).launch {
+            Toast.makeText(this@AESDecryptionService, message, Toast.LENGTH_LONG).show()
+        }
+        NotificationCompat.Builder(this, PermissionHelper.CHANNEL_ID)
+            .setContentTitle("Decryption Error")
+            .setContentText(message)
+            .setSmallIcon(R.drawable.baseline_clear_24)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .build().also {
+                NotificationManagerCompat.from(this).notify(NOTIFICATION_ID + 1, it)
+            }
     }
 
     @SuppressLint("MissingPermission")
