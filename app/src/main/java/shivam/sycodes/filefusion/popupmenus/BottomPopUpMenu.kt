@@ -72,6 +72,7 @@ class BottomPopUpMenu(private var context1: FileExplorerFragment, private val co
                 bottomPopUpMenu.menu.findItem(R.id.decrypt).isVisible = true
                 bottomPopUpMenu.menu.findItem(R.id.encrypt).isVisible = false
             }
+            bottomPopUpMenu.menu.findItem(R.id.archive).isVisible = true
         }
 
         bottomPopUpMenu.setOnMenuItemClickListener { item ->

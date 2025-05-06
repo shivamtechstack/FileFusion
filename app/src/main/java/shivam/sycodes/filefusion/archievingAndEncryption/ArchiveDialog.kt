@@ -37,8 +37,8 @@ class ArchiveDialog {
         val protectWithPasswordCheckBox = archiveDialogView.findViewById<CheckBox>(R.id.protectWithPasswordCheckBox)
         val cancelButton = archiveDialogView.findViewById<Button>(R.id.archive_cancel_button)
         val createButton = archiveDialogView.findViewById<Button>(R.id.create_archieve_button)
-        val passwordEditText = archiveDialogView.findViewById<EditText>(R.id.archivePasswordEditText)
-        val confirmPasswordEditText = archiveDialogView.findViewById<EditText>(R.id.archiveConfirmPasswordEditText)
+//        val passwordEditText = archiveDialogView.findViewById<EditText>(R.id.archivePasswordEditText)
+//        val confirmPasswordEditText = archiveDialogView.findViewById<EditText>(R.id.archiveConfirmPasswordEditText)
         val archievePasswordlayout = archiveDialogView.findViewById<View>(R.id.archivePasswordLayout)
 
         cancelButton.setOnClickListener {
@@ -111,7 +111,6 @@ class ArchiveDialog {
                         putExtra("files", listOf(selectedFiles) as Serializable)
                         putExtra("archive_name", archiveFilename)
                         putExtra("compression_level", selectedCompression)
-                        putExtra("password", passwordEditText.text.toString())
                         putExtra("Action", "7zip")
                     }
                     ContextCompat.startForegroundService(context,sevenZipIntent)
